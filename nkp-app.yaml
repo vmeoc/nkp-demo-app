@@ -5,7 +5,7 @@ owner: vincent
 env: dev
 archi: stateless
 runtime: python
-port: 80
+port: 8080
 size: S
 backup: none
 tracing: true
