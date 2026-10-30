@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nkp-app.schema.json",
+  "title": "Contrat de déploiement NKP (nkp-app.yaml)",
+  "description": "Intentions du développeur. render.py les traduit en manifests Kubernetes que la plateforme NKP sait gouverner. Chaque option à choix porte un titre et une description : ils servent au dialogue de l'IA aujourd'hui et pourront alimenter une interface graphique demain.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["app", "owner", "env", "archi", "runtime", "port", "size", "backup", "tracing", "expose"],
+  "properties": {
+    "app": {
+      "title": "Nom de l'application",
+      "description": "Nom DNS : minuscules, chiffres et tirets, 40 caractères max. Devient le nom du Deployment et du Service. Ne plus le changer une fois déployé.",
+      "type": "string",
+      "pattern": "^[a-z]([-a-z0-9]{0,38}[a-z0-9])?$"
+    },
+    "owner": {
+      "title": "Propriétaire",
+      "description": "Identifiant de la personne ou de l'équipe responsable (label Kubernetes).",
+      "type": "string",
+      "pattern": "^[a-z0-9]([-a-z0-9._]{0,61}[a-z0-9])?$"
+    },
+    "cost_center": {
+      "title": "Centre de coût",
+      "description": "Obligatoire en prod. Sert au reporting des coûts.",
+      "type": "string",
+      "pattern": "^[a-z0-9]([-a-z0-9._]{0,61}[a-z0-9])?$"
+    },
+    "env": {
+      "title": "Environnement",
+      "oneOf": [
+        { "const": "dev", "title": "Développement", "description": "Règles souples, 1 replica par défaut." },
+        { "const": "test", "title": "Test", "description": "Recette fonctionnelle, 1 replica par défaut." },
+        { "const": "preprod", "title": "Pré-production", "description": "Iso-prod, 2 replicas par défaut." },
+        { "const": "prod", "title": "Production", "description": "2 replicas minimum, centre de coût obligatoire, pas de date d'expiration." }
+      ]
+    },
+    "archi": {
+      "title": "Type d'architecture",
+      "oneOf": [
+        { "const": "stateless", "title": "Stateless", "description": "Pods sans volume persistant. Seul type supporté dans la démo." },
+        { "const": "backend-db", "title": "Backend + nouvelle base", "description": "Base de données provisionnée par la plateforme. Pas encore supporté." },
+        { "const": "backend-db-existing", "title": "Backend + base existante", "description": "Connexion à une base existante. Pas encore supporté." }
+      ]
+    },
+    "runtime": {
+      "title": "Langage",
+      "description": "Détermine l'auto-instrumentation OpenTelemetry.",
+      "oneOf": [
+        { "const": "python", "title": "Python" },
+        { "const": "nodejs", "title": "Node.js" },
+        { "const": "java", "title": "Java" },
+        { "const": "dotnet", "title": ".NET" },
+        { "const": "static", "title": "Site statique (nginx)", "description": "Pas de tracing possible." }
+      ]
+    },
+    "port": {
+      "title": "Port d'écoute du conteneur",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "replicas": {
+      "title": "Nombre de replicas",
+      "description": "Facultatif. Par défaut : 1 en dev/test, 2 en preprod/prod.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "size": {
+      "title": "Taille",
+      "oneOf": [
+        { "const": "S", "title": "Small", "description": "0,1 CPU / 128 Mi demandés, plafond 0,5 CPU / 256 Mi." },
+        { "const": "M", "title": "Medium", "description": "0,25 CPU / 256 Mi demandés, plafond 1 CPU / 512 Mi." },
+        { "const": "L", "title": "Large", "description": "0,5 CPU / 512 Mi demandés, plafond 2 CPU / 1 Gi." }
+      ]
+    },
+    "backup": {
+      "title": "Sauvegarde",
+      "description": "Simulé dans la démo : seul le label est posé, aucune politique Velero n'est créée.",
+      "oneOf": [
+        { "const": "none", "title": "Aucune", "description": "Git suffit pour une appli stateless." },
+        { "const": "daily", "title": "Quotidienne", "description": "02:00, rétention 7 jours." },
+        { "const": "hourly", "title": "Horaire", "description": "Toutes les heures, rétention 48 heures." }
+      ]
+    },
+    "tracing": {
+      "title": "Tracing distribué",
+      "description": "true = auto-instrumentation OpenTelemetry injectée par l'opérateur, sans modifier le code.",
+      "type": "boolean"
+    },
+    "expose": {
+      "title": "Exposition",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "oneOf": [
+            { "const": "none", "title": "Interne au cluster", "description": "Service ClusterIP uniquement." },
+            { "const": "loadbalancer", "title": "Adresse IP", "description": "Service LoadBalancer (MetalLB ou équivalent requis)." },
+            { "const": "ingress", "title": "URL", "description": "Ingress avec un nom d'hôte." }
+          ]
+        },
+        "host": {
+          "title": "Nom d'hôte",
+          "type": "string",
+          "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+$"
+        },
+        "ingress_class": {
+          "title": "Classe d'ingress",
+          "description": "Par défaut kommander-traefik. Vérifier avec : kubectl get ingressclass",
+          "type": "string"
+        }
+      },
+      "if": { "properties": { "type": { "const": "ingress" } } },
+      "then": { "required": ["host"] }
+    },
+    "llm": {
+      "title": "Accès LLM",
+      "oneOf": [
+        { "const": "none", "title": "Aucun" },
+        { "const": "nai", "title": "Nutanix Enterprise AI", "description": "Injecte le secret nai-credentials (NAI_BASE_URL, NAI_API_KEY, NAI_MODEL) dans le conteneur." }
+      ]
+    },
+    "expires": {
+      "title": "Date d'expiration",
+      "description": "Facultatif, format AAAA-MM-JJ. Interdit en prod. Posé en label ; la suppression est faite par un job planifié côté plateforme.",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}

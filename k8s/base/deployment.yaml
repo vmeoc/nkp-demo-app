@@ -1,0 +1,66 @@
+# GÉNÉRÉ par render.py depuis nkp-app.yaml. Ne pas modifier à la main.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-nkp
+  labels:
+    app.kubernetes.io/name: hello-nkp
+    app.kubernetes.io/managed-by: nkp-deploy
+    nkp.demo/env: dev
+    nkp.demo/owner: vincent
+    nkp.demo/archi: stateless
+    nkp.demo/backup: none
+    nkp.demo/tracing: enabled
+    nkp.demo/llm: none
+    nkp.demo/expires: '2026-12-31'
+  annotations:
+    nkp.demo/backup-policy: aucune sauvegarde
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hello-nkp
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hello-nkp
+        app.kubernetes.io/managed-by: nkp-deploy
+        nkp.demo/env: dev
+        nkp.demo/owner: vincent
+        nkp.demo/archi: stateless
+        nkp.demo/backup: none
+        nkp.demo/tracing: enabled
+        nkp.demo/llm: none
+        nkp.demo/expires: '2026-12-31'
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: 'true'
+    spec:
+      containers:
+      - name: hello-nkp
+        image: app-image
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: APP_ENV
+          value: dev
+        - name: OTEL_SERVICE_NAME
+          value: hello-nkp
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        readinessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10

@@ -1,0 +1,23 @@
+# GÉNÉRÉ par render.py depuis nkp-app.yaml. Ne pas modifier à la main.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-nkp
+  labels:
+    app.kubernetes.io/name: hello-nkp
+    app.kubernetes.io/managed-by: nkp-deploy
+    nkp.demo/env: dev
+    nkp.demo/owner: vincent
+    nkp.demo/archi: stateless
+    nkp.demo/backup: none
+    nkp.demo/tracing: enabled
+    nkp.demo/llm: none
+    nkp.demo/expires: '2026-12-31'
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: hello-nkp
+  ports:
+  - name: http
+    port: 80
+    targetPort: http

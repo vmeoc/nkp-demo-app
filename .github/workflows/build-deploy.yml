@@ -2,7 +2,19 @@ name: build-deploy
 on:
   push:
     branches: [main]
-    paths-ignore: ["k8s/**"]
+    # Un changement de configuration seule (contrat, manifests, skill, doc) ne reconstruit pas l'image :
+    # Flux applique directement k8s/base avec l'image actuelle.
+    paths-ignore:
+      - "k8s/**"
+      - "nkp-app.yaml"
+      - ".github/skills/**"
+      - "**/*.md"
+  workflow_dispatch:
+
+# Un seul build à la fois : deux push rapprochés ne se marchent pas dessus.
+concurrency:
+  group: build-deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -22,15 +34,27 @@ jobs:
 
       - name: Build & push
         run: |
-          IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA::7}
-          docker build -t $IMAGE .
-          docker push $IMAGE
-          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+          IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}
+          TAG=${GITHUB_SHA::7}
+          docker build -t "$IMAGE_NAME:$TAG" .
+          docker push "$IMAGE_NAME:$TAG"
+          echo "IMAGE_NAME=$IMAGE_NAME" >> "$GITHUB_ENV"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
 
-      - name: Update manifest
+      - name: Update image tag (k8s/kustomization.yaml uniquement)
         run: |
-          sed -i "s|image: .*|image: ${IMAGE}|" k8s/deployment.yaml
+          test -f k8s/kustomization.yaml || { echo "::error::k8s/kustomization.yaml manquant : lancer render.py et committer"; exit 1; }
+          # newTag entre guillemets : un SHA court composé uniquement de chiffres serait sinon lu comme un nombre.
+          sed -i -e "s|^\(\s*newName:\).*|\1 ${IMAGE_NAME}|" \
+                 -e "s|^\(\s*newTag:\).*|\1 \"${TAG}\"|" k8s/kustomization.yaml
           git config user.name "ci-bot"
           git config user.email "ci-bot@users.noreply.github.com"
-          git commit -am "deploy ${IMAGE}"
-          git push
+          git add k8s/kustomization.yaml
+          git commit -m "deploy ${IMAGE_NAME}:${TAG}" || { echo "Tag déjà à jour"; exit 0; }
+          # Si le développeur a poussé entre-temps : on rejoue notre commit par-dessus. Aucun conflit possible,
+          # car personne d'autre ne modifie k8s/kustomization.yaml.
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep 5
+          done
+          exit 1

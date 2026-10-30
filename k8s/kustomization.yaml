@@ -1,0 +1,10 @@
+# Fichier géré par la CI : seules les lignes newName et newTag changent à chaque build.
+# Ne pas modifier à la main, ni le régénérer : c'est ce qui évite les conflits Git.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - base
+images:
+  - name: app-image
+    newName: ghcr.io/vmeoc/nkp-demo-app
+    newTag: "bootstrap"
