@@ -7,4 +7,4 @@ resources:
 images:
   - name: app-image
     newName: ghcr.io/vmeoc/nkp-demo-app
-    newTag: "ecc37d8"
+    newTag: "33806e1"
