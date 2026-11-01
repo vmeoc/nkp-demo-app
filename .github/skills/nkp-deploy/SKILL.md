@@ -18,7 +18,9 @@ Tu ne rédiges jamais de manifest Kubernetes. Tu écris un **contrat d'intention
 - Ne modifie jamais un fichier de `k8s/` à la main. Pour changer le déploiement, change `nkp-app.yaml` puis relance `render.py`.
 - Ne touche jamais `k8s/kustomization.yaml` : c'est le fichier de la CI. C'est ce qui évite les conflits Git.
 - Utilise `.venv/bin/python` (à défaut `python3`) depuis la racine du repo.
-- Toute création ou modification de `nkp-app.yaml` exige l'accord explicite de l'utilisateur avant l'écriture. Avant chaque push de déploiement, même si les changements ne nécessitent aucune modification du contrat, présente les valeurs exactes de `nkp-app.yaml` qui seront poussées et demande à l'utilisateur de confirmer qu'il les approuve. Cette confirmation est impérative, sans exception : ni des valeurs par défaut, ni une demande de ne pas poser de questions, ni une approbation antérieure ne la remplacent.
+- RÈGLE BLOQUANTE : aucune création ou modification de `nkp-app.yaml`, aucun `render.py`, aucun `git add/commit/push`, et aucun déploiement NKP ne doivent être lancés sans approbation explicite du développeur.
+- Avant toute écriture du contrat, présente le tableau complet des valeurs exactes proposées et attend une réponse affirmative claire du type « je valide » ou « oui, je valide ». Sans réponse explicite, tu ne touches ni `nkp-app.yaml`, ni les manifests générés, et tu ne pousses rien.
+- Avant chaque push de déploiement, même si le contrat n'a pas besoin de changer pour cette livraison, présente aussi les valeurs exactes de `nkp-app.yaml` qui seront poussées et demande leur approbation explicite. Cette confirmation est impérative, sans exception : ni des valeurs par défaut, ni une demande de ne pas poser de questions, ni une approbation antérieure ne la remplacent.
 - Ne contourne jamais une règle de la plateforme pour faire passer un déploiement : ne baisse pas l'environnement, ne retire pas une option obligatoire, ne désactive pas un contrôle. Explique la règle et propose une correction conforme.
 - Ne commite jamais de secret. Pas de `git push --force`.
 - Ne change jamais le champ `app` d'une appli déjà déployée sans prévenir l'utilisateur : cela crée une nouvelle appli.
@@ -80,7 +82,7 @@ Il est important qu'il voit ce degré de connaissance que tu as du projet et la 
 
 ## Étape 3 — Présenter le contrat et attendre la validation explicite
 
-Avant toute création ou modification de `nkp-app.yaml`, présente un tableau unique avec les valeurs proposées et attends l'accord explicite de l'utilisateur avant d'écrire. Avant chaque push de déploiement, présente aussi les valeurs exactes du contrat qui seront poussées et demande leur approbation, même si le contrat n'a pas besoin de changer pour cette livraison. Ne pose pas les questions une par une : demande une confirmation globale. Sans réponse affirmative explicite, ne crée ni ne modifie le contrat et ne pousse pas le déploiement.
+Avant toute création ou modification de `nkp-app.yaml`, présente un tableau unique avec les valeurs proposées et attends l'accord explicite de l'utilisateur avant d'écrire. Avant chaque push de déploiement, présente aussi les valeurs exactes du contrat qui seront poussées et demande leur approbation, même si le contrat n'a pas besoin de changer pour cette livraison. Ne pose pas les questions une par une : demande une confirmation globale. Sans réponse affirmative explicite, ne crée ni ne modifie le contrat et ne pousse pas le déploiement. Cette étape est un blocage obligatoire : ne pas faire cette étape = interdiction de continuer.
 Crée nkp-app.yaml s'il n'est pas présent, ou modifie le s'il existe déjà.
 
 Exemple :
