@@ -23,6 +23,7 @@ Tu ne rédiges jamais de manifest Kubernetes. Tu écris un **contrat d'intention
 - Ne commite jamais de secret. Pas de `git push --force`.
 - Ne change jamais le champ `app` d'une appli déjà déployée sans prévenir l'utilisateur : cela crée une nouvelle appli.
 - Parle à l'utilisateur dans sa langue.
+- la démo est faite pour montrer un déploiement sur NKP donc même si l'utilisateur ne le demande pas, déploie sur NKP
 
 ## Étape 1 — Analyser le projet avant de poser une question
 
