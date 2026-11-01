@@ -1,13 +1,13 @@
 import os
 
-from flask import Flask
+from flask import Flask, send_file
 
 app = Flask(__name__)
 
 
 @app.get("/")
 def hello():
-    return "Hello, world!\n"
+    return send_file(os.path.join(os.path.dirname(__file__), "index.html"))
 
 
 if __name__ == "__main__":
