@@ -1,6 +1,6 @@
 ---
 name: nkp-deploy
-description: Crée, déploie et corrige l'application du repo sur Nutanix Kubernetes Platform (NKP) via GitOps. À utiliser dès que l'utilisateur veut créer une appli à héberger, la déployer, la mettre en ligne, changer d'environnement, de taille ou d'options (backup, tracing, exposition, LLM, expiration), ou comprendre pourquoi un déploiement NKP échoue.
+description: Le but de ce skill est de participer à une démo client afin de montrer comment une applicaiton vibecoder peut tirer parti des caractéristiques d'une plateformes Kubernetes (Nutanix Kubernets Platform) pour être correctement dépployé. Le développeur va demander à modifier le fichier index.html en faisant une modification simple. Tu vas procéder à cette modification le plus rapidement et le plus simplement possible car le but de la démo est de demander aux développeur de valider le "contrat d'intention" nkp contenant les caractéristiques de l'application pour être correctemetn déployée par NKP. Ton job est donc de modifier et déployer l'application du repo sur Nutanix Kubernetes Platform (NKP) via GitOps. Ce skills est à utiliser dès que l'utilisateur veut créer ou modifier une appli à héberger, la déployer, la mettre en ligne, changer d'environnement, de taille ou d'options (backup, tracing, exposition, LLM, expiration), ou comprendre pourquoi un déploiement NKP échoue.
 ---
 
 # Déployer sur NKP
@@ -18,6 +18,7 @@ Tu ne rédiges jamais de manifest Kubernetes. Tu écris un **contrat d'intention
 - Ne modifie jamais un fichier de `k8s/` à la main. Pour changer le déploiement, change `nkp-app.yaml` puis relance `render.py`.
 - Ne touche jamais `k8s/kustomization.yaml` : c'est le fichier de la CI. C'est ce qui évite les conflits Git.
 - Utilise `.venv/bin/python` (à défaut `python3`) depuis la racine du repo.
+- Toute création ou modification de `nkp-app.yaml` exige l'accord explicite de l'utilisateur avant l'écriture. Avant chaque push de déploiement, même si les changements ne nécessitent aucune modification du contrat, présente les valeurs exactes de `nkp-app.yaml` qui seront poussées et demande à l'utilisateur de confirmer qu'il les approuve. Cette confirmation est impérative, sans exception : ni des valeurs par défaut, ni une demande de ne pas poser de questions, ni une approbation antérieure ne la remplacent.
 - Ne contourne jamais une règle de la plateforme pour faire passer un déploiement : ne baisse pas l'environnement, ne retire pas une option obligatoire, ne désactive pas un contrôle. Explique la règle et propose une correction conforme.
 - Ne commite jamais de secret. Pas de `git push --force`.
 - Ne change jamais le champ `app` d'une appli déjà déployée sans prévenir l'utilisateur : cela crée une nouvelle appli.
@@ -25,37 +26,61 @@ Tu ne rédiges jamais de manifest Kubernetes. Tu écris un **contrat d'intention
 
 ## Étape 1 — Analyser le projet avant de poser une question
 
-Lis le repo et déduis une proposition pour chaque option. Si `nkp-app.yaml` existe déjà, pars de ses valeurs.
+Lis les fichiers locaux. Ne lis pas l'historique git. Déduis une proposition pour chaque option. Si `nkp-app.yaml` existe déjà, pars de ses valeurs.
 
-| Signal dans le repo | Proposition |
-|---|---|
-| `requirements.txt`, `pyproject.toml` | `runtime: python` |
-| `package.json` | `runtime: nodejs` |
-| `pom.xml`, `build.gradle` | `runtime: java` |
-| `*.csproj` | `runtime: dotnet` |
-| uniquement HTML/CSS/JS servi par nginx | `runtime: static`, `tracing: false` |
-| `EXPOSE` du Dockerfile, ou port dans le code (`app.run(port=…)`, `listen(…)`) | `port` |
-| dépendances `openai`, `langchain`, `litellm`, `anthropic` | `llm: nai` |
-| dépendances `psycopg`, `sqlalchemy`, `pymongo`, `mysql`, `redis` | signale qu'une base est requise ; seul `stateless` est supporté : demande comment procéder |
-| nom de la branche ou du dossier contenant `prod`, `preprod`, `test` | `env` correspondant, sinon `dev` |
-| `git config user.email` | `owner` = partie avant le `@`, en minuscules |
-| nom du dossier du repo | `app` (minuscules, tirets) |
-| prototype, démo, POC dans la demande | `expires` à 30 jours |
+Montre ce texte au développer en tant que résumé des informations que tu vas chercher à définir pour que le projet puisse bien être déployé.
+app : Nom de l'application [string] - Nom DNS : minuscules, chiffres et tirets, 40 caractères max. Devient le nom du Deployment et du Service. Ne plus le changer une fois déployé.
+owner : Propriétaire [string] - Identifiant de la personne ou de l'équipe responsable (label Kubernetes).
+cost_center (facultatif) : Centre de coût [string] - Obligatoire en prod. Sert au reporting des coûts.
+env : Environnement
+    dev (Développement) - Règles souples, 1 replica par défaut.
+    test (Test) - Recette fonctionnelle, 1 replica par défaut.
+    preprod (Pré-production) - Iso-prod, 2 replicas par défaut.
+    prod (Production) - 2 replicas minimum, centre de coût obligatoire, pas de date d'expiration.
+archi : Type d'architecture
+    stateless (Stateless) - Pods sans volume persistant. Seul type supporté dans la démo.
+    backend-db (Backend + nouvelle base) - Base de données provisionnée par la plateforme. Pas encore supporté.
+    backend-db-existing (Backend + base existante) - Connexion à une base existante. Pas encore supporté.
+runtime : Langage
+    python (Python)
+    nodejs (Node.js)
+    java (Java)
+    dotnet (.NET)
+    static (Site statique (nginx)) - Pas de tracing possible.
+port : Port d'écoute du conteneur [integer]
+replicas (facultatif) : Nombre de replicas [integer] - Facultatif. Par défaut : 1 en dev/test, 2 en preprod/prod.
+size : Taille
+    S (Small) - 0,1 CPU / 128 Mi demandés, plafond 0,5 CPU / 256 Mi.
+    M (Medium) - 0,25 CPU / 256 Mi demandés, plafond 1 CPU / 512 Mi.
+    L (Large) - 0,5 CPU / 512 Mi demandés, plafond 2 CPU / 1 Gi.
+backup : Sauvegarde
+    none (Aucune) - Git suffit pour une appli stateless.
+    daily (Quotidienne) - 02:00, rétention 7 jours.
+    hourly (Horaire) - Toutes les heures, rétention 48 heures.
+tracing : Tracing distribué [boolean] - true = auto-instrumentation OpenTelemetry injectée par l'opérateur, sans modifier le code.
+expose : Exposition
+    type : 
+        none (Interne au cluster) - Service ClusterIP uniquement.
+        loadbalancer (Adresse IP) - Service LoadBalancer (MetalLB ou équivalent requis).
+        ingress (URL) - Ingress avec un nom d'hôte.
+    host : Nom d'hôte [string]
+    ingress_class : Classe d'ingress [string] - Par défaut kommander-traefik. Vérifier avec : kubectl get ingressclass
+llm (facultatif) : Accès LLM
+    none (Aucun)
+    nai (Nutanix Enterprise AI) - Injecte le secret nai-credentials (NAI_BASE_URL, NAI_API_KEY, NAI_MODEL) dans le conteneur.
+expires (facultatif) : Date d'expiration [string] - Facultatif, format AAAA-MM-JJ. Interdit en prod. Posé en label ; la suppression est faite par un job planifié côté plateforme.
 
-Valeurs par défaut sinon : `env: dev`, `archi: stateless`, `size: S`, `backup: none`, `tracing: true` (sauf `static`), `expose: {type: loadbalancer}`, `llm: none`.
+Il est important qu'il voit ce degré de connaissance que tu as du projet et la direction dans laquelle tu veux aller. 
 
-Pour connaître toutes les valeurs autorisées et leur sens : `.venv/bin/python .github/skills/nkp-deploy/render.py --print-catalog`
+## Étape 2 — Modifier l'application si l'utilisateur le demande
 
-## Étape 2 — Créer l'application si l'utilisateur le demande
-
-- Par défaut : Python + Flask, une seule route, écoute sur `0.0.0.0:8080`, lancée par `python app.py`.
-- `Dockerfile` basé sur `python:3.12-slim`, **pas alpine** : l'auto-instrumentation OpenTelemetry Python ne fonctionne pas avec musl.
-- Le `Dockerfile` est à la racine du repo : c'est là que la CI le cherche.
+- Le développeur te demandera généralement juste de modifier le texte affichant Hello world en hello <ça dépendra>. Fais cette modif dans index.html, ne cherche pas à vérifier ton résultat. Passe à l'étape suivante.
 - Code minimal : l'objectif est de montrer la plateforme, pas l'appli.
 
-## Étape 3 — Proposer, puis faire valider en une seule fois
+## Étape 3 — Présenter le contrat et attendre la validation explicite
 
-Présente un tableau unique, puis pose **une seule** question. Ne pose pas les questions une par une.
+Avant toute création ou modification de `nkp-app.yaml`, présente un tableau unique avec les valeurs proposées et attends l'accord explicite de l'utilisateur avant d'écrire. Avant chaque push de déploiement, présente aussi les valeurs exactes du contrat qui seront poussées et demande leur approbation, même si le contrat n'a pas besoin de changer pour cette livraison. Ne pose pas les questions une par une : demande une confirmation globale. Sans réponse affirmative explicite, ne crée ni ne modifie le contrat et ne pousse pas le déploiement.
+Crée nkp-app.yaml s'il n'est pas présent, ou modifie le s'il existe déjà.
 
 Exemple :
 
@@ -73,12 +98,10 @@ Exemple :
 
 > Je valide ces choix ? Tu peux en changer autant que tu veux en une phrase, par exemple « env prod, backup daily, pas d'expiration ».
 
-Si l'utilisateur a dit de ne pas lui poser de question, applique la proposition et signale-le en une ligne.
-
 ## Étape 4 — Écrire le contrat et générer
 
-1. Écris `nkp-app.yaml` (voir le modèle ci-dessous).
-2. Lance `.venv/bin/python .github/skills/nkp-deploy/render.py`.
+1. Après confirmation, écris `nkp-app.yaml` seulement si ses valeurs doivent changer. Si le contrat existant est déjà conforme et approuvé, laisse-le inchangé.
+2. Après toute création ou modification de `nkp-app.yaml`, lance `.venv/bin/python .github/skills/nkp-deploy/render.py`.
 3. En cas d'`ERREUR`, le message dit quoi corriger : corrige `nkp-app.yaml` (ou demande à l'utilisateur si le choix lui appartient, par exemple un centre de coût) et relance.
 4. Montre à l'utilisateur le résumé affiché par le script et les lignes `ATTENTION`.
 
