@@ -9,15 +9,15 @@ metadata:
     nkp.demo/env: dev
     nkp.demo/owner: vincent
     nkp.demo/archi: stateless
-    nkp.demo/backup: none
+    nkp.demo/backup: daily
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
     nkp.demo/cost-center: test3
     nkp.demo/expires: '2026-12-31'
   annotations:
-    nkp.demo/backup-policy: aucune sauvegarde
+    nkp.demo/backup-policy: quotidienne 02:00, rétention 7 jours (simulé)
 spec:
-  replicas: 1
+  replicas: 10
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -30,7 +30,7 @@ spec:
         nkp.demo/env: dev
         nkp.demo/owner: vincent
         nkp.demo/archi: stateless
-        nkp.demo/backup: none
+        nkp.demo/backup: daily
         nkp.demo/tracing: enabled
         nkp.demo/llm: none
         nkp.demo/cost-center: test3

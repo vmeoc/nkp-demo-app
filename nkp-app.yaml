@@ -5,9 +5,9 @@ env: dev
 archi: stateless
 runtime: python
 port: 8080
-replicas: 1
+replicas: 10
 size: S
-backup: none
+backup: daily
 tracing: true
 expose:
   type: loadbalancer
