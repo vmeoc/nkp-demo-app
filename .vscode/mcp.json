@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "nkp-contract": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/mcp/launch.mjs"]
+    }
+  }
+}

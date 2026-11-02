@@ -5,6 +5,7 @@ A lancer depuis la racine du repo :
   .venv/bin/python .github/skills/nkp-deploy/render.py                  # génère k8s/
   .venv/bin/python .github/skills/nkp-deploy/render.py --check          # k8s/base est-il à jour ?
   .venv/bin/python .github/skills/nkp-deploy/render.py --print-catalog  # options autorisées
+  .venv/bin/python .github/skills/nkp-deploy/render.py --validate-input # valide un contrat JSON sur stdin, sans écrire
 
 Propriété des fichiers (c'est ce qui évite les conflits Git) :
   nkp-app.yaml            -> écrit par le développeur ou l'IA
@@ -146,6 +147,27 @@ def check_rules(c):
         warnings.append("tracing : nécessite l'opérateur OpenTelemetry et une ressource Instrumentation "
                         "dans le namespace du Projet.")
     return replicas, errors, warnings
+
+
+def validate_contract_data(contract, schema):
+    schema_errors = validate_schema(contract, schema)
+    if schema_errors:
+        return {
+            "valid": False,
+            "errors": schema_errors,
+            "warnings": [],
+            "replicas": None,
+            "error_type": "schema",
+        }
+
+    replicas, rule_errors, warnings = check_rules(contract)
+    return {
+        "valid": not rule_errors,
+        "errors": rule_errors,
+        "warnings": warnings,
+        "replicas": replicas,
+        "error_type": "rules",
+    }
 
 
 # ---------- génération ----------
@@ -324,11 +346,26 @@ def main():
     parser = argparse.ArgumentParser(description="nkp-app.yaml -> k8s/")
     parser.add_argument("--check", action="store_true", help="vérifie que k8s/base correspond au contrat, sans écrire")
     parser.add_argument("--print-catalog", action="store_true", help="affiche les options autorisées")
+    parser.add_argument("--validate-input", action="store_true",
+                        help="valide un contrat JSON reçu sur stdin, sans écrire de fichiers")
     args = parser.parse_args()
 
     schema = load_schema()
     if args.print_catalog:
         print_catalog(schema)
+        return 0
+
+    if args.validate_input:
+        try:
+            contract = json.load(sys.stdin)
+        except json.JSONDecodeError as e:
+            print(f"ERREUR JSON invalide sur stdin : {e}", file=sys.stderr)
+            return 1
+        if not isinstance(contract, dict):
+            print("ERREUR le contrat JSON sur stdin doit être un objet.", file=sys.stderr)
+            return 1
+        result = validate_contract_data(_stringify_dates(contract), schema)
+        print(json.dumps(result, ensure_ascii=False))
         return 0
 
     try:
@@ -337,18 +374,19 @@ def main():
         print(f"ERREUR {e}", file=sys.stderr)
         return 1
 
-    errors = validate_schema(contract, schema)
-    if errors:
+    validation = validate_contract_data(contract, schema)
+    if validation["errors"] and validation["error_type"] == "schema":
         print("ERREUR contrat invalide (nkp-app.yaml) :", file=sys.stderr)
-        print("\n".join(f"  - {e}" for e in errors), file=sys.stderr)
+        print("\n".join(f"  - {e}" for e in validation["errors"]), file=sys.stderr)
         return 1
 
-    replicas, errors, warnings = check_rules(contract)
-    if errors:
+    if validation["errors"]:
         print("ERREUR règles de la plateforme non respectées :", file=sys.stderr)
-        print("\n".join(f"  - {e}" for e in errors), file=sys.stderr)
+        print("\n".join(f"  - {e}" for e in validation["errors"]), file=sys.stderr)
         return 1
 
+    replicas = validation["replicas"]
+    warnings = validation["warnings"]
     files = build_manifests(contract, replicas)
 
     if args.check:

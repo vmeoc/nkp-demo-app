@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Programmatic Platform</title>
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div class="brand-row">
+          <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p class="eyebrow">Nutanix Kubernetes Platform</p>
+          <span class="hero-badge">CONTRACT STUDIO</span>
+        </div>
+        <h1>AI Programmatic Platform</h1>
+        <p class="intro">
+          Façonnez les intentions de votre application. Prévisualisez le contrat,
+          validez-le, puis gardez le contrôle avant chaque déploiement.
+        </p>
+        <div class="hero-footer">
+          <span class="hero-tag"><span class="live-dot"></span> GitOps ready</span>
+          <span class="hero-note">Le formulaire ne modifie pas directement le dépôt.</span>
+        </div>
+      </header>
+      <div id="status" class="status" role="status" aria-live="polite">
+        <span class="status-indicator" aria-hidden="true"></span>
+        <span class="status-text">Chargement du contrat…</span>
+      </div>
+      <form id="contract-form" hidden></form>
+      <section id="review" class="review-card" hidden aria-labelledby="review-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Récapitulatif</p>
+            <h2 id="review-title">Votre contrat</h2>
+          </div>
+          <span class="review-badge">APERÇU</span>
+        </div>
+        <ul id="validation-messages"></ul>
+        <div id="contract-table"></div>
+        <h3 class="yaml-heading">YAML exact</h3>
+        <pre><code id="contract-preview"></code></pre>
+        <div class="actions">
+          <button id="confirm" type="button" class="primary" hidden>
+            Confirmer et envoyer le YAML à Copilot
+          </button>
+          <button id="copy" type="button">Copier le YAML</button>
+        </div>
+        <p id="delivery-result" class="delivery-result" role="status" aria-live="polite" hidden></p>
+        <p class="notice">
+          <span class="notice-icon" aria-hidden="true">i</span>
+          La confirmation transmet le contrat exact au chat et vaut accord
+          pour l'appliquer, le générer, le pousser et le déployer sans nouvelle
+          confirmation. Le serveur MCP ne modifie pas directement les fichiers.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="./contract-form.js"></script>
+  </body>
+</html>

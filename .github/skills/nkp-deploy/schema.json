@@ -95,6 +95,7 @@
       "required": ["type"],
       "properties": {
         "type": {
+          "title": "Type d'exposition",
           "oneOf": [
             { "const": "none", "title": "Interne au cluster", "description": "Service ClusterIP uniquement." },
             { "const": "loadbalancer", "title": "Adresse IP", "description": "Service LoadBalancer (MetalLB ou équivalent requis)." },

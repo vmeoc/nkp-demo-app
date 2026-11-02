@@ -12,11 +12,12 @@ metadata:
     nkp.demo/backup: none
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
+    nkp.demo/cost-center: test
     nkp.demo/expires: '2026-12-31'
   annotations:
     nkp.demo/backup-policy: aucune sauvegarde
 spec:
-  replicas: 1
+  replicas: 4
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -32,6 +33,7 @@ spec:
         nkp.demo/backup: none
         nkp.demo/tracing: enabled
         nkp.demo/llm: none
+        nkp.demo/cost-center: test
         nkp.demo/expires: '2026-12-31'
       annotations:
         instrumentation.opentelemetry.io/inject-python: 'true'

@@ -1,9 +1,11 @@
 app: hello-nkp
 owner: vincent
+cost_center: test
 env: dev
 archi: stateless
 runtime: python
 port: 8080
+replicas: 4
 size: S
 backup: none
 tracing: true

@@ -1,6 +1,6 @@
 ---
 name: nkp-deploy
-description: Le but de ce skill est de participer à une démo client afin de montrer comment une applicaiton vibecoder peut tirer parti des caractéristiques d'une plateformes Kubernetes (Nutanix Kubernets Platform) pour être correctement dépployé. Le développeur va demander à modifier le fichier index.html en faisant une modification simple. Tu vas procéder à cette modification le plus rapidement et le plus simplement possible car le but de la démo est de demander aux développeur de valider le "contrat d'intention" nkp contenant les caractéristiques de l'application pour être correctemetn déployée par NKP. Ton job est donc de modifier et déployer l'application du repo sur Nutanix Kubernetes Platform (NKP) via GitOps. Ce skills est à utiliser dès que l'utilisateur veut créer ou modifier une appli à héberger, la déployer, la mettre en ligne, changer d'environnement, de taille ou d'options (backup, tracing, exposition, LLM, expiration), ou comprendre pourquoi un déploiement NKP échoue.
+description: Modifier et déployer cette application sur Nutanix Kubernetes Platform via GitOps. Par défaut, utiliser la MCP App open_nkp_contract_form dans le chat VS Code pour faire examiner et confirmer le contrat d'intentions NKP ; cette confirmation autorise son application, le push et le déploiement, sans confirmation supplémentaire. N'utiliser le questionnaire texte qu'en solution de repli si l'interface MCP est indisponible. Utiliser ce skill pour les demandes de création, modification, hébergement, déploiement ou dépannage NKP.
 ---
 
 # Déployer sur NKP
@@ -19,19 +19,26 @@ Tu ne rédiges jamais de manifest Kubernetes. Tu écris un **contrat d'intention
 - Ne touche jamais `k8s/kustomization.yaml` : c'est le fichier de la CI. C'est ce qui évite les conflits Git.
 - Utilise `.venv/bin/python` (à défaut `python3`) depuis la racine du repo.
 - RÈGLE BLOQUANTE : aucune création ou modification de `nkp-app.yaml`, aucun `render.py`, aucun `git add/commit/push`, et aucun déploiement NKP ne doivent être lancés sans approbation explicite du développeur.
-- Avant toute écriture du contrat, présente le tableau complet des valeurs exactes proposées et attend une réponse affirmative claire du type « je valide » ou « oui, je valide ». Sans réponse explicite, tu ne touches ni `nkp-app.yaml`, ni les manifests générés, et tu ne pousses rien.
-- Avant chaque push de déploiement, même si le contrat n'a pas besoin de changer pour cette livraison, présente aussi les valeurs exactes de `nkp-app.yaml` qui seront poussées et demande leur approbation explicite. Cette confirmation est impérative, sans exception : ni des valeurs par défaut, ni une demande de ne pas poser de questions, ni une approbation antérieure ne la remplacent.
+- La confirmation explicite du contrat dans le formulaire MCP vaut approbation pour appliquer exactement les valeurs confirmées, générer les manifests, pousser les changements nécessaires et déployer sur NKP. Ne demande pas une seconde confirmation avant le push ou le déploiement.
+- Si le formulaire MCP est indisponible, le parcours texte doit présenter le contrat exact et demander une seule approbation explicite qui couvre son application et le déploiement. N'interprète jamais une erreur ou une absence de réponse comme une approbation.
+- Si une correction après validation change une valeur du contrat, arrête-toi et fais confirmer le nouveau contrat dans le formulaire avant de l'appliquer et de poursuivre. Une correction de code ou une régénération sans changement de contrat ne nécessite pas de nouvelle confirmation.
 - Ne contourne jamais une règle de la plateforme pour faire passer un déploiement : ne baisse pas l'environnement, ne retire pas une option obligatoire, ne désactive pas un contrôle. Explique la règle et propose une correction conforme.
 - Ne commite jamais de secret. Pas de `git push --force`.
 - Ne change jamais le champ `app` d'une appli déjà déployée sans prévenir l'utilisateur : cela crée une nouvelle appli.
 - Parle à l'utilisateur dans sa langue.
 - la démo est faite pour montrer un déploiement sur NKP donc même si l'utilisateur ne le demande pas, déploie sur NKP
 
-## Étape 1 — Analyser le projet avant de poser une question
+## Étape 1 — Analyser le projet et ouvrir le formulaire graphique
 
 Lis les fichiers locaux. Ne lis pas l'historique git. Déduis une proposition pour chaque option. Si `nkp-app.yaml` existe déjà, pars de ses valeurs.
 
-Montre ce texte au développer en tant que résumé des informations que tu vas chercher à définir pour que le projet puisse bien être déployé.
+**Par défaut, utilise le formulaire MCP App dans le chat VS Code** pour présenter et faire choisir le contrat : appelle l'outil MCP `open_nkp_contract_form` du serveur `nkp-contract`. Il préremplit le contrat existant, explique les options et valide les choix selon le schéma et les règles de la plateforme. L'utilisateur doit examiner l'aperçu complet du contrat puis confirmer dans le formulaire. Cette confirmation est l'approbation pour appliquer le contrat et procéder au déploiement ; ne demande pas une confirmation distincte avant le push.
+
+Si l'outil MCP n'est pas disponible, si l'interface ne s'affiche pas ou si son chargement échoue, utilise le parcours de repli dans le chat : présente le tableau complet des options et valeurs proposées, puis attends une validation affirmative explicite. N'interprète jamais une erreur ou une absence de réponse comme une approbation.
+
+La confirmation du formulaire autorise l'application des valeurs affichées et le déploiement. Si l'interface est indisponible, obtiens dans le parcours texte une approbation explicite unique couvrant le contrat exact et sa livraison. Ne redemande pas l'approbation avant le push. Si le contrat doit changer après confirmation, fais confirmer la nouvelle proposition avant de continuer.
+
+Le formulaire graphique présente les options ci-dessous à l'utilisateur avec leurs descriptions. En solution de repli uniquement, montre ce catalogue dans le chat pour expliquer les choix disponibles.
 app : Nom de l'application [string] - Nom DNS : minuscules, chiffres et tirets, 40 caractères max. Devient le nom du Deployment et du Service. Ne plus le changer une fois déployé.
 owner : Propriétaire [string] - Identifiant de la personne ou de l'équipe responsable (label Kubernetes).
 cost_center (facultatif) : Centre de coût [string] - Obligatoire en prod. Sert au reporting des coûts.
@@ -80,10 +87,13 @@ Il est important qu'il voit ce degré de connaissance que tu as du projet et la 
 - Le développeur te demandera généralement juste de modifier le texte affichant Hello world en hello <ça dépendra>. Fais cette modif dans index.html, ne cherche pas à vérifier ton résultat. Passe à l'étape suivante.
 - Code minimal : l'objectif est de montrer la plateforme, pas l'appli.
 
-## Étape 3 — Présenter le contrat et attendre la validation explicite
+## Étape 3 — Faire examiner le contrat et obtenir l'approbation
 
-Avant toute création ou modification de `nkp-app.yaml`, présente un tableau unique avec les valeurs proposées et attends l'accord explicite de l'utilisateur avant d'écrire. Avant chaque push de déploiement, présente aussi les valeurs exactes du contrat qui seront poussées et demande leur approbation, même si le contrat n'a pas besoin de changer pour cette livraison. Ne pose pas les questions une par une : demande une confirmation globale. Sans réponse affirmative explicite, ne crée ni ne modifie le contrat et ne pousse pas le déploiement. Cette étape est un blocage obligatoire : ne pas faire cette étape = interdiction de continuer.
-Crée nkp-app.yaml s'il n'est pas présent, ou modifie le s'il existe déjà.
+Parcours normal : dans le formulaire MCP App, fais afficher les valeurs actuelles, les choix et leurs explications, les erreurs/avertissements de validation et l'aperçu du contrat exact. La confirmation explicite dans le formulaire vaut à la fois approbation pour créer ou modifier `nkp-app.yaml` et approbation pour pousser et déployer ces valeurs. Après cette confirmation, poursuis sans nouvelle demande d'approbation.
+
+Parcours de repli uniquement si l'interface MCP App est indisponible : présente un tableau unique avec les valeurs proposées et demande une réponse affirmative claire qui autorise leur application et le déploiement. Ne pose pas les questions une par une. Sans approbation explicite, ne crée ni ne modifie le contrat et ne pousse rien. Cette étape est bloquante.
+
+Après l'approbation, crée `nkp-app.yaml` s'il n'est pas présent, ou modifie-le s'il existe déjà. Ne redemande pas une approbation avant le push lorsque les valeurs n'ont pas changé depuis le formulaire. Si une contrainte du cluster oblige à changer le contrat, soumets la nouvelle proposition au formulaire et attends sa confirmation.
 
 Exemple :
 
@@ -130,14 +140,16 @@ expires: 2026-12-31
 
 Le script envoie les manifests au cluster en `--dry-run=server` : les politiques de la plateforme (Gatekeeper, Kyverno, quotas) répondent **avant** le push. Si `RESULT=PREFLIGHT_FAILED`, lis le message de refus, corrige le contrat, régénère, recommence. Si `RESULT=CONFIG_ERROR`, signale-le à l'utilisateur et continue sans pré-vol.
 
-## Étape 6 — Pousser
+## Étape 6 — Pousser après l'approbation du formulaire
 
 ```bash
-git add -A
+git add <fichiers liés à la modification et au déploiement>
 git commit -m "<résumé du changement>"
 git pull --rebase
 git push
 ```
+
+N'utilise pas `git add -A` : le worktree peut contenir des changements sans rapport, des fichiers locaux de configuration ou des sauvegardes. N'inclus que les fichiers nécessaires à la demande approuvée. La confirmation du formulaire autorise ce push ; aucune confirmation supplémentaire n'est requise.
 
 ## Étape 7 — Vérifier, et corriger si besoin
 
