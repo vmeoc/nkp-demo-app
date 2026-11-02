@@ -12,7 +12,7 @@ metadata:
     nkp.demo/backup: none
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
-    nkp.demo/cost-center: test2
+    nkp.demo/cost-center: test3
     nkp.demo/expires: '2026-12-31'
 spec:
   type: LoadBalancer
