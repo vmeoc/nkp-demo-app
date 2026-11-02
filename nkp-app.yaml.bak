@@ -1,0 +1,15 @@
+# Contrat de déploiement NKP. Valeurs autorisées :
+#   .venv/bin/python .github/skills/nkp-deploy/render.py --print-catalog
+app: hello-nkp
+owner: vincent
+env: dev
+archi: stateless
+runtime: python
+port: 8080
+size: S
+backup: none
+tracing: true
+expose:
+  type: loadbalancer
+llm: none
+expires: 2026-12-31
