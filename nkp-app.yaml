@@ -5,7 +5,7 @@ env: dev
 archi: stateless
 runtime: python
 port: 8080
-replicas: 10
+replicas: 4
 size: S
 backup: daily
 tracing: true
