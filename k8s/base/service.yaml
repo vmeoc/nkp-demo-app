@@ -9,7 +9,7 @@ metadata:
     nkp.demo/env: dev
     nkp.demo/owner: vincent
     nkp.demo/archi: stateless
-    nkp.demo/backup: daily
+    nkp.demo/backup: hourly
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
     nkp.demo/cost-center: test3
