@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Supervision NKP — Déploiement</title>
+  <title>AI deployment on NKP</title>
   <style>
     :root {
       --bg: #f4f7fb;
@@ -199,26 +199,16 @@
 </head>
 <body>
   <div class="page">
-    <div id="wip-banner" style="display:none;margin-bottom:16px;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #f59e0b;color:#78350f;font-size:14px;"></div>
     <header>
       <div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-          <span style="background:#0ea5e9;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:0.08em;">SUPERVISION</span>
-          <h1 style="margin:0;">Supervision NKP</h1>
-        </div>
+        <h1>AI deployment on NKP</h1>
         <div class="meta" id="updated">Chargement…</div>
-        <div class="meta" style="margin-top:4px;">App supervisée : <strong id="supervised-app">—</strong> · <a href="/" target="_blank" rel="noopener" style="color:var(--accent);">Ouvrir l'application ↗</a></div>
+        <div class="meta" style="margin-top:4px;"><a href="/" target="_blank" rel="noopener" style="color:var(--accent);">Ouvrir l'application ↗</a></div>
       </div>
       <button id="refresh">Rafraîchir</button>
     </header>
 
     <section class="panel">
-      <div class="orchestrator">
-        <div class="ai-hub" id="ai-hub">🤖 IA — orchestration et supervision</div>
-        <div class="hub-line"></div>
-        <div class="hub-caption">L’IA chapeaute le flux de bout en bout</div>
-      </div>
-
       <div class="pipeline-wrap">
         <div class="pipeline">
           <div class="group">
@@ -245,31 +235,9 @@
           </div>
         </div>
       </div>
-
-      <div class="grid" id="pipeline-cards"></div>
     </section>
 
-    <section class="section">
-      <h2>Historique des builds (GitHub Actions)</h2>
-      <div class="panel" id="history">Chargement…</div>
-    </section>
 
-    <section class="section two">
-      <div class="panel">
-        <h2>Journal d’orchestration IA</h2>
-        <div id="timeline">Chargement…</div>
-      </div>
-      <div class="panel">
-        <h2>Code / contrat actuels</h2>
-        <div class="detail" id="greeting"></div>
-        <pre id="contract">Chargement…</pre>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Erreurs</h2>
-      <pre id="errors">Aucune erreur détectée.</pre>
-    </section>
   </div>
 
   <script>
@@ -335,6 +303,8 @@
     }
 
     function gitPushStatus() {
+      const w = state.wip || {};
+      if (w.status === "in-progress" || w.status === "deploying") return "pending";
       if (state.runs.length > 0) return "success";
       if (state.deployLog.some((e) => e.step === "push" && e.status === "success")) return "success";
       return "pending";
@@ -362,6 +332,8 @@
     }
 
     function developerStatus() {
+      const w = state.wip || {};
+      if (w.status === "in-progress" || w.status === "deploying") return "running";
       return state.greeting ? "success" : "pending";
     }
 
@@ -505,11 +477,6 @@
 
     function render() {
       renderVisual();
-      renderCards();
-      renderHistory();
-      renderTimeline();
-      renderSources();
-      renderErrors();
       $("updated").textContent = `Dernière mise à jour : ${new Date().toLocaleString()}`;
     }
 
@@ -560,8 +527,6 @@
         if (!res.ok) throw new Error(`healthz ${res.status}`);
         state.health = await res.json();
         state.healthError = "";
-        const appEl = document.getElementById("supervised-app");
-        if (appEl && state.health && state.health.app) appEl.textContent = state.health.app;
       } catch (err) {
         state.health = null;
         state.healthError = err.message;
@@ -581,18 +546,7 @@
     }
 
     function renderWip() {
-      const banner = document.getElementById("wip-banner");
-      if (!banner) return;
-      const w = state.wip || {};
-      if (w.status && w.status !== "idle") {
-        const since = w.started ? ` (depuis ${new Date(w.started).toLocaleTimeString()})` : "";
-        const theme = w.theme ? ` — thème : ${escapeHtml(w.theme)}` : "";
-        banner.style.display = "block";
-        banner.innerHTML = `🔧 <strong>En cours de préparation</strong>${since}${theme}<br>${escapeHtml(w.message || "")}`;
-      } else {
-        banner.style.display = "none";
-        banner.innerHTML = "";
-      }
+      render();
     }
 
     let githubTimer = null;
