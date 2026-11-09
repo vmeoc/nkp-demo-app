@@ -18,6 +18,7 @@
       --block: #d97706;
       --pending: #9ca3af;
       --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --nkp: #0ea5e9;
     }
     * { box-sizing: border-box; }
     body {
@@ -26,7 +27,7 @@
       color: var(--ink);
       background:
         radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 32%),
-        radial-gradient(circle at top right, rgba(22, 163, 74, 0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 28%),
         var(--bg);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
@@ -37,13 +38,64 @@
     button { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px; padding: 9px 15px; cursor: pointer; box-shadow: var(--shadow); }
     button:hover { transform: translateY(-1px); }
     .panel { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); }
+
+    .orchestrator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .ai-hub {
+      padding: 12px 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+      border: 2px solid var(--run);
+      color: var(--run);
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(124, 58, 237, 0.18);
+    }
+    .hub-line {
+      width: 3px;
+      height: 26px;
+      background: linear-gradient(180deg, var(--run), #c4b5fd);
+      border-radius: 999px;
+    }
+    .hub-caption { color: var(--muted); font-size: 12px; }
+
     .pipeline-wrap { overflow-x: auto; padding: 8px 4px 18px; }
     .pipeline {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      align-items: stretch;
+      gap: 14px;
+      min-width: 980px;
+    }
+    .group {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      min-width: 760px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+    }
+    .group.nkp {
+      background: linear-gradient(180deg, #e0f2fe, #f0f9ff);
+      border: 2px solid var(--nkp);
+      box-shadow: 0 10px 24px rgba(14, 165, 233, 0.14);
+    }
+    .group-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .group.nkp .group-label { color: var(--nkp); }
+    .steps-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
     }
     .step {
       flex: 1 1 0;
@@ -51,15 +103,16 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 8px;
+      gap: 6px;
+      min-width: 92px;
     }
     .node {
-      width: 58px;
-      height: 58px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       background: #fff;
       border: 4px solid var(--pending);
@@ -72,12 +125,12 @@
     .step.failed .node { border-color: var(--fail); color: var(--fail); background: #fef2f2; }
     .step.blocked .node { border-color: var(--block); color: var(--block); background: #fffbeb; }
     .step.pending .node { border-color: var(--pending); color: var(--pending); background: #f9fafb; }
-    .label { font-size: 13px; font-weight: 650; }
-    .step-status { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .label { font-size: 12px; font-weight: 650; }
+    .step-status { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
     .connector {
-      flex: 0 0 46px;
+      flex: 0 0 34px;
       height: 4px;
-      margin-top: 27px;
+      margin-top: 24px;
       border-radius: 999px;
       background: #e5e7eb;
       position: relative;
@@ -85,44 +138,51 @@
     .connector::after {
       content: "";
       position: absolute;
-      right: -7px;
+      right: -6px;
       top: -4px;
       border: 6px solid transparent;
       border-left-color: #e5e7eb;
     }
-    .connector.active {
-      background: linear-gradient(90deg, var(--ok), #86efac);
-    }
+    .connector.active { background: linear-gradient(90deg, var(--ok), #86efac); }
     .connector.active::after { border-left-color: #86efac; }
-    .connector.running {
-      background: linear-gradient(90deg, var(--run), #c4b5fd);
-    }
+    .connector.running { background: linear-gradient(90deg, var(--run), #c4b5fd); }
     .connector.running::after { border-left-color: #c4b5fd; }
     @keyframes pulse {
       0%, 100% { transform: scale(1); box-shadow: 0 8px 18px rgba(124, 58, 237, 0.18); }
       50% { transform: scale(1.06); box-shadow: 0 10px 24px rgba(124, 58, 237, 0.30); }
     }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-top: 18px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); }
-    .card h2 { margin: 0 0 10px; font-size: 15px; }
-    .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 650; border: 1px solid var(--line); }
+    .nkp-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--nkp);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 18px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
+    .card h2 { margin: 0 0 8px; font-size: 13px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-weight: 650; border: 1px solid var(--line); }
     .badge.ok { color: var(--ok); border-color: #bbf7d0; background: #f0fdf4; }
     .badge.run { color: var(--run); border-color: #ddd6fe; background: #f5f3ff; }
     .badge.fail { color: var(--fail); border-color: #fecaca; background: #fef2f2; }
     .badge.block { color: var(--block); border-color: #fde68a; background: #fffbeb; }
     .badge.pending { color: var(--pending); border-color: var(--line); background: #f9fafb; }
-    .detail { color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.5; word-break: break-word; }
-    .section { margin-top: 28px; }
-    .section h2 { margin: 0 0 12px; font-size: 18px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .detail { color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.45; word-break: break-word; }
+    .section { margin-top: 24px; }
+    .section h2 { margin: 0 0 12px; font-size: 17px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
     th { color: var(--muted); font-weight: 600; }
     a { color: var(--accent); text-decoration: none; font-weight: 600; }
     a:hover { text-decoration: underline; }
-    pre { white-space: pre-wrap; word-break: break-word; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 12px; max-height: 320px; overflow: auto; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 12px; max-height: 260px; overflow: auto; }
     .error { color: var(--fail); }
     .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 760px) { .two { grid-template-columns: 1fr; } .pipeline { min-width: 680px; } }
+    @media (max-width: 760px) { .two { grid-template-columns: 1fr; } .pipeline { min-width: 900px; } }
     .event { border-left: 4px solid var(--line); padding: 10px 12px; margin-bottom: 10px; border-radius: 0 10px 10px 0; background: #f8fafc; }
     .event.ok { border-color: var(--ok); }
     .event.run { border-color: var(--run); }
@@ -143,9 +203,38 @@
     </header>
 
     <section class="panel">
-      <div class="pipeline-wrap">
-        <div class="pipeline" id="pipeline-visual"></div>
+      <div class="orchestrator">
+        <div class="ai-hub" id="ai-hub">🤖 IA — orchestration et supervision</div>
+        <div class="hub-line"></div>
+        <div class="hub-caption">L’IA chapeaute le flux de bout en bout</div>
       </div>
+
+      <div class="pipeline-wrap">
+        <div class="pipeline">
+          <div class="group">
+            <div class="group-label">Développement</div>
+            <div class="steps-row">
+              <div class="step" id="step-developer"><div class="node">💻</div><div class="label">Code</div><div class="step-status">en attente</div></div>
+              <div class="connector" id="conn-developer"></div>
+              <div class="step" id="step-git"><div class="node">🔀</div><div class="label">Push Git</div><div class="step-status">en attente</div></div>
+              <div class="connector" id="conn-git"></div>
+              <div class="step" id="step-ci"><div class="node">⚙️</div><div class="label">CI GitHub</div><div class="step-status">en attente</div></div>
+            </div>
+          </div>
+          <div class="group nkp">
+            <div class="group-label">NKP — plateforme cible</div>
+            <div class="steps-row">
+              <div class="step" id="step-flux"><div class="node">🔄</div><div class="label">Flux</div><div class="step-status">en attente</div></div>
+              <div class="connector" id="conn-flux"></div>
+              <div class="step" id="step-rollout"><div class="node">🚀</div><div class="label">Rollout</div><div class="step-status">en attente</div></div>
+              <div class="connector" id="conn-rollout"></div>
+              <div class="step" id="step-health"><div class="node">❤️</div><div class="label">Health</div><div class="step-status">en attente</div></div>
+            </div>
+            <div class="nkp-badge">NKP</div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid" id="pipeline-cards"></div>
     </section>
 
@@ -178,7 +267,8 @@
     const BRANCH = "main";
     const RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}`;
     const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
-    const REFRESH_MS = 60000;
+    const GITHUB_REFRESH_MS = 60000;
+    const HEALTH_REFRESH_MS = 15000;
 
     const state = {
       greeting: "",
@@ -187,7 +277,6 @@
       runs: [],
       health: null,
       healthError: "",
-      latestSha: null,
       targetVersion: null,
       errors: []
     };
@@ -263,51 +352,41 @@
       return state.greeting ? "success" : "pending";
     }
 
-    const steps = [
-      { key: "developer", title: "Code développeur", icon: "💻" },
-      { key: "ai", title: "Orchestration IA", icon: "🤖" },
-      { key: "git", title: "Push Git", icon: "🔀" },
-      { key: "ci", title: "CI GitHub", icon: "⚙️" },
-      { key: "flux", title: "Flux", icon: "🔄" },
-      { key: "rollout", title: "Rollout NKP", icon: "🚀" },
-      { key: "health", title: "Health check", icon: "❤️" }
-    ];
-
-    function stepStatus(key) {
-      return {
-        developer: developerStatus(),
-        ai: aiStatus(),
-        git: gitPushStatus(),
-        ci: ciStatus(),
-        flux: fluxStatus(),
-        rollout: rolloutStatus(),
-        health: healthStatus()
-      }[key];
-    }
-
-    function connectorClass(previousKey) {
-      const s = stepStatus(previousKey);
-      if (s === "success") return "connector active";
-      if (s === "running") return "connector running";
-      return "connector";
+    function setStep(id, status, connectorId) {
+      const el = $(id);
+      if (!el) return;
+      el.className = `step ${status}`;
+      const statusEl = el.querySelector(".step-status");
+      if (statusEl) statusEl.textContent = status;
+      if (connectorId) {
+        const conn = $(connectorId);
+        if (conn) {
+          conn.className = "connector" + (status === "success" ? " active" : (status === "running" ? " running" : ""));
+        }
+      }
     }
 
     function renderVisual() {
-      const nodes = steps.map((step, index) => {
-        const status = stepStatus(step.key);
-        const connector = index < steps.length - 1
-          ? `<div class="${connectorClass(step.key)}"></div>`
-          : "";
-        return `
-          <div class="step ${status}">
-            <div class="node">${step.icon}</div>
-            <div class="label">${escapeHtml(step.title)}</div>
-            <div class="step-status">${status}</div>
-          </div>
-          ${connector}
-        `;
-      }).join("");
-      $("pipeline-visual").innerHTML = nodes;
+      const dev = developerStatus();
+      const git = gitPushStatus();
+      const ci = ciStatus();
+      const flux = fluxStatus();
+      const rollout = rolloutStatus();
+      const health = healthStatus();
+      const ai = aiStatus();
+
+      setStep("step-developer", dev, "conn-developer");
+      setStep("step-git", git, "conn-git");
+      setStep("step-ci", ci, "conn-flux");
+      setStep("step-flux", flux, "conn-rollout");
+      setStep("step-rollout", rollout, "conn-health");
+      setStep("step-health", health, null);
+
+      const hub = $("ai-hub");
+      if (hub) {
+        hub.style.borderColor = ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)";
+        hub.style.color = ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)";
+      }
     }
 
     function card(title, status, detail) {
@@ -351,13 +430,13 @@
               : "Rollout en cours.";
 
       $("pipeline-cards").innerHTML = [
-        card("1. Code développeur", developerStatus(), `Greeting détecté : ${escapeHtml(state.greeting || "non trouvé")}`),
-        card("2. Orchestration IA", aiStatus(), state.deployLog.length ? `Dernier événement : ${escapeHtml(state.deployLog[state.deployLog.length - 1].step)} (${escapeHtml(state.deployLog[state.deployLog.length - 1].status)})` : "Aucun événement d’orchestration enregistré."),
-        card("3. Push Git", gitPushStatus(), state.runs.length ? "Push détecté via les runs GitHub Actions." : "Aucun push détecté."),
-        card("4. CI GitHub Actions", ci, ciDetail),
-        card("5. Flux / manifests", fluxStatus(), fluxDetail),
-        card("6. Rollout NKP", rolloutStatus(), rolloutDetail),
-        card("7. Health check", healthStatus(), healthDetail)
+        card("Code développeur", developerStatus(), `Greeting détecté : ${escapeHtml(state.greeting || "non trouvé")}`),
+        card("Orchestration IA", aiStatus(), state.deployLog.length ? `Dernier événement : ${escapeHtml(state.deployLog[state.deployLog.length - 1].step)} (${escapeHtml(state.deployLog[state.deployLog.length - 1].status)})` : "Aucun événement d’orchestration enregistré."),
+        card("Push Git", gitPushStatus(), state.runs.length ? "Push détecté via les runs GitHub Actions." : "Aucun push détecté."),
+        card("CI GitHub Actions", ci, ciDetail),
+        card("Flux / manifests (NKP)", fluxStatus(), fluxDetail),
+        card("Rollout NKP", rolloutStatus(), rolloutDetail),
+        card("Health check (NKP)", healthStatus(), healthDetail)
       ].join("");
     }
 
@@ -416,21 +495,15 @@
       $("updated").textContent = `Dernière mise à jour : ${new Date().toLocaleString()}`;
     }
 
-    async function loadAll() {
-      state.errors = [];
+    async function loadGitHub() {
+      state.errors = state.errors.filter((e) => !e.startsWith("Code :") && !e.startsWith("Contrat :") && !e.startsWith("Journal :") && !e.startsWith("GitHub Actions :"));
       const results = await Promise.allSettled([
         fetchText(`${RAW}/index.html`),
         fetchText(`${RAW}/nkp-app.yaml`),
         fetchJson(`${RAW}/deploy-log.json`),
-        fetchJson(`${API}/actions/workflows/build-deploy.yml/runs?branch=${BRANCH}&per_page=10`),
-        fetchJson(`${API}/commits/${BRANCH}`),
-        fetch("/healthz", { cache: "no-store" }).then(async (res) => {
-          if (!res.ok) throw new Error(`healthz ${res.status}`);
-          return res.json();
-        })
+        fetchJson(`${API}/actions/workflows/build-deploy.yml/runs?branch=${BRANCH}&per_page=10`)
       ]);
-
-      const [indexRes, contractRes, logRes, runsRes, commitRes, healthRes] = results;
+      const [indexRes, contractRes, logRes, runsRes] = results;
 
       if (indexRes.status === "fulfilled") {
         const match = indexRes.value.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
@@ -457,43 +530,67 @@
         state.errors.push(`GitHub Actions : ${runsRes.reason.message}`);
       }
 
-      if (commitRes.status === "fulfilled") {
-        state.latestSha = commitRes.value.sha || null;
-      }
-
-      if (healthRes.status === "fulfilled") {
-        state.health = healthRes.value;
-        state.healthError = "";
-      } else {
-        state.health = null;
-        state.healthError = healthRes.reason.message;
-      }
-
       const successfulRun = state.runs.find((run) => run.conclusion === "success");
-      state.targetVersion = successfulRun ? (successfulRun.head_sha || "").slice(0, 7) : (state.latestSha ? state.latestSha.slice(0, 7) : null);
+      state.targetVersion = successfulRun ? (successfulRun.head_sha || "").slice(0, 7) : null;
 
       render();
     }
 
-    let timer = null;
-    function schedule() {
-      clearTimeout(timer);
-      timer = setTimeout(loadAll, REFRESH_MS);
+    async function loadHealth() {
+      try {
+        const res = await fetch("/healthz", { cache: "no-store" });
+        if (!res.ok) throw new Error(`healthz ${res.status}`);
+        state.health = await res.json();
+        state.healthError = "";
+      } catch (err) {
+        state.health = null;
+        state.healthError = err.message;
+      }
+      render();
     }
 
-    $("refresh").addEventListener("click", () => {
-      clearTimeout(timer);
-      loadAll().then(schedule);
+    let githubTimer = null;
+    let healthTimer = null;
+
+    function scheduleGitHub() {
+      clearTimeout(githubTimer);
+      githubTimer = setTimeout(async () => {
+        await loadGitHub();
+        scheduleGitHub();
+      }, GITHUB_REFRESH_MS);
+    }
+
+    function scheduleHealth() {
+      clearTimeout(healthTimer);
+      healthTimer = setTimeout(async () => {
+        await loadHealth();
+        scheduleHealth();
+      }, HEALTH_REFRESH_MS);
+    }
+
+    $("refresh").addEventListener("click", async () => {
+      clearTimeout(githubTimer);
+      clearTimeout(healthTimer);
+      await Promise.all([loadGitHub(), loadHealth()]);
+      scheduleGitHub();
+      scheduleHealth();
     });
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
-        clearTimeout(timer);
-        loadAll().then(schedule);
+        clearTimeout(githubTimer);
+        clearTimeout(healthTimer);
+        Promise.all([loadGitHub(), loadHealth()]).then(() => {
+          scheduleGitHub();
+          scheduleHealth();
+        });
       }
     });
 
-    loadAll().then(schedule);
+    Promise.all([loadGitHub(), loadHealth()]).then(() => {
+      scheduleGitHub();
+      scheduleHealth();
+    });
   </script>
 </body>
 </html>
