@@ -66,9 +66,14 @@
     .pipeline-wrap { overflow-x: auto; padding: 8px 4px 18px; }
     .pipeline {
       display: flex;
-      align-items: stretch;
+      align-items: center;
       gap: 14px;
       min-width: 980px;
+    }
+    .connector.bridge {
+      flex: 0 0 46px;
+      align-self: center;
+      margin-top: 0;
     }
     .group {
       display: flex;
@@ -221,6 +226,7 @@
               <div class="step" id="step-ci"><div class="node">⚙️</div><div class="label">CI GitHub</div><div class="step-status">en attente</div></div>
             </div>
           </div>
+          <div class="connector bridge" id="conn-bridge"></div>
           <div class="group nkp">
             <div class="group-label">NKP — plateforme cible</div>
             <div class="steps-row">
@@ -378,6 +384,11 @@
       setStep("step-developer", dev, "conn-developer");
       setStep("step-git", git, "conn-git");
       setStep("step-ci", ci, "conn-flux");
+
+      const bridge = $("conn-bridge");
+      if (bridge) {
+        bridge.className = "connector bridge" + (ci === "success" ? " active" : (ci === "running" ? " running" : ""));
+      }
       setStep("step-flux", flux, "conn-rollout");
       setStep("step-rollout", rollout, "conn-health");
       setStep("step-health", health, null);
