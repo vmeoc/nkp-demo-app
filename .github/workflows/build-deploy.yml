@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - "k8s/**"
       - "nkp-app.yaml"
-      - ".github/skills/**"
+      - ".opencode/skills/**"
       - "**/*.md"
   workflow_dispatch:
 

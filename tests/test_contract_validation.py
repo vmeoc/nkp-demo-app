@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = ROOT / ".venv/bin/python"
-RENDER = ROOT / ".github/skills/nkp-deploy/render.py"
+RENDER = ROOT / ".opencode/skills/nkp-deploy/render.py"
 
 
 def validate(contract):

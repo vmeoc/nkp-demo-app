@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # check_deploy.sh : dit à l'IA (et à l'humain) si le déploiement a réussi, et sinon pourquoi.
 #
-#   .github/skills/nkp-deploy/check_deploy.sh preflight   # avant le push : contrat + dry-run serveur
-#   .github/skills/nkp-deploy/check_deploy.sh verify      # après le push : CI -> Flux -> pods
+#   .opencode/skills/nkp-deploy/check_deploy.sh preflight   # avant le push : contrat + dry-run serveur
+#   .opencode/skills/nkp-deploy/check_deploy.sh verify      # après le push : CI -> Flux -> pods
 #
 # Configuration : .nkp/target.env (non commité), par exemple :
 #   NKP_CONTEXT=nkp-workload-admin@nkp-workload   # contexte kubectl du workload cluster
@@ -20,7 +20,7 @@ cd "$ROOT"
 [ -f .nkp/target.env ] && { set -a; . .nkp/target.env; set +a; }
 
 PY=".venv/bin/python"; [ -x "$PY" ] || PY="python3"
-RENDER=".github/skills/nkp-deploy/render.py"
+RENDER=".opencode/skills/nkp-deploy/render.py"
 
 fail() { echo "$2"; echo "RESULT=$1"; exit "${3:-1}"; }
 

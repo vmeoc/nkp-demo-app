@@ -16,8 +16,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const resourceUri = "ui://nkp-contract/configure-form.html";
 const contractPath = path.join(root, "nkp-app.yaml");
 const examplePath = path.join(root, "nkp-app.example.yaml");
-const schemaPath = path.join(root, ".github/skills/nkp-deploy/schema.json");
-const rendererPath = path.join(root, ".github/skills/nkp-deploy/render.py");
+const schemaPath = path.join(root, ".opencode/skills/nkp-deploy/schema.json");
+const rendererPath = path.join(root, ".opencode/skills/nkp-deploy/render.py");
 const appPath = path.join(root, "mcp-dist/mcp/contract-form.html");
 const venvPython = path.join(root, ".venv/bin/python");
 
