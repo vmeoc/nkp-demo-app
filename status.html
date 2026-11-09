@@ -6,45 +6,124 @@
   <title>Statut de déploiement NKP</title>
   <style>
     :root {
-      color-scheme: dark;
-      --ink: #f5f4ff;
-      --muted: #a4a6be;
-      --line: rgb(255 255 255 / 12%);
-      --ok: #75e2bd;
-      --run: #c4b6ff;
-      --fail: #ff8a8a;
-      --block: #f0c36b;
-      --pending: #74778f;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe3ee;
+      --accent: #4f46e5;
+      --ok: #16a34a;
+      --run: #7c3aed;
+      --fail: #dc2626;
+      --block: #d97706;
+      --pending: #9ca3af;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
     }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; color: var(--ink); background: #05060d; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 48px; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 32%),
+        radial-gradient(circle at top right, rgba(22, 163, 74, 0.10), transparent 28%),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .page { width: min(1240px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 48px; }
     header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
-    h1 { margin: 0; font-size: 28px; letter-spacing: -0.03em; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -0.03em; }
     .meta { color: var(--muted); font-size: 13px; }
-    button { border: 1px solid var(--line); background: rgb(255 255 255 / 4%); color: var(--ink); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
-    button:hover { background: rgb(255 255 255 / 8%); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-    .card { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: rgb(255 255 255 / 3%); }
-    .card h2 { margin: 0 0 8px; font-size: 15px; }
+    button { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px; padding: 9px 15px; cursor: pointer; box-shadow: var(--shadow); }
+    button:hover { transform: translateY(-1px); }
+    .panel { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); }
+    .pipeline-wrap { overflow-x: auto; padding: 8px 4px 18px; }
+    .pipeline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 760px;
+    }
+    .step {
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .node {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 700;
+      background: #fff;
+      border: 4px solid var(--pending);
+      color: var(--pending);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      transition: all 180ms ease;
+    }
+    .step.success .node { border-color: var(--ok); color: var(--ok); background: #f0fdf4; }
+    .step.running .node { border-color: var(--run); color: var(--run); background: #f5f3ff; animation: pulse 1.6s ease-in-out infinite; }
+    .step.failed .node { border-color: var(--fail); color: var(--fail); background: #fef2f2; }
+    .step.blocked .node { border-color: var(--block); color: var(--block); background: #fffbeb; }
+    .step.pending .node { border-color: var(--pending); color: var(--pending); background: #f9fafb; }
+    .label { font-size: 13px; font-weight: 650; }
+    .step-status { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .connector {
+      flex: 0 0 46px;
+      height: 4px;
+      margin-top: 27px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      position: relative;
+    }
+    .connector::after {
+      content: "";
+      position: absolute;
+      right: -7px;
+      top: -4px;
+      border: 6px solid transparent;
+      border-left-color: #e5e7eb;
+    }
+    .connector.active {
+      background: linear-gradient(90deg, var(--ok), #86efac);
+    }
+    .connector.active::after { border-left-color: #86efac; }
+    .connector.running {
+      background: linear-gradient(90deg, var(--run), #c4b5fd);
+    }
+    .connector.running::after { border-left-color: #c4b5fd; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 8px 18px rgba(124, 58, 237, 0.18); }
+      50% { transform: scale(1.06); box-shadow: 0 10px 24px rgba(124, 58, 237, 0.30); }
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-top: 18px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); }
+    .card h2 { margin: 0 0 10px; font-size: 15px; }
     .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 650; border: 1px solid var(--line); }
-    .badge.ok { color: var(--ok); border-color: rgb(117 226 189 / 35%); background: rgb(117 226 189 / 8%); }
-    .badge.run { color: var(--run); border-color: rgb(196 182 255 / 35%); background: rgb(196 182 255 / 8%); }
-    .badge.fail { color: var(--fail); border-color: rgb(255 138 138 / 35%); background: rgb(255 138 138 / 8%); }
-    .badge.block { color: var(--block); border-color: rgb(240 195 107 / 35%); background: rgb(240 195 107 / 8%); }
-    .badge.pending { color: var(--pending); }
+    .badge.ok { color: var(--ok); border-color: #bbf7d0; background: #f0fdf4; }
+    .badge.run { color: var(--run); border-color: #ddd6fe; background: #f5f3ff; }
+    .badge.fail { color: var(--fail); border-color: #fecaca; background: #fef2f2; }
+    .badge.block { color: var(--block); border-color: #fde68a; background: #fffbeb; }
+    .badge.pending { color: var(--pending); border-color: var(--line); background: #f9fafb; }
     .detail { color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.5; word-break: break-word; }
     .section { margin-top: 28px; }
     .section h2 { margin: 0 0 12px; font-size: 18px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
     th { color: var(--muted); font-weight: 600; }
-    a { color: var(--run); }
-    pre { white-space: pre-wrap; word-break: break-word; background: rgb(255 255 255 / 3%); border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 12px; max-height: 320px; overflow: auto; }
+    a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 12px; max-height: 320px; overflow: auto; }
     .error { color: var(--fail); }
-    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
-    .event { border-left: 3px solid var(--line); padding: 8px 12px; margin-bottom: 10px; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 760px) { .two { grid-template-columns: 1fr; } .pipeline { min-width: 680px; } }
+    .event { border-left: 4px solid var(--line); padding: 10px 12px; margin-bottom: 10px; border-radius: 0 10px 10px 0; background: #f8fafc; }
     .event.ok { border-color: var(--ok); }
     .event.run { border-color: var(--run); }
     .event.fail { border-color: var(--fail); }
@@ -60,24 +139,27 @@
         <h1>Statut de déploiement NKP</h1>
         <div class="meta" id="updated">Chargement…</div>
       </div>
-      <div>
-        <button id="refresh">Rafraîchir</button>
-      </div>
+      <button id="refresh">Rafraîchir</button>
     </header>
 
-    <section class="grid" id="pipeline"></section>
+    <section class="panel">
+      <div class="pipeline-wrap">
+        <div class="pipeline" id="pipeline-visual"></div>
+      </div>
+      <div class="grid" id="pipeline-cards"></div>
+    </section>
 
     <section class="section">
       <h2>Historique des builds (GitHub Actions)</h2>
-      <div id="history" class="detail">Chargement…</div>
+      <div class="panel" id="history">Chargement…</div>
     </section>
 
     <section class="section two">
-      <div>
+      <div class="panel">
         <h2>Journal d’orchestration IA</h2>
-        <div id="timeline" class="detail">Chargement…</div>
+        <div id="timeline">Chargement…</div>
       </div>
-      <div>
+      <div class="panel">
         <h2>Code / contrat actuels</h2>
         <div class="detail" id="greeting"></div>
         <pre id="contract">Chargement…</pre>
@@ -129,13 +211,7 @@
     }
 
     function badge(status) {
-      const labels = {
-        success: "succès",
-        running: "en cours",
-        failed: "échec",
-        blocked: "bloqué",
-        pending: "en attente"
-      };
+      const labels = { success: "succès", running: "en cours", failed: "échec", blocked: "bloqué", pending: "en attente" };
       return `<span class="badge ${status}">${labels[status] || status}</span>`;
     }
 
@@ -187,6 +263,53 @@
       return state.greeting ? "success" : "pending";
     }
 
+    const steps = [
+      { key: "developer", title: "Code développeur", icon: "💻" },
+      { key: "ai", title: "Orchestration IA", icon: "🤖" },
+      { key: "git", title: "Push Git", icon: "🔀" },
+      { key: "ci", title: "CI GitHub", icon: "⚙️" },
+      { key: "flux", title: "Flux", icon: "🔄" },
+      { key: "rollout", title: "Rollout NKP", icon: "🚀" },
+      { key: "health", title: "Health check", icon: "❤️" }
+    ];
+
+    function stepStatus(key) {
+      return {
+        developer: developerStatus(),
+        ai: aiStatus(),
+        git: gitPushStatus(),
+        ci: ciStatus(),
+        flux: fluxStatus(),
+        rollout: rolloutStatus(),
+        health: healthStatus()
+      }[key];
+    }
+
+    function connectorClass(previousKey) {
+      const s = stepStatus(previousKey);
+      if (s === "success") return "connector active";
+      if (s === "running") return "connector running";
+      return "connector";
+    }
+
+    function renderVisual() {
+      const nodes = steps.map((step, index) => {
+        const status = stepStatus(step.key);
+        const connector = index < steps.length - 1
+          ? `<div class="${connectorClass(step.key)}"></div>`
+          : "";
+        return `
+          <div class="step ${status}">
+            <div class="node">${step.icon}</div>
+            <div class="label">${escapeHtml(step.title)}</div>
+            <div class="step-status">${status}</div>
+          </div>
+          ${connector}
+        `;
+      }).join("");
+      $("pipeline-visual").innerHTML = nodes;
+    }
+
     function card(title, status, detail) {
       return `
         <article class="card">
@@ -197,7 +320,7 @@
       `;
     }
 
-    function renderPipeline() {
+    function renderCards() {
       const ci = ciStatus();
       const run = state.runs[0];
       const ciDetail = run
@@ -227,7 +350,7 @@
               ? "Rollout échoué ou timeout."
               : "Rollout en cours.";
 
-      $("pipeline").innerHTML = [
+      $("pipeline-cards").innerHTML = [
         card("1. Code développeur", developerStatus(), `Greeting détecté : ${escapeHtml(state.greeting || "non trouvé")}`),
         card("2. Orchestration IA", aiStatus(), state.deployLog.length ? `Dernier événement : ${escapeHtml(state.deployLog[state.deployLog.length - 1].step)} (${escapeHtml(state.deployLog[state.deployLog.length - 1].status)})` : "Aucun événement d’orchestration enregistré."),
         card("3. Push Git", gitPushStatus(), state.runs.length ? "Push détecté via les runs GitHub Actions." : "Aucun push détecté."),
@@ -284,7 +407,8 @@
     }
 
     function render() {
-      renderPipeline();
+      renderVisual();
+      renderCards();
       renderHistory();
       renderTimeline();
       renderSources();
