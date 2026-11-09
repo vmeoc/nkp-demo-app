@@ -17,7 +17,7 @@ metadata:
   annotations:
     nkp.demo/backup-policy: quotidienne 02:00, rétention 7 jours (simulé)
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
