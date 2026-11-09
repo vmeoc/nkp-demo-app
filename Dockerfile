@@ -12,4 +12,3 @@ ENV APP_VERSION=$APP_VERSION
 
 EXPOSE 8080
 CMD ["python", "app.py"]
-```

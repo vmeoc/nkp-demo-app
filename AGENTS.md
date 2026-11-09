@@ -41,4 +41,3 @@ Follow `.opencode/skills/nkp-deploy/SKILL.md`. Summary:
 - `render.py` uses paths relative to the current working directory; always run from repo root.
 - Python venv is 3.9 while the Dockerfile targets 3.12; don't assume runtime parity.
 - `expires` must be a future date; forbidden in prod; `cost_center` required in prod; tracing incompatible with `static` runtime.
-```
