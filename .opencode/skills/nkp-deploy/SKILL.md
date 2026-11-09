@@ -91,6 +91,9 @@ Il est important qu'il voit ce degré de connaissance que tu as du projet et la 
 - Si le thème nécessite des assets statiques (images, polices, css/js séparés), ajoute-les au repo et **mets à jour la ligne `COPY` du `Dockerfile`** en conséquence (sinon ils ne seront pas dans l'image).
 - Ne cherche pas à vérifier le rendu dans un navigateur ; le déploiement fait foi. Passe à l'étape suivante.
 - Code minimal mais soigné : l'objectif est de montrer la plateforme ET une page crédible, pas une application complexe. Pas de backend dynamique sauf demande explicite.
+- **Signalement WIP** : dès le début d'une tâche, signale le travail en cours au dashboard de supervision via l'API WIP de l'app déployée :
+  `curl -s -X POST http://<IP>/wip-status -H 'X-Wip-Token: demo-wip-token' -H 'Content-Type: application/json' -d '{"status":"in-progress","message":"<ce qui est en cours>","theme":"<thème>"}'`
+  (token par défaut `demo-wip-token`, surchargeable via env `WIP_TOKEN`). Le statut repasse à `idle` automatiquement au redémarrage du pod (nouveau déploiement). Cela permet au dashboard de montrer "🔧 En cours de préparation" en temps réel.
 
 ## Étape 3 — Faire examiner le contrat et obtenir l'approbation
 

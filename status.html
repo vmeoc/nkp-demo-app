@@ -199,6 +199,7 @@
 </head>
 <body>
   <div class="page">
+    <div id="wip-banner" style="display:none;margin-bottom:16px;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #f59e0b;color:#78350f;font-size:14px;"></div>
     <header>
       <div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
@@ -288,7 +289,8 @@
       health: null,
       healthError: "",
       targetVersion: null,
-      errors: []
+      errors: [],
+      wip: { status: "idle", message: "", theme: "", started: "", updated: "" }
     };
 
     const $ = (id) => document.getElementById(id);
@@ -567,6 +569,32 @@
       render();
     }
 
+    async function loadWip() {
+      try {
+        const res = await fetch("/wip-status", { cache: "no-store" });
+        if (!res.ok) throw new Error(`wip ${res.status}`);
+        state.wip = await res.json();
+      } catch (err) {
+        state.wip = { status: "idle", message: "", theme: "", started: "", updated: "" };
+      }
+      renderWip();
+    }
+
+    function renderWip() {
+      const banner = document.getElementById("wip-banner");
+      if (!banner) return;
+      const w = state.wip || {};
+      if (w.status && w.status !== "idle") {
+        const since = w.started ? ` (depuis ${new Date(w.started).toLocaleTimeString()})` : "";
+        const theme = w.theme ? ` — thème : ${escapeHtml(w.theme)}` : "";
+        banner.style.display = "block";
+        banner.innerHTML = `🔧 <strong>En cours de préparation</strong>${since}${theme}<br>${escapeHtml(w.message || "")}`;
+      } else {
+        banner.style.display = "none";
+        banner.innerHTML = "";
+      }
+    }
+
     let githubTimer = null;
     let healthTimer = null;
 
@@ -582,6 +610,7 @@
       clearTimeout(healthTimer);
       healthTimer = setTimeout(async () => {
         await loadHealth();
+        await loadWip();
         scheduleHealth();
       }, HEALTH_REFRESH_MS);
     }
@@ -589,7 +618,7 @@
     $("refresh").addEventListener("click", async () => {
       clearTimeout(githubTimer);
       clearTimeout(healthTimer);
-      await Promise.all([loadGitHub(), loadHealth()]);
+      await Promise.all([loadGitHub(), loadHealth(), loadWip()]);
       scheduleGitHub();
       scheduleHealth();
     });
@@ -598,14 +627,14 @@
       if (!document.hidden) {
         clearTimeout(githubTimer);
         clearTimeout(healthTimer);
-        Promise.all([loadGitHub(), loadHealth()]).then(() => {
+        Promise.all([loadGitHub(), loadHealth(), loadWip()]).then(() => {
           scheduleGitHub();
           scheduleHealth();
         });
       }
     });
 
-    Promise.all([loadGitHub(), loadHealth()]).then(() => {
+    Promise.all([loadGitHub(), loadHealth(), loadWip()]).then(() => {
       scheduleGitHub();
       scheduleHealth();
     });
