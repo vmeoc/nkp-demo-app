@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-nkp
+  name: air-liquid
   labels:
-    app.kubernetes.io/name: hello-nkp
+    app.kubernetes.io/name: air-liquid
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
     nkp.demo/owner: vincentm
@@ -21,11 +21,11 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: hello-nkp
+      app.kubernetes.io/name: air-liquid
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: hello-nkp
+        app.kubernetes.io/name: air-liquid
         app.kubernetes.io/managed-by: nkp-deploy
         nkp.demo/env: dev
         nkp.demo/owner: vincentm
@@ -39,7 +39,7 @@ spec:
         instrumentation.opentelemetry.io/inject-python: 'true'
     spec:
       containers:
-      - name: hello-nkp
+      - name: air-liquid
         image: app-image
         ports:
         - name: http
@@ -48,7 +48,7 @@ spec:
         - name: APP_ENV
           value: dev
         - name: OTEL_SERVICE_NAME
-          value: hello-nkp
+          value: air-liquid
         resources:
           requests:
             cpu: 100m

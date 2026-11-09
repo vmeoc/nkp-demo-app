@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-nkp
+  name: air-liquid
   labels:
-    app.kubernetes.io/name: hello-nkp
+    app.kubernetes.io/name: air-liquid
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
     nkp.demo/owner: vincentm
@@ -17,7 +17,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app.kubernetes.io/name: hello-nkp
+    app.kubernetes.io/name: air-liquid
   ports:
   - name: http
     port: 80

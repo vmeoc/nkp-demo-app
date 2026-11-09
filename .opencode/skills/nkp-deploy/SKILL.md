@@ -79,10 +79,12 @@ expires (facultatif) : Date d'expiration [string] - Facultatif, format AAAA-MM-J
 
 Il est important qu'il voit ce degré de connaissance que tu as du projet et la direction dans laquelle tu veux aller. 
 
-## Étape 2 — Modifier l'application si l'utilisateur le demande
+## Étape 2 — Créer / modifier la page web si l'utilisateur le demande
 
-- Le développeur te demandera généralement juste de modifier le texte affichant Hello world en hello <ça dépendra>. Fais cette modif dans index.html, ne cherche pas à vérifier ton résultat. Passe à l'étape suivante.
-- Code minimal : l'objectif est de montrer la plateforme, pas l'appli.
+- Le développeur peut demander une **page web stylée et professionnelle sur un thème** (landing, portfolio, présentation produit, événement, etc.). Dans ce cas, génère dans `index.html` une page HTML complète et soignée : CSS moderne (variables, dégradés, typographie soignée), mise en page responsive, accessibilité de base (landmarks, alt, contrastes), et contenu adapté au thème demandé. Pas de framework obligatoire : HTML/CSS purs suffisent.
+- Si le thème nécessite des assets statiques (images, polices, css/js séparés), ajoute-les au repo et **mets à jour la ligne `COPY` du `Dockerfile`** en conséquence (sinon ils ne seront pas dans l'image).
+- Ne cherche pas à vérifier le rendu dans un navigateur ; le déploiement fait foi. Passe à l'étape suivante.
+- Code minimal mais soigné : l'objectif est de montrer la plateforme ET une page crédible, pas une application complexe. Pas de backend dynamique sauf demande explicite.
 
 ## Étape 3 — Faire examiner le contrat et obtenir l'approbation
 
@@ -96,7 +98,7 @@ Exemple :
 
 | Option | Proposition | Pourquoi |
 |---|---|---|
-| Nom | `hello-nkp` | nom du dossier |
+| Nom | `landing-nkp` | nom du dossier |
 | Environnement | `dev` | branche `main`, pas d'indication contraire |
 | Architecture | `stateless` | aucune base de données détectée |
 | Taille | `S` | appli de démonstration |
@@ -116,7 +118,7 @@ Exemple :
 4. Montre à l'utilisateur le résumé affiché par le script et les lignes `ATTENTION`.
 
 ```yaml
-app: hello-nkp
+app: landing-nkp
 owner: vincent
 env: dev
 archi: stateless

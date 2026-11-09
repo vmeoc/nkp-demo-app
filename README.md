@@ -1,6 +1,6 @@
-# Hello NKP
+# Landing NKP
 
-Application Hello World en Python avec Flask, exposée sur le port 8080.
+Application web (page thématique stylée) en Python avec Flask, exposée sur le port 8080.
 
 ## Lancer localement
 

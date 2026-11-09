@@ -10,7 +10,7 @@ import {
 } from "../mcp/contract-message.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const proposedYaml = "app: hello-nkp\nreplicas: 2\n";
+const proposedYaml = "app: landing-nkp\nreplicas: 2\n";
 const message = createConfirmedContractMessage(proposedYaml);
 assert(message.includes(`\`\`\`yaml\n${proposedYaml}`));
 assert(message.includes("\n```"));
@@ -118,7 +118,7 @@ try {
     arguments: {},
   });
   assert.equal(opened.structuredContent.kind, "initial");
-  assert.equal(opened.structuredContent.contract.app, "hello-nkp");
+  assert.equal(opened.structuredContent.contract.app, "landing-nkp");
   assert.equal(opened.structuredContent.appLocked, true);
 
   const resource = await request("resources/read", {
@@ -135,7 +135,7 @@ try {
     name: "validate_nkp_contract",
     arguments: {
       contract: {
-        app: "hello-nkp",
+        app: "landing-nkp",
         owner: "vincent",
         env: "dev",
         archi: "stateless",
@@ -156,7 +156,7 @@ try {
     name: "validate_nkp_contract",
     arguments: {
       contract: {
-        app: "hello-nkp",
+        app: "landing-nkp",
         owner: "vincent",
         env: "prod",
         archi: "stateless",

@@ -14,7 +14,7 @@ def hello():
 
 @app.get("/healthz")
 def healthz():
-    return jsonify(status="ok", version=APP_VERSION, app="hello-nkp")
+    return jsonify(status="ok", version=APP_VERSION, app="air-liquid")
 
 
 @app.get("/status")

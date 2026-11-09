@@ -22,7 +22,7 @@ def validate(contract):
 
 def valid_contract():
     return {
-        "app": "hello-nkp",
+        "app": "landing-nkp",
         "owner": "vincent",
         "env": "dev",
         "archi": "stateless",

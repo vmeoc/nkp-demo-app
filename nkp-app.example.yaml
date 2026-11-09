@@ -1,6 +1,6 @@
 # Contrat de déploiement NKP. Valeurs autorisées :
 #   .venv/bin/python .github/skills/nkp-deploy/render.py --print-catalog
-app: hello-nkp
+app: landing-nkp
 owner: vincent
 env: dev
 archi: stateless
