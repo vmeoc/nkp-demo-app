@@ -4,5 +4,35 @@
     "step": "bootstrap",
     "status": "success",
     "message": "Suivi de déploiement activé."
+  },
+  {
+    "timestamp": "2026-11-09T13:30:00Z",
+    "step": "contract",
+    "status": "success",
+    "message": "Contrat nkp-app.yaml validé (env dev, stateless, port 8080)."
+  },
+  {
+    "timestamp": "2026-11-09T13:31:00Z",
+    "step": "render",
+    "status": "success",
+    "message": "Manifests k8s/base vérifiés à jour via render.py --check."
+  },
+  {
+    "timestamp": "2026-11-09T13:32:00Z",
+    "step": "push",
+    "status": "success",
+    "message": "Changements poussés sur main."
+  },
+  {
+    "timestamp": "2026-11-09T13:35:00Z",
+    "step": "ci",
+    "status": "success",
+    "message": "CI GitHub Actions réussie (build + push image)."
+  },
+  {
+    "timestamp": "2026-11-09T13:40:00Z",
+    "step": "deploy",
+    "status": "success",
+    "message": "Flux a appliqué la révision et le rollout NKP est OK."
   }
 ]

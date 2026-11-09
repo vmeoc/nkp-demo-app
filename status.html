@@ -150,8 +150,9 @@
       if (!state.deployLog.length) return "pending";
       if (state.deployLog.some((e) => e.status === "failed")) return "failed";
       const last = state.deployLog[state.deployLog.length - 1];
-      if (last.step === "push" && last.status === "success") return "success";
-      if (state.deployLog.some((e) => ["validate", "render"].includes(e.step) && e.status === "success")) return "running";
+      if (last.step === "bootstrap") return "pending";
+      if (last.status === "success") return "success";
+      if (last.status === "running") return "running";
       return "pending";
     }
 
