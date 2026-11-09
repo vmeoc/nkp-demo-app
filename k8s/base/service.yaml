@@ -22,3 +22,4 @@ spec:
   - name: http
     port: 80
     targetPort: http
+  loadBalancerIP: 10.38.207.176

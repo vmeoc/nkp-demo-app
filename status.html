@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Statut de déploiement NKP</title>
+  <title>Supervision NKP — Déploiement</title>
   <style>
     :root {
       --bg: #f4f7fb;
@@ -201,8 +201,12 @@
   <div class="page">
     <header>
       <div>
-        <h1>Statut de déploiement NKP</h1>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="background:#0ea5e9;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:0.08em;">SUPERVISION</span>
+          <h1 style="margin:0;">Supervision NKP</h1>
+        </div>
         <div class="meta" id="updated">Chargement…</div>
+        <div class="meta" style="margin-top:4px;">App supervisée : <strong id="supervised-app">—</strong> · <a href="/" target="_blank" rel="noopener" style="color:var(--accent);">Ouvrir l'application ↗</a></div>
       </div>
       <button id="refresh">Rafraîchir</button>
     </header>
@@ -301,6 +305,7 @@
 
     async function fetchJson(url) {
       const res = await fetch(url, { cache: "no-store", headers: { Accept: "application/vnd.github+json" } });
+      if (res.status === 403) throw new Error("Limite de l'API GitHub atteinte (60 req/h non authentifié). Réessayez plus tard.");
       if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
       return res.json();
     }
@@ -553,6 +558,8 @@
         if (!res.ok) throw new Error(`healthz ${res.status}`);
         state.health = await res.json();
         state.healthError = "";
+        const appEl = document.getElementById("supervised-app");
+        if (appEl && state.health && state.health.app) appEl.textContent = state.health.app;
       } catch (err) {
         state.health = null;
         state.healthError = err.message;

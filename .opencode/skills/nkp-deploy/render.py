@@ -235,15 +235,18 @@ def build_manifests(c, replicas):
     }
 
     expose = c["expose"]
+    service_spec = {
+        "type": "LoadBalancer" if expose["type"] == "loadbalancer" else "ClusterIP",
+        "selector": selector,
+        "ports": [{"name": "http", "port": 80, "targetPort": "http"}],
+    }
+    if expose["type"] == "loadbalancer" and expose.get("ip"):
+        service_spec["loadBalancerIP"] = expose["ip"]
     files["service.yaml"] = {
         "apiVersion": "v1",
         "kind": "Service",
         "metadata": {"name": app, "labels": labels},
-        "spec": {
-            "type": "LoadBalancer" if expose["type"] == "loadbalancer" else "ClusterIP",
-            "selector": selector,
-            "ports": [{"name": "http", "port": 80, "targetPort": "http"}],
-        },
+        "spec": service_spec,
     }
 
     if expose["type"] == "ingress":

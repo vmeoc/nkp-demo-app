@@ -11,5 +11,6 @@ backup: daily
 tracing: true
 expose:
   type: loadbalancer
+  ip: 10.38.207.176
 llm: none
 expires: 2026-12-31
