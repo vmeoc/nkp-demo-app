@@ -3,132 +3,103 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0057A8">
-    <title>Air Liquide — Gases, technologies and services for industry and health</title>
+    <meta name="theme-color" content="#0B1F3A">
+    <title>ArianeGroup — Maîtriser l'accès à l'espace</title>
     <style>
       :root {
-        color-scheme: light;
-        --blue: #0057A8;
-        --blue-dark: #003F7A;
-        --blue-light: #E8F1FA;
-        --ink: #1A2332;
-        --muted: #5A6678;
-        --line: #DCE3ED;
-        --bg: #FFFFFF;
-        --soft: #F5F8FC;
+        --bg: #070B14;
+        --bg-2: #0E1626;
+        --ink: #EAF0F8;
+        --muted: #9AA9BF;
+        --line: rgba(255,255,255,0.1);
+        --accent: #FF6B2C;
+        --accent-2: #3B82F6;
+        --card: rgba(255,255,255,0.04);
         font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; }
       body { color: var(--ink); background: var(--bg); line-height: 1.6; }
-      a { color: var(--blue); text-decoration: none; }
+      a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
       img { max-width: 100%; display: block; }
 
-      .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+      .container { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
 
       /* Topbar */
-      .topbar {
-        position: sticky; top: 0; z-index: 10;
-        background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--line);
-      }
+      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,11,20,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
       .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--blue-dark); }
-      .brand-mark {
-        width: 36px; height: 36px; border-radius: 10px;
-        background: linear-gradient(135deg, var(--blue), var(--blue-dark));
-        display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 15px;
-      }
-      .nav { display: flex; gap: 28px; font-size: 14px; font-weight: 500; color: var(--ink); }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #fff; }
+      .brand-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), #FF9A5C); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; }
+      .nav { display: flex; gap: 28px; font-size: 14px; }
       .nav a { color: var(--ink); }
-      .nav a:hover { color: var(--blue); text-decoration: none; }
-      .cta {
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 10px 18px; border-radius: 8px;
-        background: var(--blue); color: #fff; font-weight: 600; font-size: 14px;
-        border: none; cursor: pointer;
-      }
-      .cta:hover { background: var(--blue-dark); text-decoration: none; }
+      .nav a:hover { color: var(--accent); text-decoration: none; }
+      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; }
+      .cta:hover { background: #E85A1F; text-decoration: none; }
 
       /* Hero */
-      .hero {
-        background: linear-gradient(120deg, var(--blue-dark) 0%, var(--blue) 60%, #1E88E5 100%);
-        color: #fff; padding: 96px 0 80px; position: relative; overflow: hidden;
-      }
-      .hero::before {
-        content: ""; position: absolute; inset: 0;
-        background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12), transparent 45%);
-      }
-      .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; position: relative; }
-      .eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 700; color: #BFD9F2; margin: 0 0 18px; }
-      h1 { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.05; margin: 0 0 22px; letter-spacing: -0.03em; font-weight: 750; }
-      .hero p.lead { font-size: 18px; color: #EAF2FA; max-width: 560px; margin: 0 0 32px; }
+      .hero { position: relative; min-height: 88vh; display: flex; align-items: center; overflow: hidden; }
+      .hero-bg { position: absolute; inset: 0; }
+      .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,11,20,0.55) 0%, rgba(7,11,20,0.85) 60%, var(--bg) 100%); }
+      .hero-content { position: relative; padding: 120px 0 80px; max-width: 760px; }
+      .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 0 20px; }
+      h1 { font-size: clamp(44px, 6.5vw, 78px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 800; }
+      .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 36px; }
       .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-      .btn-secondary { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.35); }
-      .btn-secondary:hover { background: rgba(255,255,255,0.2); }
-      .hero-card {
-        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 16px; padding: 28px; backdrop-filter: blur(6px);
-      }
-      .hero-card h3 { margin: 0 0 12px; font-size: 16px; }
-      .hero-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-      .hero-card li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #EAF2FA; }
-      .hero-card li::before { content: "✓"; color: #7DD3FC; font-weight: 700; }
+      .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+      .btn-ghost:hover { background: rgba(255,255,255,0.08); }
 
       /* Stats */
-      .stats { background: var(--soft); padding: 56px 0; border-bottom: 1px solid var(--line); }
+      .stats { padding: 64px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-2); }
       .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
       .stat { text-align: center; }
-      .stat .num { font-size: 36px; font-weight: 800; color: var(--blue); letter-spacing: -0.02em; }
-      .stat .lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
+      .stat .num { font-size: 40px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+      .stat .lbl { font-size: 13px; color: var(--muted); margin-top: 6px; }
 
       /* Sections */
-      section.block { padding: 88px 0; }
-      .section-head { max-width: 640px; margin-bottom: 48px; }
-      .section-head .eyebrow { color: var(--blue); }
-      h2 { font-size: clamp(28px, 3.5vw, 40px); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
+      section.block { padding: 96px 0; }
+      .section-head { max-width: 680px; margin-bottom: 56px; }
+      .section-head .eyebrow { color: var(--accent); }
+      h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
       .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
 
-      /* Activities cards */
+      /* Split with image */
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+      .split-img { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4/3; }
+      .split-img img { width: 100%; height: 100%; object-fit: cover; }
+      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
+      .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
+      .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
+
+      /* Cards */
       .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-      .card {
-        border: 1px solid var(--line); border-radius: 14px; padding: 28px;
-        background: #fff; transition: transform 180ms ease, box-shadow 180ms ease;
-      }
-      .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,87,168,0.08); }
-      .card-icon {
-        width: 48px; height: 48px; border-radius: 12px;
-        background: var(--blue-light); color: var(--blue);
-        display: grid; place-items: center; font-size: 22px; margin-bottom: 16px;
-      }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease; }
+      .card:hover { transform: translateY(-6px); border-color: rgba(255,107,44,0.4); }
+      .card-img { aspect-ratio: 16/9; overflow: hidden; }
+      .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; }
+      .card:hover .card-img img { transform: scale(1.05); }
+      .card-body { padding: 24px; }
       .card h3 { margin: 0 0 8px; font-size: 18px; }
       .card p { color: var(--muted); font-size: 14px; margin: 0; }
 
-      /* About split */
-      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-      .split .visual {
-        background: linear-gradient(135deg, var(--blue-light), #fff);
-        border-radius: 20px; padding: 40px; min-height: 320px;
-        display: grid; place-items: center; border: 1px solid var(--line);
-      }
-      .split .visual span { font-size: 96px; }
-      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
-      .list li { display: flex; gap: 12px; font-size: 15px; }
-      .list li::before { content: "→"; color: var(--blue); font-weight: 700; }
+      /* Feature band */
+      .band { background: linear-gradient(120deg, #1a2a4a 0%, #0B1F3A 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+      .band img { border-radius: 18px; border: 1px solid var(--line); }
 
       /* Footer */
-      footer { background: var(--ink); color: #C9D2DF; padding: 56px 0 32px; }
+      footer { background: #04070D; color: #8FA0B8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
       .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
       footer h4 { color: #fff; font-size: 14px; margin: 0 0 14px; }
       footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 13px; }
-      footer a { color: #C9D2DF; }
+      footer a { color: #8FA0B8; }
       footer a:hover { color: #fff; }
-      .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+      .footer-bottom { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
       @media (max-width: 860px) {
-        .hero-grid, .split { grid-template-columns: 1fr; }
+        .split, .band-grid { grid-template-columns: 1fr; }
         .cards { grid-template-columns: 1fr; }
         .stats-grid { grid-template-columns: repeat(2,1fr); }
         .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -144,128 +115,146 @@
     <header class="topbar">
       <div class="container topbar-inner">
         <div class="brand">
-          <div class="brand-mark">AL</div>
-          <span>Air Liquide</span>
+          <div class="brand-mark">AG</div>
+          <span>ArianeGroup</span>
         </div>
         <nav class="nav" aria-label="Navigation principale">
-          <a href="#activites">Activités</a>
+          <a href="#lanceurs">Lanceurs</a>
+          <a href="#espace">Espace</a>
+          <a href="#innovation">Innovation</a>
           <a href="#groupe">Le groupe</a>
-          <a href="#chiffres">Chiffres clés</a>
-          <a href="#contact">Contact</a>
         </nav>
         <a class="cta" href="#contact">Nous contacter</a>
       </div>
     </header>
 
     <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <p class="eyebrow">Gases · Technologies · Services</p>
-          <h1>Innovating for a sustainable future</h1>
-          <p class="lead">
-            Air Liquide est un leader mondial des gaz, des technologies et des services pour l'industrie et la santé.
-            Présent dans 75 pays, le Groupe imagine des solutions durables pour ses clients et la société.
-          </p>
-          <div class="hero-actions">
-            <a class="cta" href="#activites">Découvrir nos activités</a>
-            <a class="cta btn-secondary" href="#groupe">Le groupe</a>
-          </div>
-        </div>
-        <div class="hero-card">
-          <h3>Nos engagements</h3>
-          <ul>
-            <li>Neutralité carbone à horizon 2050</li>
-            <li>Innovation au service de la santé</li>
-            <li>Hydrogène bas carbone</li>
-            <li>Excellence opérationnelle</li>
-            <li>Présence dans 75 pays</li>
-          </ul>
+      <div class="hero-bg">
+        <img src="https://picsum.photos/seed/ariane-hero/1920/1080" alt="Lancement d'une fusée Ariane dans le ciel" loading="eager">
+      </div>
+      <div class="container hero-content">
+        <p class="eyebrow">Maîtriser l'accès à l'espace</p>
+        <h1>L'Europe dans l'espace, aujourd'hui et demain</h1>
+        <p class="lead">
+          ArianeGroup conçoit, développe et opère les lanceurs Ariane. Leader européen de l'accès à l'espace,
+          le groupe rassemble 10 000 talents au service de la souveraineté et de l'innovation.
+        </p>
+        <div class="hero-actions">
+          <a class="cta" href="#lanceurs">Découvrir Ariane 6</a>
+          <a class="cta btn-ghost" href="#groupe">Le groupe</a>
         </div>
       </div>
     </section>
 
     <section class="stats">
       <div class="container stats-grid">
-        <div class="stat"><div class="num">75</div><div class="lbl">Pays</div></div>
-        <div class="stat"><div class="num">66 000</div><div class="lbl">Collaborateurs</div></div>
-        <div class="stat"><div class="num">27 Mds€</div><div class="lbl">Chiffre d'affaires</div></div>
-        <div class="stat"><div class="num">4 M</div><div class="lbl">Patients accompagnés</div></div>
+        <div class="stat"><div class="num">10 000</div><div class="lbl">Collaborateurs</div></div>
+        <div class="stat"><div class="num">115+</div><div class="lbl">Lancements Ariane 5</div></div>
+        <div class="stat"><div class="num">13</div><div class="lbl">Pays</div></div>
+        <div class="stat"><div class="num">60+</div><div class="lbl">Années d'excellence</div></div>
       </div>
     </section>
 
-    <section id="activites" class="block">
+    <section id="lanceurs" class="block">
       <div class="container">
         <div class="section-head">
-          <p class="eyebrow">Ce que nous faisons</p>
-          <h2>Nos activités</h2>
-          <p>Des solutions gaz et technologies pour l'industrie, la santé et la transition énergétique.</p>
+          <p class="eyebrow">Lanceurs</p>
+          <h2>Ariane 6, nouvelle génération</h2>
+          <p>Un lanceur modulaire et compétitif, conçu pour répondre aux besoins institutionnels et commerciaux.</p>
         </div>
         <div class="cards">
           <article class="card">
-            <div class="card-icon">🏭</div>
-            <h3>Gaz industriels</h3>
-            <p>Oxygène, azote, hydrogène, argon et gaz spéciaux pour les procédés industriels.</p>
+            <div class="card-img"><img src="https://picsum.photos/seed/ariane-rocket/800/450" alt="Fusée Ariane sur son pas de tir" loading="lazy"></div>
+            <div class="card-body">
+              <h3>Ariane 6</h3>
+              <p>Nouveau lanceur européen, flexible et compétitif, pour toutes les orbites.</p>
+            </div>
           </article>
           <article class="card">
-            <div class="card-icon">⚕️</div>
-            <h3>Santé</h3>
-            <p>Gaz médicaux, dispositifs et services pour les patients à domicile et à l'hôpital.</p>
+            <div class="card-img"><img src="https://picsum.photos/seed/ariane-ariane5/800/450" alt="Décollage d'Ariane 5" loading="lazy"></div>
+            <div class="card-body">
+              <h3>Ariane 5</h3>
+              <p>Plus de 115 lancements réussis, référence mondiale des lanceurs lourds.</p>
+            </div>
           </article>
           <article class="card">
-            <div class="card-icon">⚡</div>
-            <h3>Transition énergétique</h3>
-            <p>Hydrogène bas carbone, captage et valorisation du CO₂, biométhane.</p>
-          </article>
-          <article class="card">
-            <div class="card-icon">🔬</div>
-            <h3>Innovation</h3>
-            <p>Centres de R&D et partenariats pour accélérer les technologies de demain.</p>
-          </article>
-          <article class="card">
-            <div class="card-icon">🌍</div>
-            <h3>Développement durable</h3>
-            <p>Engagements climat et trajectoire de neutralité carbone à horizon 2050.</p>
-          </article>
-          <article class="card">
-            <div class="card-icon">🤝</div>
-            <h3>Services</h3>
-            <p>Accompagnement, maintenance et optimisation des installations clients.</p>
+            <div class="card-img"><img src="https://picsum.photos/seed/ariane-spaceport/800/450" alt="Centre spatial guyanais à Kourou" loading="lazy"></div>
+            <div class="card-body">
+              <h3>Centre spatial guyanais</h3>
+              <p>Le port spatial de l'Europe, au cœur de la Guyane française.</p>
+            </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="groupe" class="block" style="background: var(--soft);">
+    <section id="espace" class="block" style="background: var(--bg-2);">
       <div class="container split">
         <div>
-          <p class="eyebrow" style="color: var(--blue);">Le groupe</p>
-          <h2>Un leader mondial à votre service</h2>
+          <p class="eyebrow" style="color: var(--accent);">Espace</p>
+          <h2>Des missions au service de l'Europe</h2>
           <p style="color: var(--muted); font-size: 17px;">
-            Fondé en 1902, Air Liquide accompagne l'industrie et la santé dans plus de 75 pays.
-            Le Groupe s'appuie sur l'innovation et l'excellence opérationnelle pour créer de la valeur durable.
+            Télécommunications, observation de la Terre, navigation, science : ArianeGroup met l'espace au service
+            de la société et de la souveraineté européenne.
           </p>
           <ul class="list">
-            <li>Présence industrielle dans le monde entier</li>
-            <li>Portefeuille diversifié de clients et de marchés</li>
-            <li>Engagement fort pour la décarbonation</li>
-            <li>Culture de sécurité et d'excellence</li>
+            <li>Satellites institutionnels et commerciaux</li>
+            <li>Observation et imagerie de la Terre</li>
+            <li>Navigation et positionnement (Galileo)</li>
+            <li>Exploration et science</li>
           </ul>
         </div>
-        <div class="visual" aria-hidden="true"><span>🌬️</span></div>
+        <div class="split-img">
+          <img src="https://picsum.photos/seed/ariane-satellite/900/675" alt="Satellite en orbite autour de la Terre" loading="lazy">
+        </div>
       </div>
     </section>
 
-    <section id="chiffres" class="block">
+    <section id="innovation" class="block">
       <div class="container">
         <div class="section-head">
-          <p class="eyebrow">Performance</p>
-          <h2>Chiffres clés</h2>
-          <p>Des résultats solides portés par la diversité de nos marchés et notre présence mondiale.</p>
+          <p class="eyebrow">Innovation</p>
+          <h2>Innover pour l'accès à l'espace</h2>
+          <p>Propulsion, matériaux, digital et nouvelles technologies pour préparer le futur.</p>
         </div>
-        <div class="cards">
-          <article class="card"><div class="card-icon">📈</div><h3>Croissance</h3><p>Progression régulière du chiffre d'affaires et des résultats.</p></article>
-          <article class="card"><div class="card-icon">🛡️</div><h3>Sécurité</h3><p>Priorité absolue pour nos collaborateurs et nos clients.</p></article>
-          <article class="card"><div class="card-icon">🌱</div><h3>Climat</h3><p>Trajectoire alignée sur les objectifs de l'Accord de Paris.</p></article>
+        <div class="band">
+          <div class="container band-grid">
+            <div>
+              <h2 style="font-size: 32px;">Propulsion &amp; nouveaux usages</h2>
+              <p style="color: var(--muted); font-size: 16px;">
+                Des moteurs cryogéniques aux lanceurs réutilisables, ArianeGroup développe les technologies clés
+                de demain et accompagne la nouvelle économie spatiale.
+              </p>
+              <ul class="list">
+                <li>Moteurs cryogéniques Vinci et Vulcain</li>
+                <li>Études sur la réutilisabilité</li>
+                <li>Propulsion électrique et verte</li>
+              </ul>
+            </div>
+            <img src="https://picsum.photos/seed/ariane-engine/900/600" alt="Moteur de fusée en test" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="groupe" class="block" style="background: var(--bg-2);">
+      <div class="container split">
+        <div class="split-img">
+          <img src="https://picsum.photos/seed/ariane-team/900/675" alt="Équipes d'ingénieurs ArianeGroup" loading="lazy">
+        </div>
+        <div>
+          <p class="eyebrow" style="color: var(--accent);">Le groupe</p>
+          <h2>10 000 talents au service de l'espace</h2>
+          <p style="color: var(--muted); font-size: 17px;">
+            Filiale à parts égales d'Airbus et de Safran, ArianeGroup est un acteur industriel et technologique
+            majeur, présent sur 13 sites en Europe.
+          </p>
+          <ul class="list">
+            <li>Filiale Airbus / Safran</li>
+            <li>13 sites en Europe</li>
+            <li>Excellence industrielle et sécurité</li>
+            <li>Engagement pour la souveraineté européenne</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -275,38 +264,38 @@
         <div class="footer-grid">
           <div>
             <div class="brand" style="color:#fff; margin-bottom: 12px;">
-              <div class="brand-mark">AL</div>
-              <span style="color:#fff;">Air Liquide</span>
+              <div class="brand-mark">AG</div>
+              <span style="color:#fff;">ArianeGroup</span>
             </div>
-            <p style="font-size: 13px; max-width: 320px;">Gases, technologies and services for industry and health.</p>
+            <p style="font-size: 13px; max-width: 320px;">Maîtriser l'accès à l'espace pour l'Europe et le monde.</p>
           </div>
           <div>
-            <h4>Entreprise</h4>
+            <h4>Groupe</h4>
             <ul>
               <li><a href="#">À propos</a></li>
               <li><a href="#">Carrières</a></li>
-              <li><a href="#">Investisseurs</a></li>
+              <li><a href="#">Médias</a></li>
             </ul>
           </div>
           <div>
-            <h4>Solutions</h4>
+            <h4>Activités</h4>
             <ul>
-              <li><a href="#">Industrie</a></li>
-              <li><a href="#">Santé</a></li>
-              <li><a href="#">Énergie</a></li>
+              <li><a href="#">Lanceurs</a></li>
+              <li><a href="#">Espace</a></li>
+              <li><a href="#">Défense</a></li>
             </ul>
           </div>
           <div>
             <h4>Contact</h4>
             <ul>
               <li><a href="#">Nous contacter</a></li>
-              <li><a href="#">Médias</a></li>
               <li><a href="#">Sites</a></li>
+              <li><a href="#">Presse</a></li>
             </ul>
           </div>
         </div>
         <div class="footer-bottom">
-          <span>© Air Liquide — page de démonstration NKP</span>
+          <span>© ArianeGroup — page de démonstration NKP</span>
           <span>Déployé via NKP GitOps</span>
         </div>
       </div>
