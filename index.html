@@ -38,8 +38,10 @@
       .cta:hover { background: #E85A1F; text-decoration: none; }
 
       .hero { position: relative; min-height: 88vh; display: flex; align-items: center; overflow: hidden; }
-      .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, #1a2a4a 0%, #070B14 70%); }
-      .hero-bg svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .hero-bg { position: absolute; inset: 0; }
+      .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,11,20,0.45) 0%, rgba(7,11,20,0.85) 55%, var(--bg) 100%); }
+      .hero-fallback { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, #1a2a4a 0%, #070B14 70%); display: none; }
       .hero-content { position: relative; padding: 120px 0 80px; max-width: 760px; }
       .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 0 20px; }
       h1 { font-size: clamp(44px, 6.5vw, 78px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 800; }
@@ -61,8 +63,9 @@
       .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
 
       .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; display: grid; place-items: center; }
-      .split-art svg { width: 80%; height: 80%; }
+      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; position: relative; }
+      .split-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+      .split-art .svg-fallback { position: absolute; inset: 0; display: none; }
       .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
       .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
       .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
@@ -70,16 +73,19 @@
       .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
       .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease; }
       .card:hover { transform: translateY(-6px); border-color: rgba(255,107,44,0.4); }
-      .card-art { aspect-ratio: 16/9; background: var(--bg-2); display: grid; place-items: center; border-bottom: 1px solid var(--line); }
-      .card-art svg { width: 60%; height: 60%; }
+      .card-art { aspect-ratio: 16/9; background: var(--bg-2); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+      .card-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 400ms ease; }
+      .card:hover .card-art img { transform: scale(1.05); }
+      .card-art .svg-fallback { position: absolute; inset: 0; display: none; }
       .card-body { padding: 24px; }
       .card h3 { margin: 0 0 8px; font-size: 18px; }
       .card p { color: var(--muted); font-size: 14px; margin: 0; }
 
       .band { background: linear-gradient(120deg, #1a2a4a 0%, #0B1F3A 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
       .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-      .band-art { border-radius: 18px; border: 1px solid var(--line); background: var(--bg); aspect-ratio: 3/2; display: grid; place-items: center; }
-      .band-art svg { width: 70%; height: 70%; }
+      .band-art { border-radius: 18px; border: 1px solid var(--line); background: var(--bg); aspect-ratio: 3/2; position: relative; overflow: hidden; }
+      .band-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+      .band-art .svg-fallback { position: absolute; inset: 0; display: none; }
 
       footer { background: #04070D; color: #8FA0B8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
       .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
@@ -120,38 +126,11 @@
     </header>
 
     <section class="hero">
-      <div class="hero-bg" aria-hidden="true">
-        <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
-          <!-- stars -->
-          <g fill="#ffffff">
-            <circle cx="120" cy="80" r="1.2" opacity="0.8"/><circle cx="300" cy="140" r="0.9" opacity="0.6"/>
-            <circle cx="520" cy="60" r="1.4" opacity="0.9"/><circle cx="780" cy="120" r="1" opacity="0.7"/>
-            <circle cx="950" cy="90" r="1.3" opacity="0.8"/><circle cx="1080" cy="160" r="0.8" opacity="0.6"/>
-            <circle cx="200" cy="300" r="1" opacity="0.5"/><circle cx="450" cy="260" r="1.2" opacity="0.7"/>
-            <circle cx="680" cy="320" r="0.9" opacity="0.6"/><circle cx="900" cy="280" r="1.1" opacity="0.8"/>
-          </g>
-          <!-- Earth -->
-          <circle cx="980" cy="520" r="260" fill="#0E2A5C" opacity="0.9"/>
-          <circle cx="980" cy="520" r="260" fill="url(#earth)" opacity="0.85"/>
-          <defs>
-            <radialGradient id="earth" cx="40%" cy="35%">
-              <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/>
-              <stop offset="60%" stop-color="#1E3A8A" stop-opacity="0.4"/>
-              <stop offset="100%" stop-color="#0B1F3A" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <!-- Rocket -->
-          <g transform="translate(520,260) rotate(-35)">
-            <rect x="-12" y="-60" width="24" height="120" rx="12" fill="#EAF0F8"/>
-            <polygon points="0,-90 -18,-60 18,-60" fill="#FF6B2C"/>
-            <rect x="-12" y="40" width="24" height="20" fill="#3B82F6"/>
-            <polygon points="-12,60 -28,80 -12,70" fill="#FF6B2C"/>
-            <polygon points="12,60 28,80 12,70" fill="#FF6B2C"/>
-            <!-- flame -->
-            <ellipse cx="0" cy="85" rx="8" ry="18" fill="#FF6B2C" opacity="0.9"/>
-            <ellipse cx="0" cy="85" rx="4" ry="12" fill="#FFD27A"/>
-          </g>
-        </svg>
+      <div class="hero-bg">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(NHQ202112230018).jpg?width=1400" alt="Fusée Ariane 5 avec le télescope James Webb sur le pas de tir à Kourou" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="hero-fallback">
+          <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#070B14"/><circle cx="980" cy="520" r="260" fill="#0E2A5C"/><g transform="translate(520,260) rotate(-35)"><rect x="-12" y="-60" width="24" height="120" rx="12" fill="#EAF0F8"/><polygon points="0,-90 -18,-60 18,-60" fill="#FF6B2C"/><ellipse cx="0" cy="85" rx="8" ry="18" fill="#FF6B2C" opacity="0.9"/></g></svg>
+        </div>
       </div>
       <div class="container hero-content">
         <p class="eyebrow">Maîtriser l'accès à l'espace</p>
@@ -186,16 +165,8 @@
         <div class="cards">
           <article class="card">
             <div class="card-art">
-              <svg viewBox="0 0 120 120" aria-label="Fusée Ariane">
-                <g transform="translate(60,60)">
-                  <rect x="-8" y="-30" width="16" height="60" rx="8" fill="#EAF0F8"/>
-                  <polygon points="0,-48 -12,-30 12,-30" fill="#FF6B2C"/>
-                  <rect x="-8" y="22" width="16" height="10" fill="#3B82F6"/>
-                  <polygon points="-8,32 -20,44 -8,38" fill="#FF6B2C"/>
-                  <polygon points="8,32 20,44 8,38" fill="#FF6B2C"/>
-                  <ellipse cx="0" cy="46" rx="5" ry="10" fill="#FF6B2C" opacity="0.9"/>
-                </g>
-              </svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_6_ESA-CC.jpg?width=800" alt="Ariane 6 sur le pas de tir à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><rect x="-8" y="-30" width="16" height="60" rx="8" fill="#EAF0F8"/><polygon points="0,-48 -12,-30 12,-30" fill="#FF6B2C"/><rect x="-8" y="22" width="16" height="10" fill="#3B82F6"/><ellipse cx="0" cy="46" rx="5" ry="10" fill="#FF6B2C" opacity="0.9"/></g></svg>
             </div>
             <div class="card-body">
               <h3>Ariane 6</h3>
@@ -204,16 +175,8 @@
           </article>
           <article class="card">
             <div class="card-art">
-              <svg viewBox="0 0 120 120" aria-label="Lancement Ariane 5">
-                <g transform="translate(60,60)">
-                  <path d="M-20,30 L-20,-20 Q-20,-40 0,-48 Q20,-40 20,-20 L20,30 Z" fill="#EAF0F8"/>
-                  <rect x="-20" y="30" width="40" height="12" fill="#3B82F6"/>
-                  <circle cx="0" cy="-10" r="6" fill="#FF6B2C"/>
-                  <polygon points="-20,42 -32,58 -20,50" fill="#FF6B2C"/>
-                  <polygon points="20,42 32,58 20,50" fill="#FF6B2C"/>
-                  <ellipse cx="0" cy="56" rx="6" ry="12" fill="#FF6B2C" opacity="0.85"/>
-                </g>
-              </svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_launch_pad.jpg?width=800" alt="Pas de tir ELA-3 d'Ariane 5 au Centre spatial guyanais" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><path d="M-20,30 L-20,-20 Q-20,-40 0,-48 Q20,-40 20,-20 L20,30 Z" fill="#EAF0F8"/><rect x="-20" y="30" width="40" height="12" fill="#3B82F6"/><circle cx="0" cy="-10" r="6" fill="#FF6B2C"/><ellipse cx="0" cy="56" rx="6" ry="12" fill="#FF6B2C" opacity="0.85"/></g></svg>
             </div>
             <div class="card-body">
               <h3>Ariane 5</h3>
@@ -222,16 +185,8 @@
           </article>
           <article class="card">
             <div class="card-art">
-              <svg viewBox="0 0 120 120" aria-label="Centre spatial guyanais">
-                <g transform="translate(60,60)">
-                  <rect x="-40" y="10" width="80" height="20" rx="4" fill="#3B82F6"/>
-                  <rect x="-30" y="-15" width="60" height="25" rx="3" fill="#EAF0F8" opacity="0.9"/>
-                  <polygon points="-30,-15 0,-40 30,-15" fill="#FF6B2C"/>
-                  <rect x="-6" y="-5" width="12" height="15" fill="#0B1F3A"/>
-                  <circle cx="-18" cy="-2" r="3" fill="#0B1F3A"/>
-                  <circle cx="18" cy="-2" r="3" fill="#0B1F3A"/>
-                </g>
-              </svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vega_Launch_Pad_Centre_Spatial_Guyanais.jpg?width=800" alt="Pas de tir au Centre spatial guyanais à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><rect x="-40" y="10" width="80" height="20" rx="4" fill="#3B82F6"/><rect x="-30" y="-15" width="60" height="25" rx="3" fill="#EAF0F8" opacity="0.9"/><polygon points="-30,-15 0,-40 30,-15" fill="#FF6B2C"/></g></svg>
             </div>
             <div class="card-body">
               <h3>Centre spatial guyanais</h3>
@@ -258,21 +213,9 @@
             <li>Exploration et science</li>
           </ul>
         </div>
-        <div class="split-art" aria-label="Satellite en orbite">
-          <svg viewBox="0 0 200 150">
-            <circle cx="100" cy="75" r="30" fill="#0E2A5C"/>
-            <circle cx="100" cy="75" r="30" fill="url(#g1)"/>
-            <defs><radialGradient id="g1" cx="40%" cy="35%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.7"/><stop offset="100%" stop-color="#0B1F3A" stop-opacity="0"/></radialGradient></defs>
-            <!-- satellite -->
-            <g transform="translate(160,40)">
-              <rect x="-12" y="-4" width="24" height="8" rx="2" fill="#EAF0F8"/>
-              <rect x="-30" y="-2" width="14" height="4" fill="#3B82F6"/>
-              <rect x="16" y="-2" width="14" height="4" fill="#3B82F6"/>
-            </g>
-            <!-- orbit -->
-            <ellipse cx="100" cy="75" rx="70" ry="25" fill="none" stroke="#FF6B2C" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
-            <circle cx="170" cy="75" r="3" fill="#FF6B2C"/>
-          </svg>
+        <div class="split-art">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane42P_rocket.png?width=800" alt="Fusée Ariane 4 avec satellite TOPEX/Poseidon au décollage à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><circle cx="100" cy="75" r="30" fill="#0E2A5C"/><circle cx="100" cy="75" r="30" fill="url(#g1)"/><defs><radialGradient id="g1" cx="40%" cy="35%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.7"/><stop offset="100%" stop-color="#0B1F3A" stop-opacity="0"/></radialGradient></defs><g transform="translate(160,40)"><rect x="-12" y="-4" width="24" height="8" rx="2" fill="#EAF0F8"/><rect x="-30" y="-2" width="14" height="4" fill="#3B82F6"/><rect x="16" y="-2" width="14" height="4" fill="#3B82F6"/></g><ellipse cx="100" cy="75" rx="70" ry="25" fill="none" stroke="#FF6B2C" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/></svg>
         </div>
       </div>
     </section>
@@ -298,19 +241,9 @@
                 <li>Propulsion électrique et verte</li>
               </ul>
             </div>
-            <div class="band-art" aria-label="Moteur de fusée">
-              <svg viewBox="0 0 200 140">
-                <g transform="translate(100,70)">
-                  <ellipse cx="0" cy="0" rx="30" ry="50" fill="#EAF0F8" opacity="0.9"/>
-                  <rect x="-30" y="-10" width="60" height="20" fill="#3B82F6"/>
-                  <circle cx="0" cy="-35" r="8" fill="#FF6B2C"/>
-                  <rect x="-12" y="40" width="24" height="16" fill="#FF6B2C" opacity="0.8"/>
-                  <ellipse cx="0" cy="62" rx="10" ry="18" fill="#FF6B2C" opacity="0.7"/>
-                  <ellipse cx="0" cy="62" rx="5" ry="12" fill="#FFD27A"/>
-                  <line x1="-30" y1="-40" x2="-45" y2="-50" stroke="#9AA9BF" stroke-width="2"/>
-                  <line x1="30" y1="-40" x2="45" y2="-50" stroke="#9AA9BF" stroke-width="2"/>
-                </g>
-              </svg>
+            <div class="band-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vieux_moteur_Vulcain_au_mus%C3%A9e_du_Centre_Spatial_Guyanais.jpg?width=800" alt="Ancien moteur Vulcain au musée du Centre spatial guyanais" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;display:none;"><g transform="translate(100,70)"><ellipse cx="0" cy="0" rx="30" ry="50" fill="#EAF0F8" opacity="0.9"/><rect x="-30" y="-10" width="60" height="20" fill="#3B82F6"/><circle cx="0" cy="-35" r="8" fill="#FF6B2C"/><ellipse cx="0" cy="62" rx="10" ry="18" fill="#FF6B2C" opacity="0.7"/></g></svg>
             </div>
           </div>
         </div>
@@ -319,22 +252,9 @@
 
     <section id="groupe" class="block" style="background: var(--bg-2);">
       <div class="container split">
-        <div class="split-art" aria-label="Équipe d'ingénieurs">
-          <svg viewBox="0 0 200 150">
-            <g transform="translate(100,75)">
-              <!-- 3 people silhouettes -->
-              <circle cx="-45" cy="-20" r="14" fill="#3B82F6"/>
-              <rect x="-57" y="-2" width="24" height="40" rx="6" fill="#3B82F6" opacity="0.8"/>
-              <circle cx="0" cy="-25" r="16" fill="#FF6B2C"/>
-              <rect x="-18" y="-5" width="36" height="45" rx="6" fill="#FF6B2C" opacity="0.8"/>
-              <circle cx="45" cy="-20" r="14" fill="#EAF0F8" opacity="0.9"/>
-              <rect x="33" y="-2" width="24" height="40" rx="6" fill="#EAF0F8" opacity="0.7"/>
-              <!-- helmets -->
-              <circle cx="-45" cy="-24" r="6" fill="#0B1F3A" opacity="0.5"/>
-              <circle cx="0" cy="-29" r="7" fill="#0B1F3A" opacity="0.5"/>
-              <circle cx="45" cy="-24" r="6" fill="#0B1F3A" opacity="0.5"/>
-            </g>
-          </svg>
+        <div class="split-art">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(NHQ202112230015).jpg?width=800" alt="Ariane 5 sur le pas de tir avec le télescope James Webb à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><g transform="translate(100,75)"><circle cx="-45" cy="-20" r="14" fill="#3B82F6"/><rect x="-57" y="-2" width="24" height="40" rx="6" fill="#3B82F6" opacity="0.8"/><circle cx="0" cy="-25" r="16" fill="#FF6B2C"/><rect x="-18" y="-5" width="36" height="45" rx="6" fill="#FF6B2C" opacity="0.8"/><circle cx="45" cy="-20" r="14" fill="#EAF0F8" opacity="0.9"/><rect x="33" y="-2" width="24" height="40" rx="6" fill="#EAF0F8" opacity="0.7"/></g></svg>
         </div>
         <div>
           <p class="eyebrow" style="color: var(--accent);">Le groupe</p>
@@ -394,5 +314,18 @@
         </div>
       </div>
     </footer>
+
+    <script>
+      // Show SVG fallback when an image fails to load
+      document.querySelectorAll('img').forEach(function(img){
+        img.addEventListener('error', function(){
+          this.style.display = 'none';
+          var fb = this.nextElementSibling;
+          if (fb && fb.classList && fb.classList.contains('svg-fallback')) {
+            fb.style.display = 'flex';
+          }
+        });
+      });
+    </script>
   </body>
 </html>

@@ -81,7 +81,13 @@ Il est important qu'il voit ce degré de connaissance que tu as du projet et la 
 
 ## Étape 2 — Créer / modifier la page web si l'utilisateur le demande
 
-- Le développeur peut demander une **page web stylée et professionnelle sur un thème** (landing, portfolio, présentation produit, événement, etc.). Dans ce cas, génère dans `index.html` une page HTML complète et soignée : CSS moderne (variables, dégradés, typographie soignée), mise en page responsive, accessibilité de base (landmarks, alt, contrastes), et contenu adapté au thème demandé. **Intègre systématiquement des images** (photos, illustrations, icônes SVG) pour rendre la page plus stylée et vivante : hero image, visuels de section, logos/pictogrammes, etc. Privilégie des images libres de droit ou des placeholders réalistes (picsum.photos, unsplash via URL directe) et ajoute toujours un `alt` descriptif. Pas de framework obligatoire : HTML/CSS purs suffisent.
+- Le développeur peut demander une **page web stylée et professionnelle sur un thème** (landing, portfolio, présentation produit, événement, etc.). Dans ce cas, génère dans `index.html` une page HTML complète et soignée : CSS moderne (variables, dégradés, typographie soignée), mise en page responsive, accessibilité de base (landmarks, alt, contrastes), et contenu adapté au thème demandé.
+- **Images** : intègre systématiquement des visuels (hero, sections, cartes) pour rendre la page plus stylée et vivante. Pour les obtenir :
+  1. Fais une **recherche web** pour trouver de **vraies images liées au thème** (photos réelles, pas de placeholders aléatoires) : priorité à **Wikimedia Commons** (URLs stables `commons.wikimedia.org/wiki/Special:FilePath/...?width=...`, licences CC/public domain), puis aux kits presse / sites officiels, puis Unsplash/Pexels (URL directe de la photo choisie).
+  2. Intègre l'URL stable dans `<img>` avec un `alt` descriptif.
+  3. Prévois toujours un **fallback SVG inline on-theme** (illustration vectorielle pertinente) pour le hero et les visuels clés, au cas où l'URL externe casse ou est bloquée. Ne jamais utiliser de service de placeholder générique (picsum, etc.) qui ne correspond pas au thème.
+  4. Ne jamais générer d'image (qualité insuffisante) : soit une vraie photo sourcée, soit un SVG inline de qualité.
+- Pas de framework obligatoire : HTML/CSS purs suffisent.
 - Si le thème nécessite des assets statiques (images, polices, css/js séparés), ajoute-les au repo et **mets à jour la ligne `COPY` du `Dockerfile`** en conséquence (sinon ils ne seront pas dans l'image).
 - Ne cherche pas à vérifier le rendu dans un navigateur ; le déploiement fait foi. Passe à l'étape suivante.
 - Code minimal mais soigné : l'objectif est de montrer la plateforme ET une page crédible, pas une application complexe. Pas de backend dynamique sauf demande explicite.
