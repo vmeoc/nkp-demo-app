@@ -3,329 +3,218 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0B1F3A">
-    <title>ArianeGroup — Maîtriser l'accès à l'espace</title>
+    <meta name="theme-color" content="#002395">
+    <title>Basket en France — La France du basket</title>
     <style>
       :root {
-        --bg: #070B14;
-        --bg-2: #0E1626;
-        --ink: #EAF0F8;
-        --muted: #9AA9BF;
+        --bg: #0A0F1F;
+        --bg-2: #121A33;
+        --ink: #F4F6FB;
+        --muted: #A7B0C8;
         --line: rgba(255,255,255,0.1);
-        --accent: #FF6B2C;
-        --accent-2: #3B82F6;
-        --card: rgba(255,255,255,0.04);
+        --blue: #002395;
+        --red: #ED2939;
+        --orange: #F97316;
+        --card: rgba(255,255,255,0.05);
         font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; }
       body { color: var(--ink); background: var(--bg); line-height: 1.6; }
-      a { color: var(--accent); text-decoration: none; }
+      a { color: var(--orange); text-decoration: none; }
       a:hover { text-decoration: underline; }
       img, svg { max-width: 100%; display: block; }
 
-      .container { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
+      .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
 
-      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,11,20,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(10,15,31,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
       .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #fff; }
-      .brand-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), #FF9A5C); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; }
-      .nav { display: flex; gap: 28px; font-size: 14px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; color: #fff; letter-spacing: -0.01em; }
+      .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--red)); display: grid; place-items: center; color: #fff; font-size: 20px; }
+      .nav { display: flex; gap: 26px; font-size: 14px; }
       .nav a { color: var(--ink); }
-      .nav a:hover { color: var(--accent); text-decoration: none; }
-      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; }
-      .cta:hover { background: #E85A1F; text-decoration: none; }
+      .nav a:hover { color: var(--orange); text-decoration: none; }
+      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: var(--orange); color: #fff; font-weight: 700; font-size: 14px; }
+      .cta:hover { background: #EA6A0F; text-decoration: none; }
 
-      .hero { position: relative; min-height: 88vh; display: flex; align-items: center; overflow: hidden; }
+      .hero { position: relative; min-height: 86vh; display: flex; align-items: center; overflow: hidden; }
       .hero-bg { position: absolute; inset: 0; }
-      .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
-      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,11,20,0.45) 0%, rgba(7,11,20,0.85) 55%, var(--bg) 100%); }
-      .hero-fallback { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, #1a2a4a 0%, #070B14 70%); display: none; }
-      .hero-content { position: relative; padding: 120px 0 80px; max-width: 760px; }
-      .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 0 20px; }
-      h1 { font-size: clamp(44px, 6.5vw, 78px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 800; }
+      .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05); }
+      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,31,0.35) 0%, rgba(10,15,31,0.75) 50%, var(--bg) 100%); }
+      .hero-fallback { position: absolute; inset: 0; background: radial-gradient(ellipse at 40% 40%, #1a2a5a 0%, #0A0F1F 70%); display: none; align-items: center; justify-content: center; }
+      .hero-fallback svg { width: 60%; opacity: 0.35; }
+      .hero-content { position: relative; padding: 120px 0 80px; max-width: 780px; }
+      .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; font-weight: 700; color: var(--orange); margin: 0 0 20px; }
+      h1 { font-size: clamp(44px, 6.5vw, 76px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 900; }
       .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 36px; }
       .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-      .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-      .btn-ghost:hover { background: rgba(255,255,255,0.08); }
 
-      .stats { padding: 64px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-2); }
-      .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-      .stat { text-align: center; }
-      .stat .num { font-size: 40px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-      .stat .lbl { font-size: 13px; color: var(--muted); margin-top: 6px; }
+      .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+      .btn-ghost:hover { background: rgba(255,255,255,0.08); text-decoration: none; }
 
-      section.block { padding: 96px 0; }
-      .section-head { max-width: 680px; margin-bottom: 56px; }
-      .section-head .eyebrow { color: var(--accent); }
-      h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
-      .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
+      section { padding: 88px 0; }
+      .section-head { max-width: 720px; margin-bottom: 48px; }
+      .section-head .eyebrow { margin-bottom: 12px; }
+      h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; font-weight: 800; }
+      .section-lead { color: var(--muted); font-size: 17px; }
 
-      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; position: relative; }
-      .split-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-      .split-art .svg-fallback { position: absolute; inset: 0; display: none; }
-      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
-      .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
-      .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
+      .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+      .stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px 24px; }
+      .stat .num { font-size: 38px; font-weight: 900; letter-spacing: -0.03em; background: linear-gradient(135deg, #fff, var(--orange)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .stat .label { color: var(--muted); font-size: 13px; margin-top: 6px; }
 
       .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease; }
-      .card:hover { transform: translateY(-6px); border-color: rgba(255,107,44,0.4); }
-      .card-art { aspect-ratio: 16/9; background: var(--bg-2); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-      .card-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 400ms ease; }
-      .card:hover .card-art img { transform: scale(1.05); }
-      .card-art .svg-fallback { position: absolute; inset: 0; display: none; }
-      .card-body { padding: 24px; }
-      .card h3 { margin: 0 0 8px; font-size: 18px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; transition: transform .2s ease, border-color .2s ease; }
+      .card:hover { transform: translateY(-4px); border-color: rgba(249,115,22,0.4); }
+      .card img { width: 100%; height: 220px; object-fit: cover; }
+      .card-body { padding: 22px; }
+      .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 700; }
       .card p { color: var(--muted); font-size: 14px; margin: 0; }
 
-      .band { background: linear-gradient(120deg, #1a2a4a 0%, #0B1F3A 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-      .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-      .band-art { border-radius: 18px; border: 1px solid var(--line); background: var(--bg); aspect-ratio: 3/2; position: relative; overflow: hidden; }
-      .band-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-      .band-art .svg-fallback { position: absolute; inset: 0; display: none; }
+      .split { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
+      .split img { border-radius: 18px; width: 100%; height: 420px; object-fit: cover; border: 1px solid var(--line); }
+      .split .svgbox { border-radius: 18px; background: var(--card); border: 1px solid var(--line); height: 420px; display: grid; place-items: center; padding: 24px; }
+      .list { list-style: none; padding: 0; margin: 20px 0 0; }
+      .list li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: flex-start; }
+      .list li:last-child { border-bottom: none; }
+      .list .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); margin-top: 8px; flex-shrink: 0; }
 
-      footer { background: #04070D; color: #8FA0B8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
-      .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
-      footer h4 { color: #fff; font-size: 14px; margin: 0 0 14px; }
-      footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 13px; }
-      footer a { color: #8FA0B8; }
-      footer a:hover { color: #fff; }
-      .footer-bottom { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+      .timeline { display: grid; gap: 18px; }
+      .tl { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+      .tl:last-child { border-bottom: none; }
+      .tl .year { font-weight: 800; color: var(--orange); font-size: 20px; }
+      .tl h4 { margin: 0 0 4px; font-size: 17px; }
+      .tl p { color: var(--muted); font-size: 14px; margin: 0; }
 
-      @media (max-width: 860px) {
-        .split, .band-grid { grid-template-columns: 1fr; }
+      footer { border-top: 1px solid var(--line); padding: 40px 0; color: var(--muted); font-size: 13px; }
+      .footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+      @media (max-width: 880px) {
+        .stats { grid-template-columns: repeat(2,1fr); }
         .cards { grid-template-columns: 1fr; }
-        .stats-grid { grid-template-columns: repeat(2,1fr); }
-        .footer-grid { grid-template-columns: 1fr 1fr; }
+        .split { grid-template-columns: 1fr; }
         .nav { display: none; }
-      }
-      @media (max-width: 520px) {
-        .stats-grid { grid-template-columns: 1fr; }
-        .footer-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
     <header class="topbar">
       <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-mark">AG</div>
-          <span>ArianeGroup</span>
-        </div>
-        <nav class="nav" aria-label="Navigation principale">
-          <a href="#lanceurs">Lanceurs</a>
-          <a href="#espace">Espace</a>
-          <a href="#innovation">Innovation</a>
-          <a href="#groupe">Le groupe</a>
+        <div class="brand"><span class="brand-mark">🏀</span> Basket France</div>
+        <nav class="nav">
+          <a href="#histoire">Histoire</a>
+          <a href="#equipe">Équipe de France</a>
+          <a href="#chiffres">Chiffres</a>
+          <a href="#clubs">Clubs</a>
         </nav>
-        <a class="cta" href="#contact">Nous contacter</a>
+        <a class="cta" href="https://www.ffbb.com" target="_blank" rel="noopener">FFBB</a>
       </div>
     </header>
 
     <section class="hero">
       <div class="hero-bg">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(NHQ202112230018).jpg?width=1400" alt="Fusée Ariane 5 avec le télescope James Webb sur le pas de tir à Kourou" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div class="hero-fallback">
-          <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#070B14"/><circle cx="980" cy="520" r="260" fill="#0E2A5C"/><g transform="translate(520,260) rotate(-35)"><rect x="-12" y="-60" width="24" height="120" rx="12" fill="#EAF0F8"/><polygon points="0,-90 -18,-60 18,-60" fill="#FF6B2C"/><ellipse cx="0" cy="85" rx="8" ry="18" fill="#FF6B2C" opacity="0.9"/></g></svg>
-        </div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89quipe_de_France_de_basket-ball_-_01.jpg?width=1600" alt="Équipe de France de basket-ball" onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex';">
+      </div>
+      <div class="hero-fallback">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="200" cy="200" r="150" fill="none" stroke="#F97316" stroke-width="6"/>
+          <path d="M50 200 H350 M200 50 V350" stroke="#F97316" stroke-width="4"/>
+          <path d="M85 110 Q200 200 85 290" fill="none" stroke="#F97316" stroke-width="4"/>
+          <path d="M315 110 Q200 200 315 290" fill="none" stroke="#F97316" stroke-width="4"/>
+        </svg>
       </div>
       <div class="container hero-content">
-        <p class="eyebrow">Maîtriser l'accès à l'espace</p>
-        <h1>L'Europe dans l'espace, aujourd'hui et demain</h1>
-        <p class="lead">
-          ArianeGroup conçoit, développe et opère les lanceurs Ariane. Leader européen de l'accès à l'espace,
-          le groupe rassemble 10 000 talents au service de la souveraineté et de l'innovation.
-        </p>
+        <p class="eyebrow">Basket · France</p>
+        <h1>La France du basket,<br>du parquet au podium.</h1>
+        <p class="lead">De Tony Parker à Victor Wembanyama, le basket français s'est imposé comme une puissance mondiale. Découvrez l'histoire, les champions et les clubs qui font vibrer le parquet tricolore.</p>
         <div class="hero-actions">
-          <a class="cta" href="#lanceurs">Découvrir Ariane 6</a>
-          <a class="cta btn-ghost" href="#groupe">Le groupe</a>
+          <a class="cta" href="#histoire">Découvrir</a>
+          <a class="btn-ghost" href="#equipe">L'équipe de France</a>
         </div>
       </div>
     </section>
 
-    <section class="stats">
-      <div class="container stats-grid">
-        <div class="stat"><div class="num">10 000</div><div class="lbl">Collaborateurs</div></div>
-        <div class="stat"><div class="num">115+</div><div class="lbl">Lancements Ariane 5</div></div>
-        <div class="stat"><div class="num">13</div><div class="lbl">Pays</div></div>
-        <div class="stat"><div class="num">60+</div><div class="lbl">Années d'excellence</div></div>
+    <section id="chiffres">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Chiffres clés</p>
+          <h2>Un sport en plein envol</h2>
+          <p class="section-lead">Le basket-ball est l'un des sports les plus pratiqués en France, porté par une fédération dynamique et des résultats internationaux remarquables.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="num">700k</div><div class="label">licenciés FFBB</div></div>
+          <div class="stat"><div class="num">18</div><div class="label">titres européens (hommes &amp; femmes)</div></div>
+          <div class="stat"><div class="num">2</div><div class="label">médailles olympiques (argent 2020, 2024)</div></div>
+          <div class="stat"><div class="num">1933</div><div class="label">création de l'équipe de France</div></div>
+        </div>
       </div>
     </section>
 
-    <section id="lanceurs" class="block">
+    <section id="histoire">
       <div class="container">
         <div class="section-head">
-          <p class="eyebrow">Lanceurs</p>
-          <h2>Ariane 6, nouvelle génération</h2>
-          <p>Un lanceur modulaire et compétitif, conçu pour répondre aux besoins institutionnels et commerciaux.</p>
+          <p class="eyebrow">Histoire</p>
+          <h2>Les grandes dates du basket tricolore</h2>
+        </div>
+        <div class="timeline">
+          <div class="tl"><div class="year">1933</div><div><h4>Naissance de l'équipe de France</h4><p>Première sélection masculine, début d'une longue aventure internationale.</p></div></div>
+          <div class="tl"><div class="year">2000</div><div><h4>Argent olympique à Sydney</h4><p>Les Bleus s'inclinent en finale face aux États-Unis, médaille d'argent historique.</p></div></div>
+          <div class="tl"><div class="year">2013</div><div><h4>Champion d'Europe</h4><p>Premier titre continental pour l'équipe de France masculine, emmenée par Tony Parker.</p></div></div>
+          <div class="tl"><div class="year">2021</div><div><h4>Argent à Tokyo</h4><p>Nouvelle médaille d'argent olympique, confirmation du statut de puissance.</p></div></div>
+          <div class="tl"><div class="year">2024</div><div><h4>Argent à Paris</h4><p>À domicile, les Bleus s'inclinent en finale face aux USA de Stephen Curry, portés par Victor Wembanyama.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="equipe">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Légendes</p>
+          <h2>Les visages du basket français</h2>
+          <p class="section-lead">Des joueurs qui ont marqué l'histoire du basket tricolore et de la NBA.</p>
         </div>
         <div class="cards">
           <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_6_ESA-CC.jpg?width=800" alt="Ariane 6 sur le pas de tir à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><rect x="-8" y="-30" width="16" height="60" rx="8" fill="#EAF0F8"/><polygon points="0,-48 -12,-30 12,-30" fill="#FF6B2C"/><rect x="-8" y="22" width="16" height="10" fill="#3B82F6"/><ellipse cx="0" cy="46" rx="5" ry="10" fill="#FF6B2C" opacity="0.9"/></g></svg>
-            </div>
-            <div class="card-body">
-              <h3>Ariane 6</h3>
-              <p>Nouveau lanceur européen, flexible et compétitif, pour toutes les orbites.</p>
-            </div>
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tony_Parker_Eurobasket_2011.jpg?width=800" alt="Tony Parker avec l'équipe de France" onerror="this.outerHTML='<div class=\'svgbox\'><svg viewBox=\'0 0 200 200\'><circle cx=\'100\' cy=\'100\' r=\'80\' fill=\'none\' stroke=\'#F97316\' stroke-width=\'4\'/><text x=\'100\' y=\'110\' text-anchor=\'middle\' fill=\'#fff\' font-size=\'40\' font-weight=\'700\'>9</text></svg></div>';">
+            <div class="card-body"><h3>Tony Parker</h3><p>Meneur emblématique, champion NBA (4 titres) et champion d'Europe 2013 avec les Bleus.</p></div>
           </article>
           <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_launch_pad.jpg?width=800" alt="Pas de tir ELA-3 d'Ariane 5 au Centre spatial guyanais" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><path d="M-20,30 L-20,-20 Q-20,-40 0,-48 Q20,-40 20,-20 L20,30 Z" fill="#EAF0F8"/><rect x="-20" y="30" width="40" height="12" fill="#3B82F6"/><circle cx="0" cy="-10" r="6" fill="#FF6B2C"/><ellipse cx="0" cy="56" rx="6" ry="12" fill="#FF6B2C" opacity="0.85"/></g></svg>
-            </div>
-            <div class="card-body">
-              <h3>Ariane 5</h3>
-              <p>Plus de 115 lancements réussis, référence mondiale des lanceurs lourds.</p>
-            </div>
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rudy_Gobert_2015.jpg?width=800" alt="Rudy Gobert" onerror="this.outerHTML='<div class=\'svgbox\'><svg viewBox=\'0 0 200 200\'><circle cx=\'100\' cy=\'100\' r=\'80\' fill=\'none\' stroke=\'#F97316\' stroke-width=\'4\'/><text x=\'100\' y=\'110\' text-anchor=\'middle\' fill=\'#fff\' font-size=\'40\' font-weight=\'700\'>27</text></svg></div>';">
+            <div class="card-body"><h3>Rudy Gobert</h3><p>Pivot défensif, 4 fois meilleur défenseur NBA, pilier de l'équipe de France.</p></div>
           </article>
           <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vega_Launch_Pad_Centre_Spatial_Guyanais.jpg?width=800" alt="Pas de tir au Centre spatial guyanais à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><rect x="-40" y="10" width="80" height="20" rx="4" fill="#3B82F6"/><rect x="-30" y="-15" width="60" height="25" rx="3" fill="#EAF0F8" opacity="0.9"/><polygon points="-30,-15 0,-40 30,-15" fill="#FF6B2C"/></g></svg>
-            </div>
-            <div class="card-body">
-              <h3>Centre spatial guyanais</h3>
-              <p>Le port spatial de l'Europe, au cœur de la Guyane française.</p>
-            </div>
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Coupe_de_Monde_2019_durant_France_Argentine.jpg?width=800" alt="Coupe du Monde 2019 France Argentine" onerror="this.outerHTML='<div class=\'svgbox\'><svg viewBox=\'0 0 200 200\'><circle cx=\'100\' cy=\'100\' r=\'80\' fill=\'none\' stroke=\'#F97316\' stroke-width=\'4\'/><text x=\'100\' y=\'110\' text-anchor=\'middle\' fill=\'#fff\' font-size=\'22\' font-weight=\'700\'>2019</text></svg></div>';">
+            <div class="card-body"><h3>Coupe du Monde 2019</h3><p>Les Bleus battent les USA en quart, puis l'Argentine, pour le bronze mondial.</p></div>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="espace" class="block" style="background: var(--bg-2);">
-      <div class="container split">
-        <div>
-          <p class="eyebrow" style="color: var(--accent);">Espace</p>
-          <h2>Des missions au service de l'Europe</h2>
-          <p style="color: var(--muted); font-size: 17px;">
-            Télécommunications, observation de la Terre, navigation, science : ArianeGroup met l'espace au service
-            de la société et de la souveraineté européenne.
-          </p>
-          <ul class="list">
-            <li>Satellites institutionnels et commerciaux</li>
-            <li>Observation et imagerie de la Terre</li>
-            <li>Navigation et positionnement (Galileo)</li>
-            <li>Exploration et science</li>
-          </ul>
-        </div>
-        <div class="split-art">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane42P_rocket.png?width=800" alt="Fusée Ariane 4 avec satellite TOPEX/Poseidon au décollage à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><circle cx="100" cy="75" r="30" fill="#0E2A5C"/><circle cx="100" cy="75" r="30" fill="url(#g1)"/><defs><radialGradient id="g1" cx="40%" cy="35%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.7"/><stop offset="100%" stop-color="#0B1F3A" stop-opacity="0"/></radialGradient></defs><g transform="translate(160,40)"><rect x="-12" y="-4" width="24" height="8" rx="2" fill="#EAF0F8"/><rect x="-30" y="-2" width="14" height="4" fill="#3B82F6"/><rect x="16" y="-2" width="14" height="4" fill="#3B82F6"/></g><ellipse cx="100" cy="75" rx="70" ry="25" fill="none" stroke="#FF6B2C" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/></svg>
-        </div>
-      </div>
-    </section>
-
-    <section id="innovation" class="block">
+    <section id="clubs">
       <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Innovation</p>
-          <h2>Innover pour l'accès à l'espace</h2>
-          <p>Propulsion, matériaux, digital et nouvelles technologies pour préparer le futur.</p>
-        </div>
-        <div class="band">
-          <div class="container band-grid">
-            <div>
-              <h2 style="font-size: 32px;">Propulsion &amp; nouveaux usages</h2>
-              <p style="color: var(--muted); font-size: 16px;">
-                Des moteurs cryogéniques aux lanceurs réutilisables, ArianeGroup développe les technologies clés
-                de demain et accompagne la nouvelle économie spatiale.
-              </p>
-              <ul class="list">
-                <li>Moteurs cryogéniques Vinci et Vulcain</li>
-                <li>Études sur la réutilisabilité</li>
-                <li>Propulsion électrique et verte</li>
-              </ul>
-            </div>
-            <div class="band-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vieux_moteur_Vulcain_au_mus%C3%A9e_du_Centre_Spatial_Guyanais.jpg?width=800" alt="Ancien moteur Vulcain au musée du Centre spatial guyanais" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;display:none;"><g transform="translate(100,70)"><ellipse cx="0" cy="0" rx="30" ry="50" fill="#EAF0F8" opacity="0.9"/><rect x="-30" y="-10" width="60" height="20" fill="#3B82F6"/><circle cx="0" cy="-35" r="8" fill="#FF6B2C"/><ellipse cx="0" cy="62" rx="10" ry="18" fill="#FF6B2C" opacity="0.7"/></g></svg>
-            </div>
+        <div class="split">
+          <div>
+            <p class="eyebrow">Clubs &amp; championnat</p>
+            <h2>La Betclic Élite, cœur du basket français</h2>
+            <p class="section-lead">Le championnat de France (Betclic Élite) réunit les meilleurs clubs, de l'ASVEL au Paris Basketball, en passant par Monaco et Strasbourg.</p>
+            <ul class="list">
+              <li><span class="dot"></span><div><strong>ASVEL Lyon-Villeurbanne</strong> — club historique, multiple champion de France.</div></li>
+              <li><span class="dot"></span><div><strong>Paris Basketball</strong> — nouveau venu ambitieux, EuroLeague.</div></li>
+              <li><span class="dot"></span><div><strong>AS Monaco</strong> — puissance européenne, Euroligue.</div></li>
+              <li><span class="dot"></span><div><strong>SIG Strasbourg</strong> — formation et spectacle.</div></li>
+            </ul>
           </div>
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/France-Lituanie_Basket_qualifications_pour_le_mondial_2023_1.jpg?width=900" alt="Match France Lituanie 2023" onerror="this.outerHTML='<div class=\'svgbox\'><svg viewBox=\'0 0 400 400\'><rect x=\'20\' y=\'20\' width=\'360\' height=\'360\' rx=\'18\' fill=\'none\' stroke=\'#F97316\' stroke-width=\'4\'/><circle cx=\'200\' cy=\'200\' r=\'60\' fill=\'none\' stroke=\'#F97316\' stroke-width=\'4\'/><line x1=\'200\' y1=\'20\' x2=\'200\' y2=\'380\' stroke=\'#F97316\' stroke-width=\'3\'/></svg></div>';">
         </div>
       </div>
     </section>
 
-    <section id="groupe" class="block" style="background: var(--bg-2);">
-      <div class="container split">
-        <div class="split-art">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(NHQ202112230015).jpg?width=800" alt="Ariane 5 sur le pas de tir avec le télescope James Webb à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><g transform="translate(100,75)"><circle cx="-45" cy="-20" r="14" fill="#3B82F6"/><rect x="-57" y="-2" width="24" height="40" rx="6" fill="#3B82F6" opacity="0.8"/><circle cx="0" cy="-25" r="16" fill="#FF6B2C"/><rect x="-18" y="-5" width="36" height="45" rx="6" fill="#FF6B2C" opacity="0.8"/><circle cx="45" cy="-20" r="14" fill="#EAF0F8" opacity="0.9"/><rect x="33" y="-2" width="24" height="40" rx="6" fill="#EAF0F8" opacity="0.7"/></g></svg>
-        </div>
-        <div>
-          <p class="eyebrow" style="color: var(--accent);">Le groupe</p>
-          <h2>10 000 talents au service de l'espace</h2>
-          <p style="color: var(--muted); font-size: 17px;">
-            Filiale à parts égales d'Airbus et de Safran, ArianeGroup est un acteur industriel et technologique
-            majeur, présent sur 13 sites en Europe.
-          </p>
-          <ul class="list">
-            <li>Filiale Airbus / Safran</li>
-            <li>13 sites en Europe</li>
-            <li>Excellence industrielle et sécurité</li>
-            <li>Engagement pour la souveraineté européenne</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <footer id="contact">
-      <div class="container">
-        <div class="footer-grid">
-          <div>
-            <div class="brand" style="color:#fff; margin-bottom: 12px;">
-              <div class="brand-mark">AG</div>
-              <span style="color:#fff;">ArianeGroup</span>
-            </div>
-            <p style="font-size: 13px; max-width: 320px;">Maîtriser l'accès à l'espace pour l'Europe et le monde.</p>
-          </div>
-          <div>
-            <h4>Groupe</h4>
-            <ul>
-              <li><a href="#">À propos</a></li>
-              <li><a href="#">Carrières</a></li>
-              <li><a href="#">Médias</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Activités</h4>
-            <ul>
-              <li><a href="#">Lanceurs</a></li>
-              <li><a href="#">Espace</a></li>
-              <li><a href="#">Défense</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Contact</h4>
-            <ul>
-              <li><a href="#">Nous contacter</a></li>
-              <li><a href="#">Sites</a></li>
-              <li><a href="#">Presse</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <span>© ArianeGroup — page de démonstration NKP</span>
-          <span>Déployé via NKP GitOps</span>
-        </div>
+    <footer>
+      <div class="container footer-inner">
+        <span>© Basket France — page démo déployée sur NKP</span>
+        <span>Images : Wikimedia Commons (CC) · Fallback SVG inline</span>
       </div>
     </footer>
-
-    <script>
-      // Show SVG fallback when an image fails to load
-      document.querySelectorAll('img').forEach(function(img){
-        img.addEventListener('error', function(){
-          this.style.display = 'none';
-          var fb = this.nextElementSibling;
-          if (fb && fb.classList && fb.classList.contains('svg-fallback')) {
-            fb.style.display = 'flex';
-          }
-        });
-      });
-    </script>
   </body>
 </html>

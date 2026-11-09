@@ -2,35 +2,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: air-liquid
+  name: basket-jereme
   labels:
-    app.kubernetes.io/name: air-liquid
+    app.kubernetes.io/name: basket-jereme
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
     nkp.demo/owner: vincentm
     nkp.demo/archi: stateless
-    nkp.demo/backup: hourly
+    nkp.demo/backup: daily
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
     nkp.demo/cost-center: test3
     nkp.demo/expires: '2026-12-31'
   annotations:
-    nkp.demo/backup-policy: horaire, rétention 48 heures (simulé)
+    nkp.demo/backup-policy: quotidienne 02:00, rétention 7 jours (simulé)
 spec:
   replicas: 2
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: air-liquid
+      app.kubernetes.io/name: basket-jereme
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: air-liquid
+        app.kubernetes.io/name: basket-jereme
         app.kubernetes.io/managed-by: nkp-deploy
         nkp.demo/env: dev
         nkp.demo/owner: vincentm
         nkp.demo/archi: stateless
-        nkp.demo/backup: hourly
+        nkp.demo/backup: daily
         nkp.demo/tracing: enabled
         nkp.demo/llm: none
         nkp.demo/cost-center: test3
@@ -39,7 +39,7 @@ spec:
         instrumentation.opentelemetry.io/inject-python: 'true'
     spec:
       containers:
-      - name: air-liquid
+      - name: basket-jereme
         image: app-image
         ports:
         - name: http
@@ -48,7 +48,7 @@ spec:
         - name: APP_ENV
           value: dev
         - name: OTEL_SERVICE_NAME
-          value: air-liquid
+          value: basket-jereme
         resources:
           requests:
             cpu: 100m

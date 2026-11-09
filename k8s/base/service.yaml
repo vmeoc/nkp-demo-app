@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: air-liquid
+  name: basket-jereme
   labels:
-    app.kubernetes.io/name: air-liquid
+    app.kubernetes.io/name: basket-jereme
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
     nkp.demo/owner: vincentm
     nkp.demo/archi: stateless
-    nkp.demo/backup: hourly
+    nkp.demo/backup: daily
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
     nkp.demo/cost-center: test3
@@ -17,7 +17,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app.kubernetes.io/name: air-liquid
+    app.kubernetes.io/name: basket-jereme
   ports:
   - name: http
     port: 80

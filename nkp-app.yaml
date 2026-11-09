@@ -1,4 +1,4 @@
-app: air-liquid
+app: basket-jereme
 owner: vincentm
 cost_center: test3
 env: dev
@@ -7,7 +7,7 @@ runtime: python
 port: 8080
 replicas: 2
 size: S
-backup: hourly
+backup: daily
 tracing: true
 expose:
   type: loadbalancer
