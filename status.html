@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Statut de déploiement NKP</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f5f4ff;
+      --muted: #a4a6be;
+      --line: rgb(255 255 255 / 12%);
+      --ok: #75e2bd;
+      --run: #c4b6ff;
+      --fail: #ff8a8a;
+      --block: #f0c36b;
+      --pending: #74778f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: #05060d; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 48px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    h1 { margin: 0; font-size: 28px; letter-spacing: -0.03em; }
+    .meta { color: var(--muted); font-size: 13px; }
+    button { border: 1px solid var(--line); background: rgb(255 255 255 / 4%); color: var(--ink); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
+    button:hover { background: rgb(255 255 255 / 8%); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .card { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: rgb(255 255 255 / 3%); }
+    .card h2 { margin: 0 0 8px; font-size: 15px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 650; border: 1px solid var(--line); }
+    .badge.ok { color: var(--ok); border-color: rgb(117 226 189 / 35%); background: rgb(117 226 189 / 8%); }
+    .badge.run { color: var(--run); border-color: rgb(196 182 255 / 35%); background: rgb(196 182 255 / 8%); }
+    .badge.fail { color: var(--fail); border-color: rgb(255 138 138 / 35%); background: rgb(255 138 138 / 8%); }
+    .badge.block { color: var(--block); border-color: rgb(240 195 107 / 35%); background: rgb(240 195 107 / 8%); }
+    .badge.pending { color: var(--pending); }
+    .detail { color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.5; word-break: break-word; }
+    .section { margin-top: 28px; }
+    .section h2 { margin: 0 0 12px; font-size: 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    a { color: var(--run); }
+    pre { white-space: pre-wrap; word-break: break-word; background: rgb(255 255 255 / 3%); border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 12px; max-height: 320px; overflow: auto; }
+    .error { color: var(--fail); }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+    .event { border-left: 3px solid var(--line); padding: 8px 12px; margin-bottom: 10px; }
+    .event.ok { border-color: var(--ok); }
+    .event.run { border-color: var(--run); }
+    .event.fail { border-color: var(--fail); }
+    .event.block { border-color: var(--block); }
+    .event.pending { border-color: var(--pending); }
+    .event .when { color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Statut de déploiement NKP</h1>
+        <div class="meta" id="updated">Chargement…</div>
+      </div>
+      <div>
+        <button id="refresh">Rafraîchir</button>
+      </div>
+    </header>
+
+    <section class="grid" id="pipeline"></section>
+
+    <section class="section">
+      <h2>Historique des builds (GitHub Actions)</h2>
+      <div id="history" class="detail">Chargement…</div>
+    </section>
+
+    <section class="section two">
+      <div>
+        <h2>Journal d’orchestration IA</h2>
+        <div id="timeline" class="detail">Chargement…</div>
+      </div>
+      <div>
+        <h2>Code / contrat actuels</h2>
+        <div class="detail" id="greeting"></div>
+        <pre id="contract">Chargement…</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Erreurs</h2>
+      <pre id="errors">Aucune erreur détectée.</pre>
+    </section>
+  </div>
+
+  <script>
+    const OWNER = "vmeoc";
+    const REPO = "nkp-demo-app";
+    const BRANCH = "main";
+    const RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}`;
+    const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+    const REFRESH_MS = 60000;
+
+    const state = {
+      greeting: "",
+      contract: "",
+      deployLog: [],
+      runs: [],
+      health: null,
+      healthError: "",
+      latestSha: null,
+      targetVersion: null,
+      errors: []
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    async function fetchText(url) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
+      return res.text();
+    }
+
+    async function fetchJson(url) {
+      const res = await fetch(url, { cache: "no-store", headers: { Accept: "application/vnd.github+json" } });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
+      return res.json();
+    }
+
+    function badge(status) {
+      const labels = {
+        success: "succès",
+        running: "en cours",
+        failed: "échec",
+        blocked: "bloqué",
+        pending: "en attente"
+      };
+      return `<span class="badge ${status}">${labels[status] || status}</span>`;
+    }
+
+    function ciStatus() {
+      const run = state.runs[0];
+      if (!run) return "pending";
+      if (run.status !== "completed") return "running";
+      return run.conclusion === "success" ? "success" : "failed";
+    }
+
+    function aiStatus() {
+      if (!state.deployLog.length) return "pending";
+      if (state.deployLog.some((e) => e.status === "failed")) return "failed";
+      const last = state.deployLog[state.deployLog.length - 1];
+      if (last.step === "push" && last.status === "success") return "success";
+      if (state.deployLog.some((e) => ["validate", "render"].includes(e.step) && e.status === "success")) return "running";
+      return "pending";
+    }
+
+    function gitPushStatus() {
+      if (state.runs.length > 0) return "success";
+      if (state.deployLog.some((e) => e.step === "push" && e.status === "success")) return "success";
+      return "pending";
+    }
+
+    function healthStatus() {
+      if (state.healthError) return "failed";
+      if (!state.health) return "pending";
+      if (state.targetVersion && state.health.version === state.targetVersion) return "success";
+      return "running";
+    }
+
+    function fluxStatus() {
+      const ci = ciStatus();
+      if (ci === "failed") return "blocked";
+      if (ci !== "success") return "pending";
+      const hs = healthStatus();
+      if (hs === "success") return "success";
+      if (hs === "failed") return "failed";
+      return "running";
+    }
+
+    function rolloutStatus() {
+      return fluxStatus();
+    }
+
+    function developerStatus() {
+      return state.greeting ? "success" : "pending";
+    }
+
+    function card(title, status, detail) {
+      return `
+        <article class="card">
+          <h2>${escapeHtml(title)}</h2>
+          ${badge(status)}
+          <div class="detail">${detail}</div>
+        </article>
+      `;
+    }
+
+    function renderPipeline() {
+      const ci = ciStatus();
+      const run = state.runs[0];
+      const ciDetail = run
+        ? `Run #${run.run_number} — ${escapeHtml(run.status)}${run.conclusion ? " / " + escapeHtml(run.conclusion) : ""}<br>Commit ${escapeHtml((run.head_sha || "").slice(0, 7))}<br><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noopener">Voir le run</a>`
+        : "Aucun run GitHub Actions trouvé.";
+      const healthDetail = state.healthError
+        ? `<span class="error">${escapeHtml(state.healthError)}</span>`
+        : state.health
+          ? `Version déployée : ${escapeHtml(state.health.version)}${state.targetVersion ? "<br>Version attendue : " + escapeHtml(state.targetVersion) : ""}`
+          : "Endpoint /healthz non disponible.";
+      const fluxDetail = ci === "failed"
+        ? "Bloqué : la CI a échoué."
+        : ci !== "success"
+          ? "En attente de la fin de la CI."
+          : healthStatus() === "success"
+            ? "Manifests appliqués et application prête."
+            : healthStatus() === "failed"
+              ? "Échec lors de l’application ou du rollout."
+              : "Application des manifests en cours.";
+      const rolloutDetail = ci === "failed"
+        ? "Arrêté : pas de rollout après l’échec de la CI."
+        : ci !== "success"
+          ? "En attente."
+          : healthStatus() === "success"
+            ? "Pods prêts et health check OK."
+            : healthStatus() === "failed"
+              ? "Rollout échoué ou timeout."
+              : "Rollout en cours.";
+
+      $("pipeline").innerHTML = [
+        card("1. Code développeur", developerStatus(), `Greeting détecté : ${escapeHtml(state.greeting || "non trouvé")}`),
+        card("2. Orchestration IA", aiStatus(), state.deployLog.length ? `Dernier événement : ${escapeHtml(state.deployLog[state.deployLog.length - 1].step)} (${escapeHtml(state.deployLog[state.deployLog.length - 1].status)})` : "Aucun événement d’orchestration enregistré."),
+        card("3. Push Git", gitPushStatus(), state.runs.length ? "Push détecté via les runs GitHub Actions." : "Aucun push détecté."),
+        card("4. CI GitHub Actions", ci, ciDetail),
+        card("5. Flux / manifests", fluxStatus(), fluxDetail),
+        card("6. Rollout NKP", rolloutStatus(), rolloutDetail),
+        card("7. Health check", healthStatus(), healthDetail)
+      ].join("");
+    }
+
+    function renderHistory() {
+      if (!state.runs.length) {
+        $("history").innerHTML = "Aucun historique disponible.";
+        return;
+      }
+      const rows = state.runs.map((run) => `
+        <tr>
+          <td>${badge(run.status !== "completed" ? "running" : (run.conclusion === "success" ? "success" : "failed"))}</td>
+          <td>#${escapeHtml(run.run_number)}</td>
+          <td>${escapeHtml((run.head_sha || "").slice(0, 7))}</td>
+          <td>${escapeHtml(new Date(run.created_at).toLocaleString())}</td>
+          <td><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noopener">run</a></td>
+        </tr>
+      `).join("");
+      $("history").innerHTML = `
+        <table>
+          <thead><tr><th>État</th><th>Run</th><th>Commit</th><th>Créé</th><th>Lien</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function renderTimeline() {
+      if (!state.deployLog.length) {
+        $("timeline").innerHTML = "Aucun événement.";
+        return;
+      }
+      $("timeline").innerHTML = state.deployLog.slice().reverse().map((event) => `
+        <div class="event ${escapeHtml(event.status || "pending")}">
+          <div><strong>${escapeHtml(event.step || "étape")}</strong> — ${escapeHtml(event.status || "pending")}</div>
+          <div>${escapeHtml(event.message || "")}</div>
+          <div class="when">${escapeHtml(event.timestamp || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderSources() {
+      $("greeting").textContent = state.greeting ? `Greeting actuel : ${state.greeting}` : "Greeting non trouvé.";
+      $("contract").textContent = state.contract || "Contrat non trouvé.";
+    }
+
+    function renderErrors() {
+      $("errors").textContent = state.errors.length ? state.errors.join("\n") : "Aucune erreur détectée.";
+    }
+
+    function render() {
+      renderPipeline();
+      renderHistory();
+      renderTimeline();
+      renderSources();
+      renderErrors();
+      $("updated").textContent = `Dernière mise à jour : ${new Date().toLocaleString()}`;
+    }
+
+    async function loadAll() {
+      state.errors = [];
+      const results = await Promise.allSettled([
+        fetchText(`${RAW}/index.html`),
+        fetchText(`${RAW}/nkp-app.yaml`),
+        fetchJson(`${RAW}/deploy-log.json`),
+        fetchJson(`${API}/actions/workflows/build-deploy.yml/runs?branch=${BRANCH}&per_page=10`),
+        fetchJson(`${API}/commits/${BRANCH}`),
+        fetch("/healthz", { cache: "no-store" }).then(async (res) => {
+          if (!res.ok) throw new Error(`healthz ${res.status}`);
+          return res.json();
+        })
+      ]);
+
+      const [indexRes, contractRes, logRes, runsRes, commitRes, healthRes] = results;
+
+      if (indexRes.status === "fulfilled") {
+        const match = indexRes.value.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+        state.greeting = match ? match[1].replace(/<[^>]+>/g, "").trim() : "";
+      } else {
+        state.errors.push(`Code : ${indexRes.reason.message}`);
+      }
+
+      if (contractRes.status === "fulfilled") {
+        state.contract = contractRes.value;
+      } else {
+        state.errors.push(`Contrat : ${contractRes.reason.message}`);
+      }
+
+      if (logRes.status === "fulfilled" && Array.isArray(logRes.value)) {
+        state.deployLog = logRes.value;
+      } else if (logRes.status === "rejected") {
+        state.errors.push(`Journal : ${logRes.reason.message}`);
+      }
+
+      if (runsRes.status === "fulfilled") {
+        state.runs = runsRes.value.workflow_runs || [];
+      } else {
+        state.errors.push(`GitHub Actions : ${runsRes.reason.message}`);
+      }
+
+      if (commitRes.status === "fulfilled") {
+        state.latestSha = commitRes.value.sha || null;
+      }
+
+      if (healthRes.status === "fulfilled") {
+        state.health = healthRes.value;
+        state.healthError = "";
+      } else {
+        state.health = null;
+        state.healthError = healthRes.reason.message;
+      }
+
+      const successfulRun = state.runs.find((run) => run.conclusion === "success");
+      state.targetVersion = successfulRun ? (successfulRun.head_sha || "").slice(0, 7) : (state.latestSha ? state.latestSha.slice(0, 7) : null);
+
+      render();
+    }
+
+    let timer = null;
+    function schedule() {
+      clearTimeout(timer);
+      timer = setTimeout(loadAll, REFRESH_MS);
+    }
+
+    $("refresh").addEventListener("click", () => {
+      clearTimeout(timer);
+      loadAll().then(schedule);
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        clearTimeout(timer);
+        loadAll().then(schedule);
+      }
+    });
+
+    loadAll().then(schedule);
+  </script>
+</body>
+</html>
