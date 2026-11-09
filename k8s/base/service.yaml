@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: hello-nkp
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
-    nkp.demo/owner: vincent
+    nkp.demo/owner: vincentm
     nkp.demo/archi: stateless
     nkp.demo/backup: hourly
     nkp.demo/tracing: enabled

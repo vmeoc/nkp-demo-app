@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: hello-nkp
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
-    nkp.demo/owner: vincent
+    nkp.demo/owner: vincentm
     nkp.demo/archi: stateless
     nkp.demo/backup: hourly
     nkp.demo/tracing: enabled
@@ -17,7 +17,7 @@ metadata:
   annotations:
     nkp.demo/backup-policy: horaire, rétention 48 heures (simulé)
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -28,7 +28,7 @@ spec:
         app.kubernetes.io/name: hello-nkp
         app.kubernetes.io/managed-by: nkp-deploy
         nkp.demo/env: dev
-        nkp.demo/owner: vincent
+        nkp.demo/owner: vincentm
         nkp.demo/archi: stateless
         nkp.demo/backup: hourly
         nkp.demo/tracing: enabled
