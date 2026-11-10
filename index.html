@@ -3,45 +3,57 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0B1F3A">
-    <title>ArianeGroup — Maîtriser l'accès à l'espace</title>
+    <meta name="theme-color" content="#1e3a5f">
+    <title>La Pluie — Beauté, science et poésie de l'eau qui tombe</title>
     <style>
       :root {
-        --bg: #070B14;
-        --bg-2: #0E1626;
-        --ink: #EAF0F8;
-        --muted: #9AA9BF;
+        --bg: #0b1624;
+        --bg-2: #11203a;
+        --ink: #e8f0fa;
+        --muted: #9bb0cc;
         --line: rgba(255,255,255,0.1);
-        --accent: #FF6B2C;
-        --accent-2: #3B82F6;
-        --card: rgba(255,255,255,0.04);
+        --accent: #4fc3f7;
+        --accent-2: #81d4fa;
+        --card: rgba(255,255,255,0.05);
         font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; }
-      body { color: var(--ink); background: var(--bg); line-height: 1.6; }
+      body { color: var(--ink); background: var(--bg); line-height: 1.6; overflow-x: hidden; }
       a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
       img, svg { max-width: 100%; display: block; }
 
-      .container { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
+      /* Rain animation */
+      .rain {
+        position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+      }
+      .rain span {
+        position: absolute; top: -10%; width: 1px; height: 60px;
+        background: linear-gradient(180deg, transparent, rgba(79,195,247,0.35));
+        animation: fall linear infinite;
+      }
+      @keyframes fall {
+        to { transform: translateY(110vh); }
+      }
 
-      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(7,11,20,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+      .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; position: relative; z-index: 1; }
+
+      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(11,22,36,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
       .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
       .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #fff; }
-      .brand-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), #FF9A5C); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; }
+      .brand-mark { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #1565c0); display: grid; place-items: center; color: #fff; font-size: 18px; }
       .nav { display: flex; gap: 28px; font-size: 14px; }
       .nav a { color: var(--ink); }
       .nav a:hover { color: var(--accent); text-decoration: none; }
-      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; }
-      .cta:hover { background: #E85A1F; text-decoration: none; }
+      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: var(--accent); color: #0b1624; font-weight: 600; font-size: 14px; }
+      .cta:hover { background: var(--accent-2); text-decoration: none; }
 
-      .hero { position: relative; min-height: 88vh; display: flex; align-items: center; overflow: hidden; }
+      .hero { position: relative; min-height: 92vh; display: flex; align-items: center; overflow: hidden; }
       .hero-bg { position: absolute; inset: 0; }
-      .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
-      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,11,20,0.45) 0%, rgba(7,11,20,0.85) 55%, var(--bg) 100%); }
-      .hero-fallback { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, #1a2a4a 0%, #070B14 70%); display: none; }
+      .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) saturate(1.1); }
+      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,22,36,0.3) 0%, rgba(11,22,36,0.75) 60%, var(--bg) 100%); }
       .hero-content { position: relative; padding: 120px 0 80px; max-width: 760px; }
       .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 0 20px; }
       h1 { font-size: clamp(44px, 6.5vw, 78px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 800; }
@@ -53,7 +65,7 @@
       .stats { padding: 64px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-2); }
       .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
       .stat { text-align: center; }
-      .stat .num { font-size: 40px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+      .stat .num { font-size: 40px; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; }
       .stat .lbl { font-size: 13px; color: var(--muted); margin-top: 6px; }
 
       section.block { padding: 96px 0; }
@@ -62,36 +74,36 @@
       h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
       .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
 
-      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; position: relative; }
-      .split-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-      .split-art .svg-fallback { position: absolute; inset: 0; display: none; }
-      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
-      .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
-      .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
-
       .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
       .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease; }
-      .card:hover { transform: translateY(-6px); border-color: rgba(255,107,44,0.4); }
+      .card:hover { transform: translateY(-6px); border-color: rgba(79,195,247,0.4); }
       .card-art { aspect-ratio: 16/9; background: var(--bg-2); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-      .card-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 400ms ease; }
+      .card-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 400ms ease; filter: brightness(0.85) saturate(1.1); }
       .card:hover .card-art img { transform: scale(1.05); }
       .card-art .svg-fallback { position: absolute; inset: 0; display: none; }
       .card-body { padding: 24px; }
       .card h3 { margin: 0 0 8px; font-size: 18px; }
       .card p { color: var(--muted); font-size: 14px; margin: 0; }
 
-      .band { background: linear-gradient(120deg, #1a2a4a 0%, #0B1F3A 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; position: relative; }
+      .split-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; filter: brightness(0.8); }
+      .split-art .svg-fallback { position: absolute; inset: 0; display: none; }
+      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
+      .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
+      .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
+
+      .band { background: linear-gradient(120deg, #0d2240 0%, #0b1624 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
       .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
       .band-art { border-radius: 18px; border: 1px solid var(--line); background: var(--bg); aspect-ratio: 3/2; position: relative; overflow: hidden; }
-      .band-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+      .band-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; filter: brightness(0.75); }
       .band-art .svg-fallback { position: absolute; inset: 0; display: none; }
 
-      footer { background: #04070D; color: #8FA0B8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
+      footer { background: #050a14; color: #8fa8c8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
       .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
       footer h4 { color: #fff; font-size: 14px; margin: 0 0 14px; }
       footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 13px; }
-      footer a { color: #8FA0B8; }
+      footer a { color: #8fa8c8; }
       footer a:hover { color: #fff; }
       .footer-bottom { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
@@ -109,20 +121,21 @@
     </style>
   </head>
   <body>
+    <div class="rain" aria-hidden="true" id="rain"></div>
     <header class="topbar">
       <div class="container topbar-inner">
         <div class="brand">
-          <div class="brand-mark">AG</div>
-          <span>ArianeGroup</span>
+          <div class="brand-mark">🌧️</div>
+          <span>La Pluie</span>
         </div>
         <nav class="nav" aria-label="Navigation principale">
-          <a href="#lanceurs">Lanceurs</a>
-          <a href="#espace">Espace</a>
-          <a href="#innovation">Innovation</a>
-          <a href="#groupe">Le groupe</a>
+          <a href="#science">Science</a>
+          <a href="#types">Types</a>
+          <a href="#culture">Culture</a>
+          <a href="#climat">Climat</a>
         </nav>
         <div style="display:flex;gap:8px;align-items:center;">
-          <a class="cta" href="#contact">Nous contacter</a>
+          <a class="cta" href="#science">Découvrir</a>
           <a class="cta" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;" href="/status" target="_blank" rel="noopener">AI deployment ↗</a>
         </div>
       </div>
@@ -130,148 +143,166 @@
 
     <section class="hero">
       <div class="hero-bg">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(NHQ202112230018).jpg?width=1400" alt="Fusée Ariane 5 avec le télescope James Webb sur le pas de tir à Kourou" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Raindrops_on_water.jpg?width=1400" alt="Gouttes de pluie tombant sur une surface d'eau" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
         <div class="hero-fallback">
-          <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#070B14"/><circle cx="980" cy="520" r="260" fill="#0E2A5C"/></svg>
+          <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#0b1624"/><g fill="rgba(79,195,247,0.3)"><line x1="100" y1="0" x2="95" y2="80" stroke="currentColor" stroke-width="1"/><line x1="300" y1="0" x2="295" y2="80" stroke="currentColor" stroke-width="1"/><line x1="500" y1="0" x2="495" y2="80" stroke="currentColor" stroke-width="1"/><line x1="700" y1="0" x2="695" y2="80" stroke="currentColor" stroke-width="1"/><line x1="900" y1="0" x2="895" y2="80" stroke="currentColor" stroke-width="1"/></g></svg>
         </div>
       </div>
       <div class="container hero-content">
-        <p class="eyebrow">Maîtriser l'accès à l'espace</p>
-        <h1>L'Europe dans l'espace, aujourd'hui et demain</h1>
+        <p class="eyebrow">Eau · Atmosphère · Vie</p>
+        <h1>La pluie, poésie de l'atmosphère</h1>
         <p class="lead">
-          ArianeGroup conçoit, développe et opère les lanceurs Ariane. Leader européen de l'accès à l'espace,
-          le groupe rassemble 10 000 talents au service de la souveraineté et de l'innovation.
+          De la goutte qui naît dans un nuage à l'averse qui arrose la terre, la pluie est un cycle fascinant
+          qui nourrit la vie, sculpte les paysages et inspire les artistes depuis toujours.
         </p>
         <div class="hero-actions">
-          <a class="cta" href="#lanceurs">Découvrir Ariane 6</a>
-          <a class="cta btn-ghost" href="#groupe">Le groupe</a>
+          <a class="cta" href="#science">La science de la pluie</a>
+          <a class="cta btn-ghost" href="#culture">Culture et pluie</a>
         </div>
       </div>
     </section>
 
     <section class="stats">
       <div class="container stats-grid">
-        <div class="stat"><div class="num">10 000</div><div class="lbl">Collaborateurs</div></div>
-        <div class="stat"><div class="num">115+</div><div class="lbl">Lancements Ariane 5</div></div>
-        <div class="stat"><div class="num">13</div><div class="lbl">Pays</div></div>
-        <div class="stat"><div class="num">60+</div><div class="lbl">Années d'excellence</div></div>
+        <div class="stat"><div class="num">505 000 km³</div><div class="lbl">Précipitations annuelles sur Terre</div></div>
+        <div class="stat"><div class="num">~8 mm</div><div class="lbl">Diamètre max d'une goutte</div></div>
+        <div class="stat"><div class="num">3,8 m</div><div class="lbl">Record de pluie en 24 h (La Réunion)</div></div>
+        <div class="stat"><div class="num">200</div><div class="lbl">Jours de pluie/an à Londres</div></div>
       </div>
     </section>
 
-    <section id="lanceurs" class="block">
+    <section id="science" class="block">
       <div class="container">
         <div class="section-head">
-          <p class="eyebrow">Lanceurs</p>
-          <h2>Ariane 6, nouvelle génération</h2>
-          <p>Un lanceur modulaire et compétitif, conçu pour répondre aux besoins institutionnels et commerciaux.</p>
+          <p class="eyebrow">Science</p>
+          <h2>Comment naît la pluie ?</h2>
+          <p>Un cycle en quatre étapes : évaporation, condensation, précipitation, ruissellement.</p>
         </div>
         <div class="cards">
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_6_ESA-CC.jpg?width=800" alt="Ariane 6 sur le pas de tir à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><rect x="-8" y="-30" width="16" height="60" rx="8" fill="#EAF0F8"/><polygon points="0,-48 -12,-30 12,-30" fill="#FF6B2C"/><ellipse cx="0" cy="46" rx="5" ry="10" fill="#FF6B2C" opacity="0.9"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rain%20drops%20(2474695068).jpg?width=800" alt="Gouttes de pluie sur une feuille" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><circle cx="-15" cy="-10" r="12" fill="#4fc3f7" opacity="0.8"/><circle cx="15" cy="5" r="10" fill="#4fc3f7" opacity="0.6"/><circle cx="0" cy="20" r="8" fill="#4fc3f7" opacity="0.5"/></g></svg>
             </div>
             <div class="card-body">
-              <h3>Ariane 6</h3>
-              <p>Nouveau lanceur européen, flexible et compétitif, pour toutes les orbites.</p>
+              <h3>Évaporation</h3>
+              <p>L'eau des océans, lacs et rivières s'évapore sous l'effet de la chaleur solaire.</p>
             </div>
           </article>
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_launch_pad.jpg?width=800" alt="Pas de tir ELA-3 d'Ariane 5 au Centre spatial guyanais" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><path d="M-20,30 L-20,-20 Q-20,-40 0,-48 Q20,-40 20,-20 L20,30 Z" fill="#EAF0F8"/><rect x="-20" y="30" width="40" height="12" fill="#3B82F6"/><circle cx="0" cy="-10" r="6" fill="#FF6B2C"/><ellipse cx="0" cy="56" rx="6" ry="12" fill="#FF6B2C" opacity="0.85"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rainy%20Day%20(198960677).jpeg?width=800" alt="Journée pluvieuse en ville" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><ellipse cx="0" cy="-20" rx="30" ry="18" fill="#9bb0cc" opacity="0.9"/><line x1="-15" y1="5" x2="-18" y2="25" stroke="#4fc3f7" stroke-width="2"/><line x1="0" y1="5" x2="-3" y2="25" stroke="#4fc3f7" stroke-width="2"/><line x1="15" y1="5" x2="12" y2="25" stroke="#4fc3f7" stroke-width="2"/></g></svg>
             </div>
             <div class="card-body">
-              <h3>Ariane 5</h3>
-              <p>Plus de 115 lancements réussis, référence mondiale des lanceurs lourds.</p>
+              <h3>Condensation</h3>
+              <p>La vapeur d'eau se refroidit en altitude et forme des nuages.</p>
             </div>
           </article>
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vega_Launch_Pad_Centre_Spatial_Guyanais.jpg?width=800" alt="Pas de tir au Centre spatial guyanais à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><rect x="-40" y="10" width="80" height="20" rx="4" fill="#3B82F6"/><rect x="-30" y="-15" width="60" height="25" rx="3" fill="#EAF0F8" opacity="0.9"/><polygon points="-30,-15 0,-40 30,-15" fill="#FF6B2C"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/After%20The%20Rain%20(149330265).jpeg?width=800" alt="Paysage après la pluie" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><path d="M-40,0 Q-40,-25 -15,-25 Q0,-40 15,-25 Q40,-25 40,0 Z" fill="#9bb0cc" opacity="0.9"/><line x1="-25" y1="5" x2="-28" y2="30" stroke="#4fc3f7" stroke-width="2"/><line x1="0" y1="5" x2="-3" y2="30" stroke="#4fc3f7" stroke-width="2"/><line x1="25" y1="5" x2="22" y2="30" stroke="#4fc3f7" stroke-width="2"/></g></svg>
             </div>
             <div class="card-body">
-              <h3>Centre spatial guyanais</h3>
-              <p>Le port spatial de l'Europe, au cœur de la Guyane française.</p>
+              <h3>Précipitation</h3>
+              <p>Les gouttes grossissent et tombent quand elles deviennent trop lourdes.</p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="espace" class="block" style="background: var(--bg-2);">
+    <section id="types" class="block" style="background: var(--bg-2);">
       <div class="container split">
         <div>
-          <p class="eyebrow" style="color: var(--accent);">Espace</p>
-          <h2>Des missions au service de l'Europe</h2>
+          <p class="eyebrow" style="color: var(--accent);">Types</p>
+          <h2>Les visages de la pluie</h2>
           <p style="color: var(--muted); font-size: 17px;">
-            Télécommunications, observation de la Terre, navigation, science : ArianeGroup met l'espace au service
-            de la société et de la souveraineté européenne.
+            De la bruine fine à l'orage violent, la pluie prend mille formes selon la température, l'humidité
+            et les courants atmosphériques.
           </p>
           <ul class="list">
-            <li>Satellites institutionnels et commerciaux</li>
-            <li>Observation et imagerie de la Terre</li>
-            <li>Navigation et positionnement (Galileo)</li>
-            <li>Exploration et science</li>
+            <li>Bruine et crachin (gouttes fines)</li>
+            <li>Averse (pluie intense et brève)</li>
+            <li>Pluie continue (frontale)</li>
+            <li>Orage (pluie + tonnerre + éclairs)</li>
+            <li>Pluie verglaçante (pluie gelée au sol)</li>
           </ul>
         </div>
         <div class="split-art">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane42P_rocket.png?width=800" alt="Fusée Ariane 4 avec satellite TOPEX/Poseidon au décollage à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><circle cx="100" cy="75" r="30" fill="#0E2A5C"/><circle cx="100" cy="75" r="30" fill="url(#g1)"/><defs><radialGradient id="g1" cx="40%" cy="35%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.7"/><stop offset="100%" stop-color="#0B1F3A" stop-opacity="0"/></radialGradient></defs><g transform="translate(160,40)"><rect x="-12" y="-4" width="24" height="8" rx="2" fill="#EAF0F8"/><rect x="-30" y="-2" width="14" height="4" fill="#3B82F6"/><rect x="16" y="-2" width="14" height="4" fill="#3B82F6"/></g><ellipse cx="100" cy="75" rx="70" ry="25" fill="none" stroke="#FF6B2C" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/></svg>
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Raindrops_on_water.jpg?width=800" alt="Gouttes de pluie sur l'eau" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><g transform="translate(100,75)"><circle cx="-30" cy="-20" r="18" fill="#4fc3f7" opacity="0.7"/><circle cx="20" cy="10" r="14" fill="#4fc3f7" opacity="0.5"/><circle cx="-10" cy="25" r="10" fill="#4fc3f7" opacity="0.4"/><line x1="-50" y1="-40" x2="-55" y2="-15" stroke="#9bb0cc" stroke-width="1.5"/><line x1="40" y1="-30" x2="35" y2="-5" stroke="#9bb0cc" stroke-width="1.5"/><line x1="0" y1="-50" x2="-5" y2="-25" stroke="#9bb0cc" stroke-width="1.5"/></g></svg>
         </div>
       </div>
     </section>
 
-    <section id="innovation" class="block">
+    <section id="culture" class="block">
       <div class="container">
         <div class="section-head">
-          <p class="eyebrow">Innovation</p>
-          <h2>Innover pour l'accès à l'espace</h2>
-          <p>Propulsion, matériaux, digital et nouvelles technologies pour préparer le futur.</p>
+          <p class="eyebrow">Culture</p>
+          <h2>La pluie dans l'art et la poésie</h2>
+          <p>De Verlaine à Baudelaire, la pluie a toujours inspiré les artistes.</p>
         </div>
         <div class="band">
           <div class="container band-grid">
             <div>
-              <h2 style="font-size: 32px;">Propulsion &amp; nouveaux usages</h2>
-              <p style="color: var(--muted); font-size: 16px;">
-                Des moteurs cryogéniques aux lanceurs réutilisables, ArianeGroup développe les technologies clés
-                de demain et accompagne la nouvelle économie spatiale.
+              <h2 style="font-size: 32px;">« Il pleure dans mon cœur »</h2>
+              <p style="color: var(--muted); font-size: 16px; font-style: italic;">
+                « Il pleure dans mon cœur comme il pleut sur la ville. » — Paul Verlaine, Romances sans paroles.
               </p>
-              <ul class="list">
-                <li>Moteurs cryogéniques Vinci et Vulcain</li>
-                <li>Études sur la réutilisabilité</li>
-                <li>Propulsion électrique et verte</li>
-              </ul>
+              <p style="color: var(--muted); font-size: 16px;">
+                La pluie est un thème universel : mélancolie, renouveau, purification. Elle traverse la peinture
+                impressionniste, le cinéma, la musique et la littérature du monde entier.
+              </p>
             </div>
             <div class="band-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vieux_moteur_Vulcain_au_mus%C3%A9e_du_Centre_Spatial_Guyanais.jpg?width=800" alt="Ancien moteur Vulcain au musée du Centre spatial guyanais" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;display:none;"><g transform="translate(100,70)"><ellipse cx="0" cy="0" rx="30" ry="50" fill="#EAF0F8" opacity="0.9"/><rect x="-30" y="-10" width="60" height="20" fill="#3B82F6"/><circle cx="0" cy="-35" r="8" fill="#FF6B2C"/><ellipse cx="0" cy="62" rx="10" ry="18" fill="#FF6B2C" opacity="0.7"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rainy%20Day%20(198960677).jpeg?width=800" alt="Journée pluvieuse" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;display:none;"><g transform="translate(100,70)"><path d="M-60,20 Q-60,-10 -30,-10 Q-15,-35 0,-10 Q15,-35 30,-10 Q60,-10 60,20 Z" fill="#9bb0cc" opacity="0.9"/><line x1="-40" y1="25" x2="-43" y2="50" stroke="#4fc3f7" stroke-width="2"/><line x1="-15" y1="25" x2="-18" y2="50" stroke="#4fc3f7" stroke-width="2"/><line x1="10" y1="25" x2="7" y2="50" stroke="#4fc3f7" stroke-width="2"/><line x1="35" y1="25" x2="32" y2="50" stroke="#4fc3f7" stroke-width="2"/></g></svg>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="groupe" class="block" style="background: var(--bg-2);">
-      <div class="container split">
-        <div class="split-art">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(NHQ202112230015).jpg?width=800" alt="Ariane 5 sur le pas de tir avec le télescope James Webb à Kourou" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><g transform="translate(100,75)"><circle cx="-45" cy="-20" r="14" fill="#3B82F6"/><rect x="-57" y="-2" width="24" height="40" rx="6" fill="#3B82F6" opacity="0.8"/><circle cx="0" cy="-25" r="16" fill="#FF6B2C"/><rect x="-18" y="-5" width="36" height="45" rx="6" fill="#FF6B2C" opacity="0.8"/><circle cx="45" cy="-20" r="14" fill="#EAF0F8" opacity="0.9"/><rect x="33" y="-2" width="24" height="40" rx="6" fill="#EAF0F8" opacity="0.7"/></g></svg>
+    <section id="climat" class="block">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Climat</p>
+          <h2>La pluie et le changement climatique</h2>
+          <p>Le cycle de l'eau s'intensifie : plus d'extrêmes, plus d'incertitude.</p>
         </div>
-        <div>
-          <p class="eyebrow" style="color: var(--accent);">Le groupe</p>
-          <h2>10 000 talents au service de l'espace</h2>
-          <p style="color: var(--muted); font-size: 17px;">
-            Filiale à parts égales d'Airbus et de Safran, ArianeGroup est un acteur industriel et technologique
-            majeur, présent sur 13 sites en Europe.
-          </p>
-          <ul class="list">
-            <li>Filiale Airbus / Safran</li>
-            <li>13 sites en Europe</li>
-            <li>Excellence industrielle et sécurité</li>
-            <li>Engagement pour la souveraineté européenne</li>
-          </ul>
+        <div class="cards">
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rain%20drops%20(2474695068).jpg?width=800" alt="Gouttes de pluie" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="25" fill="#4fc3f7" opacity="0.6"/><path d="M-15,-5 Q0,-25 15,-5" fill="none" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+            </div>
+            <div class="card-body">
+              <h3>Intensification</h3>
+              <p>Les épisodes pluvieux deviennent plus intenses et plus rares.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/After%20The%20Rain%20(149330265).jpeg?width=800" alt="Après la pluie" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><rect x="-30" y="-20" width="60" height="40" rx="8" fill="#9bb0cc" opacity="0.5"/><path d="M-20,0 L0,-20 L20,0" fill="none" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+            </div>
+            <div class="card-body">
+              <h3>Sécheresses</h3>
+              <p>Les périodes sèches s'allongent dans de nombreuses régions.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Raindrops_on_water.jpg?width=800" alt="Pluie sur l'eau" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="30" fill="#4fc3f7" opacity="0.4"/><circle cx="0" cy="0" r="15" fill="#4fc3f7" opacity="0.6"/></g></svg>
+            </div>
+            <div class="card-body">
+              <h3>Adaptation</h3>
+              <p>Gestion de l'eau, agriculture résiliente, villes éponges.</p>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -281,44 +312,58 @@
         <div class="footer-grid">
           <div>
             <div class="brand" style="color:#fff; margin-bottom: 12px;">
-              <div class="brand-mark">AG</div>
-              <span style="color:#fff;">ArianeGroup</span>
+              <div class="brand-mark">🌧️</div>
+              <span style="color:#fff;">La Pluie</span>
             </div>
-            <p style="font-size: 13px; max-width: 320px;">Maîtriser l'accès à l'espace pour l'Europe et le monde.</p>
+            <p style="font-size: 13px; max-width: 320px;">Beauté, science et poésie de l'eau qui tombe.</p>
           </div>
           <div>
-            <h4>Groupe</h4>
+            <h4>Science</h4>
             <ul>
-              <li><a href="#">À propos</a></li>
-              <li><a href="#">Carrières</a></li>
-              <li><a href="#">Médias</a></li>
+              <li><a href="#science">Cycle de l'eau</a></li>
+              <li><a href="#types">Types de pluie</a></li>
+              <li><a href="#climat">Climat</a></li>
             </ul>
           </div>
           <div>
-            <h4>Activités</h4>
+            <h4>Culture</h4>
             <ul>
-              <li><a href="#">Lanceurs</a></li>
-              <li><a href="#">Espace</a></li>
-              <li><a href="#">Défense</a></li>
+              <li><a href="#culture">Poésie</a></li>
+              <li><a href="#">Peinture</a></li>
+              <li><a href="#">Musique</a></li>
             </ul>
           </div>
           <div>
-            <h4>Contact</h4>
+            <h4>Déploiement</h4>
             <ul>
-              <li><a href="#">Nous contacter</a></li>
-              <li><a href="#">Sites</a></li>
-              <li><a href="#">Presse</a></li>
+              <li><a href="/status" target="_blank" rel="noopener">AI deployment ↗</a></li>
+              <li><a href="/healthz" target="_blank" rel="noopener">Health check</a></li>
             </ul>
           </div>
         </div>
         <div class="footer-bottom">
-          <span>© ArianeGroup — page de démonstration NKP</span>
+          <span>© La Pluie — page de démonstration NKP</span>
           <span>Déployé via NKP GitOps</span>
         </div>
       </div>
     </footer>
 
     <script>
+      // Rain drops animation
+      (function(){
+        const rain = document.getElementById('rain');
+        if (!rain) return;
+        const count = 80;
+        let html = '';
+        for (let i = 0; i < count; i++) {
+          const left = Math.random() * 100;
+          const delay = Math.random() * 2;
+          const dur = 0.8 + Math.random() * 0.6;
+          const h = 40 + Math.random() * 40;
+          html += `<span style="left:${left}%;animation-delay:${delay}s;animation-duration:${dur}s;height:${h}px;"></span>`;
+        }
+        rain.innerHTML = html;
+      })();
       document.querySelectorAll('img').forEach(function(img){
         img.addEventListener('error', function(){
           this.style.display = 'none';
