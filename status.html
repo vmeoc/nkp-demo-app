@@ -208,7 +208,11 @@
       <button id="refresh">Rafraîchir</button>
     </header>
 
-    <section class="panel">
+    <section class="panel" style="display:flex;flex-direction:column;align-items:center;">
+      <div style="width:100%;max-width:980px;margin-bottom:14px;padding:12px 18px;border-radius:14px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid var(--run);color:var(--run);font-weight:700;text-align:center;box-shadow:0 10px 24px rgba(124,58,237,0.18);">
+        🤖 IA — orchestration de la chaîne de bout en bout
+      </div>
+      <div style="width:3px;height:20px;background:linear-gradient(180deg,var(--run),#c4b5fd);border-radius:999px;margin-bottom:6px;"></div>
       <div class="pipeline-wrap">
         <div class="pipeline">
           <div class="group">
@@ -246,8 +250,8 @@
     const BRANCH = "main";
     const RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}`;
     const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
-    const GITHUB_REFRESH_MS = 60000;
-    const HEALTH_REFRESH_MS = 15000;
+    const GITHUB_REFRESH_MS = 10000;
+    const HEALTH_REFRESH_MS = 10000;
 
     const state = {
       greeting: "",
@@ -285,8 +289,27 @@
       return `<span class="badge ${status}">${labels[status] || status}</span>`;
     }
 
-    function ciStatus() {
+    function wipStartedMs() {
+      const w = state.wip || {};
+      return w.started ? new Date(w.started).getTime() : 0;
+    }
+    function isNewRun(run) {
+      if (!run || !run.created_at) return false;
+      const start = wipStartedMs();
+      if (!start) return true; // pas de cycle WIP actif : on compte le run
+      return new Date(run.created_at).getTime() >= start;
+    }
+    function hasNewRun() {
       const run = state.runs[0];
+      return !!run && isNewRun(run);
+    }
+    function ciStatus() {
+      const w = state.wip || {};
+      const run = state.runs[0];
+      // Pendant un cycle WIP actif, on n'affiche un run que s'il est nouveau (de ce cycle).
+      if (w.status === "in-progress" || w.status === "deploying") {
+        if (!run || !isNewRun(run)) return "pending";
+      }
       if (!run) return "pending";
       if (run.status !== "completed") return "running";
       return run.conclusion === "success" ? "success" : "failed";
@@ -305,12 +328,17 @@
     function gitPushStatus() {
       const w = state.wip || {};
       if (w.status === "in-progress" || w.status === "deploying") return "pending";
+      if (hasNewRun()) return "success";
       if (state.runs.length > 0) return "success";
       if (state.deployLog.some((e) => e.step === "push" && e.status === "success")) return "success";
       return "pending";
     }
 
     function healthStatus() {
+      const w = state.wip || {};
+      if (w.status === "in-progress" || w.status === "deploying") {
+        if (!hasNewRun()) return "pending";
+      }
       if (state.healthError) return "failed";
       if (!state.health) return "pending";
       if (state.targetVersion && state.health.version === state.targetVersion) return "success";
@@ -318,7 +346,11 @@
     }
 
     function fluxStatus() {
+      const w = state.wip || {};
       const ci = ciStatus();
+      if (w.status === "in-progress" || w.status === "deploying") {
+        if (ci === "pending") return "pending";
+      }
       if (ci === "failed") return "blocked";
       if (ci !== "success") return "pending";
       const hs = healthStatus();
@@ -334,7 +366,7 @@
     function developerStatus() {
       const w = state.wip || {};
       if (w.status === "in-progress" || w.status === "deploying") return "running";
-      return state.greeting ? "success" : "pending";
+      return "success";
     }
 
     function setStep(id, status, connectorId) {
