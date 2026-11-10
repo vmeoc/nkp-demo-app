@@ -297,11 +297,22 @@
       if (!run || !run.created_at) return false;
       const start = wipStartedMs();
       if (!start) return true; // pas de cycle WIP actif : on compte le run
-      return new Date(run.created_at).getTime() >= start;
+      // tolérance 30s pour le décalage d'horloge agent/GitHub
+      return new Date(run.created_at).getTime() >= (start - 30000);
     }
     function hasNewRun() {
       const run = state.runs[0];
       return !!run && isNewRun(run);
+    }
+    function expectedVersion() {
+      const w = state.wip || {};
+      if (w.status === "in-progress" || w.status === "deploying") {
+        const run = state.runs[0];
+        if (run && isNewRun(run)) return (run.head_sha || "").slice(0, 7);
+        return null; // pas encore de nouveau run : on attend
+      }
+      const successfulRun = state.runs.find((r) => r.conclusion === "success");
+      return successfulRun ? (successfulRun.head_sha || "").slice(0, 7) : state.targetVersion;
     }
     function ciStatus() {
       const w = state.wip || {};
@@ -326,9 +337,10 @@
     }
 
     function gitPushStatus() {
+      // Un nouveau run CI prouve qu'un push a eu lieu (même pendant un cycle WIP).
+      if (hasNewRun()) return "success";
       const w = state.wip || {};
       if (w.status === "in-progress" || w.status === "deploying") return "pending";
-      if (hasNewRun()) return "success";
       if (state.runs.length > 0) return "success";
       if (state.deployLog.some((e) => e.step === "push" && e.status === "success")) return "success";
       return "pending";
@@ -341,6 +353,10 @@
       }
       if (state.healthError) return "failed";
       if (!state.health) return "pending";
+      const target = expectedVersion();
+      if (target && state.health.version === target) return "success";
+      // Pendant un cycle WIP actif, une version différente = rollout en cours
+      if (w.status === "in-progress" || w.status === "deploying") return "running";
       if (state.targetVersion && state.health.version === state.targetVersion) return "success";
       return "running";
     }
