@@ -320,7 +320,7 @@
       return successfulRun ? (successfulRun.head_sha || "").slice(0, 7) : state.targetVersion;
     }
     function ciStatus() {
-      if (isRaz()) return \"pending\";
+      if (isRaz()) return "pending";
       const d = state.demoState || {};
       const run = state.runs[0];
       // Pendant un cycle WIP actif, on n'affiche un run que s'il est nouveau (de ce cycle).
@@ -355,7 +355,7 @@
     }
 
     function healthStatus() {
-      if (isRaz()) return \"pending\";
+      if (isRaz()) return "pending";
       const d = state.demoState || {};
       if (d.status === "in-progress" || d.status === "deploying") {
         if (!hasNewRun()) return "pending";
@@ -371,7 +371,7 @@
     }
 
     function fluxStatus() {
-      if (isRaz()) return \"pending\";
+      if (isRaz()) return "pending";
       const d = state.demoState || {};
       const ci = ciStatus();
       if (d.status === "in-progress" || d.status === "deploying") {
