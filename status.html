@@ -607,15 +607,18 @@
       renderDemoState();
     }
 
-    function renderWip() {
-      const w = state.demoState || {};
+    function renderDemoState() {
+      const d = state.demoState || {};
       const el = $("wip-status");
       if (el) {
-        const msg = w.message ? ` — ${w.message}` : "";
-        const theme = w.theme ? ` (${w.theme})` : "";
-        const label = w.status === "in-progress" ? "en cours" : w.status === "deploying" ? "déploiement" : w.status === "pending" ? "en attente" : "en attente";
-        el.textContent = `WIP : ${label}${theme}${msg}`;
-        el.style.color = (w.status === "in-progress" || w.status === "deploying") ? "var(--run)" : "var(--pending)";
+        const msg = d.message ? ` — ${d.message}` : "";
+        const theme = d.theme ? ` (${d.theme})` : "";
+        const label = d.mode === "raz" ? "RAZ (démo en attente)" :
+                      d.mode === "demo" && (d.status === "in-progress" || d.status === "deploying") ? "démo en cours" :
+                      d.status === "in-progress" ? "en cours" :
+                      d.status === "deploying" ? "déploiement" : "en attente";
+        el.textContent = `État de la démo : ${label}${theme}${msg}`;
+        el.style.color = (d.status === "in-progress" || d.status === "deploying") ? "var(--run)" : "var(--pending)";
       }
       render();
     }
