@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: basket-jereme
+  name: natatio
   labels:
-    app.kubernetes.io/name: basket-jereme
+    app.kubernetes.io/name: natatio
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
     nkp.demo/owner: vincentm
@@ -12,12 +12,12 @@ metadata:
     nkp.demo/backup: daily
     nkp.demo/tracing: enabled
     nkp.demo/llm: none
-    nkp.demo/cost-center: test3
+    nkp.demo/cost-center: xxx
     nkp.demo/expires: '2026-12-31'
 spec:
   type: LoadBalancer
   selector:
-    app.kubernetes.io/name: basket-jereme
+    app.kubernetes.io/name: natatio
   ports:
   - name: http
     port: 80

@@ -1,6 +1,6 @@
-app: basket-jereme
+app: natatio
 owner: vincentm
-cost_center: test3
+cost_center: xxx
 env: dev
 archi: stateless
 runtime: python

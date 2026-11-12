@@ -3,376 +3,203 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#1e3a5f">
-    <title>La Pluie — Beauté, science et poésie de l'eau qui tombe</title>
+    <meta name="theme-color" content="#0a2a4a">
+    <title>La Natation — L'art de glisser dans l'eau</title>
     <style>
-      :root {
-        --bg: #0b1624;
-        --bg-2: #11203a;
-        --ink: #e8f0fa;
-        --muted: #9bb0cc;
-        --line: rgba(255,255,255,0.1);
-        --accent: #4fc3f7;
-        --accent-2: #81d4fa;
-        --card: rgba(255,255,255,0.05);
-        font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        -webkit-font-smoothing: antialiased;
-      }
-      * { box-sizing: border-box; }
-      html, body { margin: 0; }
-      body { color: var(--ink); background: var(--bg); line-height: 1.6; overflow-x: hidden; }
-      a { color: var(--accent); text-decoration: none; }
-      a:hover { text-decoration: underline; }
-      img, svg { max-width: 100%; display: block; }
-
-      /* Rain animation */
-      .rain {
-        position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
-      }
-      .rain span {
-        position: absolute; top: -10%; width: 1px; height: 60px;
-        background: linear-gradient(180deg, transparent, rgba(79,195,247,0.35));
-        animation: fall linear infinite;
-      }
-      @keyframes fall {
-        to { transform: translateY(110vh); }
-      }
-
-      .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; position: relative; z-index: 1; }
-
-      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(11,22,36,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
-      .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #fff; }
-      .brand-mark { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #1565c0); display: grid; place-items: center; color: #fff; font-size: 18px; }
-      .nav { display: flex; gap: 28px; font-size: 14px; }
-      .nav a { color: var(--ink); }
-      .nav a:hover { color: var(--accent); text-decoration: none; }
-      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: var(--accent); color: #0b1624; font-weight: 600; font-size: 14px; }
-      .cta:hover { background: var(--accent-2); text-decoration: none; }
-
-      .hero { position: relative; min-height: 92vh; display: flex; align-items: center; overflow: hidden; }
-      .hero-bg { position: absolute; inset: 0; }
-      .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) saturate(1.1); }
-      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,22,36,0.3) 0%, rgba(11,22,36,0.75) 60%, var(--bg) 100%); }
-      .hero-content { position: relative; padding: 120px 0 80px; max-width: 760px; }
-      .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 0 20px; }
-      h1 { font-size: clamp(44px, 6.5vw, 78px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 800; }
-      .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 36px; }
-      .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-      .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-      .btn-ghost:hover { background: rgba(255,255,255,0.08); }
-
-      .stats { padding: 64px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-2); }
-      .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-      .stat { text-align: center; }
-      .stat .num { font-size: 40px; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; }
-      .stat .lbl { font-size: 13px; color: var(--muted); margin-top: 6px; }
-
-      section.block { padding: 96px 0; }
-      .section-head { max-width: 680px; margin-bottom: 56px; }
-      .section-head .eyebrow { color: var(--accent); }
-      h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
-      .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
-
-      .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease; }
-      .card:hover { transform: translateY(-6px); border-color: rgba(79,195,247,0.4); }
-      .card-art { aspect-ratio: 16/9; background: var(--bg-2); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-      .card-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 400ms ease; filter: brightness(0.85) saturate(1.1); }
-      .card:hover .card-art img { transform: scale(1.05); }
-      .card-art .svg-fallback { position: absolute; inset: 0; display: none; }
-      .card-body { padding: 24px; }
-      .card h3 { margin: 0 0 8px; font-size: 18px; }
-      .card p { color: var(--muted); font-size: 14px; margin: 0; }
-
-      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; position: relative; }
-      .split-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; filter: brightness(0.8); }
-      .split-art .svg-fallback { position: absolute; inset: 0; display: none; }
-      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
-      .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
-      .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
-
-      .band { background: linear-gradient(120deg, #0d2240 0%, #0b1624 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-      .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-      .band-art { border-radius: 18px; border: 1px solid var(--line); background: var(--bg); aspect-ratio: 3/2; position: relative; overflow: hidden; }
-      .band-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; filter: brightness(0.75); }
-      .band-art .svg-fallback { position: absolute; inset: 0; display: none; }
-
-      footer { background: #050a14; color: #8fa8c8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
-      .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
-      footer h4 { color: #fff; font-size: 14px; margin: 0 0 14px; }
-      footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 13px; }
-      footer a { color: #8fa8c8; }
-      footer a:hover { color: #fff; }
-      .footer-bottom { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-
-      @media (max-width: 860px) {
-        .split, .band-grid { grid-template-columns: 1fr; }
-        .cards { grid-template-columns: 1fr; }
-        .stats-grid { grid-template-columns: repeat(2,1fr); }
-        .footer-grid { grid-template-columns: 1fr 1fr; }
-        .nav { display: none; }
-      }
-      @media (max-width: 520px) {
-        .stats-grid { grid-template-columns: 1fr; }
-        .footer-grid { grid-template-columns: 1fr; }
-      }
+      :root { --bg:#061a2e; --bg-2:#0c2a4a; --ink:#e6f2fb; --muted:#9ec3e0; --line:rgba(255,255,255,0.1); --accent:#29b6f6; --accent-3:#81d4fa; --card:rgba(255,255,255,0.05); font-family:"Inter",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+      *{box-sizing:border-box;} html,body{margin:0;} body{color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden;}
+      a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;} img,svg{max-width:100%;display:block;}
+      .waves{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:0.35;}
+      .waves svg{position:absolute;bottom:0;width:200%;animation:drift 18s linear infinite;}
+      @keyframes drift{to{transform:translateX(-50%);}}
+      .container{width:min(1180px,calc(100% - 48px));margin:0 auto;position:relative;z-index:1;}
+      .topbar{position:sticky;top:0;z-index:20;background:rgba(6,26,46,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+      .topbar-inner{display:flex;align-items:center;justify-content:space-between;height:72px;}
+      .brand{display:flex;align-items:center;gap:12px;font-weight:700;color:#fff;}
+      .brand-mark{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0277bd);display:grid;place-items:center;color:#fff;font-size:18px;}
+      .nav{display:flex;gap:28px;font-size:14px;} .nav a{color:var(--ink);} .nav a:hover{color:var(--accent);text-decoration:none;}
+      .cta{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;background:var(--accent);color:#061a2e;font-weight:600;font-size:14px;}
+      .cta:hover{background:var(--accent-3);text-decoration:none;}
+      .hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;}
+      .hero-bg{position:absolute;inset:0;} .hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(0.55) saturate(1.15);}
+      .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,26,46,0.3) 0%,rgba(6,26,46,0.7) 60%,var(--bg) 100%);}
+      .hero-content{position:relative;padding:120px 0 80px;max-width:760px;}
+      .eyebrow{text-transform:uppercase;letter-spacing:0.2em;font-size:12px;font-weight:700;color:var(--accent);margin:0 0 20px;}
+      h1{font-size:clamp(44px,6.5vw,78px);line-height:1.02;margin:0 0 24px;letter-spacing:-0.03em;font-weight:800;}
+      .lead{font-size:19px;color:var(--muted);max-width:620px;margin:0 0 36px;}
+      .hero-actions{display:flex;gap:14px;flex-wrap:wrap;} .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.3);}
+      .stats{padding:64px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2);}
+      .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;} .stat{text-align:center;}
+      .stat .num{font-size:40px;font-weight:800;color:var(--accent);letter-spacing:-0.02em;} .stat .lbl{font-size:13px;color:var(--muted);margin-top:6px;}
+      section.block{padding:96px 0;} .section-head{max-width:680px;margin-bottom:56px;} .section-head .eyebrow{color:var(--accent);}
+      h2{font-size:clamp(30px,4vw,46px);line-height:1.1;margin:0 0 16px;letter-spacing:-0.02em;} .section-head p{color:var(--muted);font-size:17px;margin:0;}
+      .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+      .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform 200ms ease,border-color 200ms ease;}
+      .card:hover{transform:translateY(-6px);border-color:rgba(41,182,246,0.4);}
+      .card-art{aspect-ratio:16/9;background:var(--bg-2);position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
+      .card-art img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform 400ms ease;filter:brightness(0.85) saturate(1.1);}
+      .card:hover .card-art img{transform:scale(1.05);}
+      .card-art .svg-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
+      .card-body{padding:24px;} .card h3{margin:0 0 8px;font-size:18px;} .card p{color:var(--muted);font-size:14px;margin:0;}
+      .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+      .split-art{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--bg-2);aspect-ratio:4/3;position:relative;}
+      .split-art img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:brightness(0.8);}
+      .split-art .svg-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
+      .list{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px;} .list li{display:flex;gap:12px;font-size:15px;color:var(--ink);}
+      .list li::before{content:"▸";color:var(--accent);font-weight:700;}
+      .band{background:linear-gradient(120deg,#0a2a4a 0%,#061a2e 100%);padding:80px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+      .band-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+      .band-art{border-radius:18px;border:1px solid var(--line);background:var(--bg);aspect-ratio:3/2;position:relative;overflow:hidden;}
+      .band-art img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:brightness(0.75);}
+      .band-art .svg-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
+      footer{background:#020a14;color:#8fb8d8;padding:64px 0 32px;border-top:1px solid var(--line);}
+      .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;} footer h4{color:#fff;font-size:14px;margin:0 0 14px;}
+      footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:13px;} footer a{color:#8fb8d8;} footer a:hover{color:#fff;}
+      .footer-bottom{border-top:1px solid var(--line);margin-top:40px;padding-top:20px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+      @media (max-width:860px){.split,.band-grid{grid-template-columns:1fr;}.cards{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.footer-grid{grid-template-columns:1fr 1fr;}.nav{display:none;}}
+      @media (max-width:520px){.stats-grid{grid-template-columns:1fr;}.footer-grid{grid-template-columns:1fr;}}
     </style>
   </head>
   <body>
-    <div class="rain" aria-hidden="true" id="rain"></div>
+    <div class="waves" aria-hidden="true"><svg viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0,100 C360,160 720,40 1080,100 C1260,130 1380,110 1440,100 L1440,200 L0,200 Z" fill="rgba(41,182,246,0.18)"/></svg></div>
     <header class="topbar">
       <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-mark">🌧️</div>
-          <span>La Pluie</span>
-        </div>
+        <div class="brand"><div class="brand-mark">🏊</div><span>La Natation</span></div>
         <nav class="nav" aria-label="Navigation principale">
-          <a href="#science">Science</a>
-          <a href="#types">Types</a>
-          <a href="#culture">Culture</a>
-          <a href="#climat">Climat</a>
+          <a href="#histoire">Histoire</a><a href="#techniques">Techniques</a><a href="#bienfaits">Bienfaits</a><a href="#competition">Compétition</a>
         </nav>
         <div style="display:flex;gap:8px;align-items:center;">
-          <a class="cta" href="#science">Découvrir</a>
+          <a class="cta" href="#techniques">Découvrir</a>
           <a class="cta" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;" href="/status" target="_blank" rel="noopener">AI deployment ↗</a>
         </div>
       </div>
     </header>
-
     <section class="hero">
       <div class="hero-bg">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Raindrops_on_water.jpg?width=1400" alt="Gouttes de pluie tombant sur une surface d'eau" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div class="hero-fallback">
-          <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#0b1624"/><g fill="rgba(79,195,247,0.3)"><line x1="100" y1="0" x2="95" y2="80" stroke="currentColor" stroke-width="1"/><line x1="300" y1="0" x2="295" y2="80" stroke="currentColor" stroke-width="1"/><line x1="500" y1="0" x2="495" y2="80" stroke="currentColor" stroke-width="1"/><line x1="700" y1="0" x2="695" y2="80" stroke="currentColor" stroke-width="1"/><line x1="900" y1="0" x2="895" y2="80" stroke="currentColor" stroke-width="1"/></g></svg>
-        </div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Swimming_pool_underwater_1.JPG?width=1400" alt="Vue sous-marine d'une piscine" loading="eager" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <div class="hero-fallback" style="display:none;position:absolute;inset:0;"><svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#061a2e"/><g fill="rgba(41,182,246,0.25)"><ellipse cx="600" cy="350" rx="500" ry="200" fill="rgba(41,182,246,0.12)"/><path d="M0,500 Q300,460 600,500 T1200,500 L1200,700 L0,700 Z" fill="rgba(41,182,246,0.2)"/></g></svg></div>
       </div>
       <div class="container hero-content">
-        <p class="eyebrow">Eau · Atmosphère · Vie</p>
-        <h1>La pluie, poésie de l'atmosphère</h1>
-        <p class="lead">
-          De la goutte qui naît dans un nuage à l'averse qui arrose la terre, la pluie est un cycle fascinant
-          qui nourrit la vie, sculpte les paysages et inspire les artistes depuis toujours.
-        </p>
-        <div class="hero-actions">
-          <a class="cta" href="#science">La science de la pluie</a>
-          <a class="cta btn-ghost" href="#culture">Culture et pluie</a>
-        </div>
+        <p class="eyebrow">Eau · Mouvement · Respiration</p>
+        <h1>La natation, art de glisser dans l'eau</h1>
+        <p class="lead">De l'Antiquité aux bassins olympiques, la natation est à la fois sport, santé et plaisir. Apprendre à nager, c'est apprendre à respirer autrement et à dompter l'élément liquide.</p>
+        <div class="hero-actions"><a class="cta" href="#techniques">Les 4 nages</a><a class="cta btn-ghost" href="#competition">Compétition</a></div>
       </div>
     </section>
-
     <section class="stats">
       <div class="container stats-grid">
-        <div class="stat"><div class="num">505 000 km³</div><div class="lbl">Précipitations annuelles sur Terre</div></div>
-        <div class="stat"><div class="num">~8 mm</div><div class="lbl">Diamètre max d'une goutte</div></div>
-        <div class="stat"><div class="num">3,8 m</div><div class="lbl">Record de pluie en 24 h (La Réunion)</div></div>
-        <div class="stat"><div class="num">200</div><div class="lbl">Jours de pluie/an à Londres</div></div>
+        <div class="stat"><div class="num">14 min</div><div class="lbl">Record du 1500 m (hommes)</div></div>
+        <div class="stat"><div class="num">4</div><div class="lbl">Nages olympiques</div></div>
+        <div class="stat"><div class="num">47 s</div><div class="lbl">Record du 100 m nage libre</div></div>
+        <div class="stat"><div class="num">1896</div><div class="lbl">Natation aux Jeux olympiques</div></div>
       </div>
     </section>
-
-    <section id="science" class="block">
+    <section id="histoire" class="block">
       <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Science</p>
-          <h2>Comment naît la pluie ?</h2>
-          <p>Un cycle en quatre étapes : évaporation, condensation, précipitation, ruissellement.</p>
-        </div>
+        <div class="section-head"><p class="eyebrow">Histoire</p><h2>Une histoire millénaire</h2><p>De la préhistoire aux bassins modernes, l'humain nage pour survivre, se déplacer et se dépasser.</p></div>
         <div class="cards">
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rain%20drops%20(2474695068).jpg?width=800" alt="Gouttes de pluie sur une feuille" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><circle cx="-15" cy="-10" r="12" fill="#4fc3f7" opacity="0.8"/><circle cx="15" cy="5" r="10" fill="#4fc3f7" opacity="0.6"/><circle cx="0" cy="20" r="8" fill="#4fc3f7" opacity="0.5"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Natation.jpg?width=800" alt="Nageur en action" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><path d="M-40,0 Q-20,-20 0,0 T40,0" fill="none" stroke="#29b6f6" stroke-width="3"/><circle cx="-10" cy="-15" r="6" fill="#29b6f6"/></g></svg></div>
             </div>
-            <div class="card-body">
-              <h3>Évaporation</h3>
-              <p>L'eau des océans, lacs et rivières s'évapore sous l'effet de la chaleur solaire.</p>
-            </div>
+            <div class="card-body"><h3>Antiquité</h3><p>Égyptiens, Grecs et Romains nagent déjà ; la natation est enseignée aux soldats.</p></div>
           </article>
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rainy%20Day%20(198960677).jpeg?width=800" alt="Journée pluvieuse en ville" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><ellipse cx="0" cy="-20" rx="30" ry="18" fill="#9bb0cc" opacity="0.9"/><line x1="-15" y1="5" x2="-18" y2="25" stroke="#4fc3f7" stroke-width="2"/><line x1="0" y1="5" x2="-3" y2="25" stroke="#4fc3f7" stroke-width="2"/><line x1="15" y1="5" x2="12" y2="25" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Blad_man_swimming_in_the_swimming_pool.jpg?width=800" alt="Homme nageant dans une piscine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><rect x="-40" y="-10" width="80" height="20" rx="10" fill="#0c2a4a" stroke="#29b6f6" stroke-width="2"/><circle cx="-25" cy="0" r="4" fill="#29b6f6"/><circle cx="0" cy="0" r="4" fill="#29b6f6"/><circle cx="25" cy="0" r="4" fill="#29b6f6"/></g></svg></div>
             </div>
-            <div class="card-body">
-              <h3>Condensation</h3>
-              <p>La vapeur d'eau se refroidit en altitude et forme des nuages.</p>
-            </div>
+            <div class="card-body"><h3>XIXᵉ siècle</h3><p>Les clubs et piscines se multiplient en Europe ; la natation devient sport organisé.</p></div>
           </article>
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/After%20The%20Rain%20(149330265).jpeg?width=800" alt="Paysage après la pluie" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><path d="M-40,0 Q-40,-25 -15,-25 Q0,-40 15,-25 Q40,-25 40,0 Z" fill="#9bb0cc" opacity="0.9"/><line x1="-25" y1="5" x2="-28" y2="30" stroke="#4fc3f7" stroke-width="2"/><line x1="0" y1="5" x2="-3" y2="30" stroke="#4fc3f7" stroke-width="2"/><line x1="25" y1="5" x2="22" y2="30" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/5e_nage.jpg?width=800" alt="Compétition de natation" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><path d="M-45,0 L-20,-20 L20,-20 L45,0 L20,20 L-20,20 Z" fill="none" stroke="#29b6f6" stroke-width="2"/><circle cx="0" cy="0" r="8" fill="#29b6f6"/></g></svg></div>
             </div>
-            <div class="card-body">
-              <h3>Précipitation</h3>
-              <p>Les gouttes grossissent et tombent quand elles deviennent trop lourdes.</p>
-            </div>
+            <div class="card-body"><h3>Ère olympique</h3><p>Présente depuis 1896, la natation est aujourd'hui l'un des sports phares des Jeux.</p></div>
           </article>
         </div>
       </div>
     </section>
-
-    <section id="types" class="block" style="background: var(--bg-2);">
+    <section id="techniques" class="block" style="background:var(--bg-2);">
       <div class="container split">
         <div>
-          <p class="eyebrow" style="color: var(--accent);">Types</p>
-          <h2>Les visages de la pluie</h2>
-          <p style="color: var(--muted); font-size: 17px;">
-            De la bruine fine à l'orage violent, la pluie prend mille formes selon la température, l'humidité
-            et les courants atmosphériques.
-          </p>
+          <p class="eyebrow" style="color:var(--accent);">Techniques</p>
+          <h2>Les 4 nages</h2>
+          <p style="color:var(--muted);font-size:17px;">Chaque nage a sa technique, son rythme et son souffle. Maîtriser les quatre, c'est être nageur complet.</p>
           <ul class="list">
-            <li>Bruine et crachin (gouttes fines)</li>
-            <li>Averse (pluie intense et brève)</li>
-            <li>Pluie continue (frontale)</li>
-            <li>Orage (pluie + tonnerre + éclairs)</li>
-            <li>Pluie verglaçante (pluie gelée au sol)</li>
+            <li>Crawl (nage libre) — la plus rapide</li>
+            <li>Brasse — la plus ancienne, la plus accessible</li>
+            <li>Dos crawlé — respiration libre, vue sur le ciel</li>
+            <li>Papillon — la plus spectaculaire et exigeante</li>
           </ul>
         </div>
         <div class="split-art">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Raindrops_on_water.jpg?width=800" alt="Gouttes de pluie sur l'eau" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <svg class="svg-fallback" viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;display:none;"><g transform="translate(100,75)"><circle cx="-30" cy="-20" r="18" fill="#4fc3f7" opacity="0.7"/><circle cx="20" cy="10" r="14" fill="#4fc3f7" opacity="0.5"/><circle cx="-10" cy="25" r="10" fill="#4fc3f7" opacity="0.4"/><line x1="-50" y1="-40" x2="-55" y2="-15" stroke="#9bb0cc" stroke-width="1.5"/><line x1="40" y1="-30" x2="35" y2="-5" stroke="#9bb0cc" stroke-width="1.5"/><line x1="0" y1="-50" x2="-5" y2="-25" stroke="#9bb0cc" stroke-width="1.5"/></g></svg>
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Swimming_pool_underwater_1.JPG?width=800" alt="Vue sous-marine d'une piscine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="svg-fallback"><svg viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;"><g transform="translate(100,75)"><path d="M-80,0 Q-40,-30 0,0 T80,0" fill="none" stroke="#29b6f6" stroke-width="3"/><circle cx="-60" cy="-10" r="6" fill="#29b6f6"/><circle cx="-20" cy="5" r="6" fill="#29b6f6"/><circle cx="20" cy="-5" r="6" fill="#29b6f6"/><circle cx="60" cy="10" r="6" fill="#29b6f6"/></g></svg></div>
         </div>
       </div>
     </section>
-
-    <section id="culture" class="block">
+    <section id="bienfaits" class="block">
       <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Culture</p>
-          <h2>La pluie dans l'art et la poésie</h2>
-          <p>De Verlaine à Baudelaire, la pluie a toujours inspiré les artistes.</p>
-        </div>
+        <div class="section-head"><p class="eyebrow">Santé</p><h2>Les bienfaits de la natation</h2><p>Un sport complet, doux pour les articulations et exigeant pour le cœur et les poumons.</p></div>
         <div class="band">
           <div class="container band-grid">
             <div>
-              <h2 style="font-size: 32px;">« Il pleure dans mon cœur »</h2>
-              <p style="color: var(--muted); font-size: 16px; font-style: italic;">
-                « Il pleure dans mon cœur comme il pleut sur la ville. » — Paul Verlaine, Romances sans paroles.
-              </p>
-              <p style="color: var(--muted); font-size: 16px;">
-                La pluie est un thème universel : mélancolie, renouveau, purification. Elle traverse la peinture
-                impressionniste, le cinéma, la musique et la littérature du monde entier.
-              </p>
+              <h2 style="font-size:32px;">Un corps et un souffle</h2>
+              <p style="color:var(--muted);font-size:16px;">La natation sollicite presque tous les muscles sans impact. Elle améliore l'endurance cardiovasculaire, la souplesse et la coordination. C'est aussi un allié contre le stress : l'eau apaise et la respiration rythmée calme le système nerveux.</p>
+              <p style="color:var(--muted);font-size:16px;">Accessible à tout âge, elle est recommandée pour la rééducation et le maintien en forme.</p>
             </div>
             <div class="band-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rainy%20Day%20(198960677).jpeg?width=800" alt="Journée pluvieuse" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;display:none;"><g transform="translate(100,70)"><path d="M-60,20 Q-60,-10 -30,-10 Q-15,-35 0,-10 Q15,-35 30,-10 Q60,-10 60,20 Z" fill="#9bb0cc" opacity="0.9"/><line x1="-40" y1="25" x2="-43" y2="50" stroke="#4fc3f7" stroke-width="2"/><line x1="-15" y1="25" x2="-18" y2="50" stroke="#4fc3f7" stroke-width="2"/><line x1="10" y1="25" x2="7" y2="50" stroke="#4fc3f7" stroke-width="2"/><line x1="35" y1="25" x2="32" y2="50" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Blad_man_swimming_in_the_swimming_pool.jpg?width=800" alt="Nageur en piscine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;"><g transform="translate(100,70)"><ellipse cx="0" cy="0" rx="60" ry="30" fill="rgba(41,182,246,0.15)" stroke="#29b6f6" stroke-width="2"/><path d="M-40,0 Q0,-20 40,0" fill="none" stroke="#29b6f6" stroke-width="2"/><circle cx="0" cy="-5" r="6" fill="#29b6f6"/></g></svg></div>
             </div>
           </div>
         </div>
       </div>
     </section>
-
-    <section id="climat" class="block">
+    <section id="competition" class="block">
       <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Climat</p>
-          <h2>La pluie et le changement climatique</h2>
-          <p>Le cycle de l'eau s'intensifie : plus d'extrêmes, plus d'incertitude.</p>
-        </div>
+        <div class="section-head"><p class="eyebrow">Compétition</p><h2>Records et légendes</h2><p>Les plus grands nageurs ont repoussé les limites du possible dans l'eau.</p></div>
         <div class="cards">
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rain%20drops%20(2474695068).jpg?width=800" alt="Gouttes de pluie" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="25" fill="#4fc3f7" opacity="0.6"/><path d="M-15,-5 Q0,-25 15,-5" fill="none" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/5e_nage.jpg?width=800" alt="Compétition de natation" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="30" fill="none" stroke="#29b6f6" stroke-width="3"/><path d="M0,-30 L0,30" stroke="#29b6f6" stroke-width="2"/><path d="M-30,0 L30,0" stroke="#29b6f6" stroke-width="2"/></g></svg></div>
             </div>
-            <div class="card-body">
-              <h3>Intensification</h3>
-              <p>Les épisodes pluvieux deviennent plus intenses et plus rares.</p>
-            </div>
+            <div class="card-body"><h3>Sprint</h3><p>50 m et 100 m nage libre : explosivité et technique parfaite.</p></div>
           </article>
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/After%20The%20Rain%20(149330265).jpeg?width=800" alt="Après la pluie" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><rect x="-30" y="-20" width="60" height="40" rx="8" fill="#9bb0cc" opacity="0.5"/><path d="M-20,0 L0,-20 L20,0" fill="none" stroke="#4fc3f7" stroke-width="2"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Natation.jpg?width=800" alt="Nageur en action" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><path d="M-40,0 Q-20,-15 0,0 T40,0" fill="none" stroke="#29b6f6" stroke-width="3"/><circle cx="0" cy="-15" r="6" fill="#29b6f6"/></g></svg></div>
             </div>
-            <div class="card-body">
-              <h3>Sécheresses</h3>
-              <p>Les périodes sèches s'allongent dans de nombreuses régions.</p>
-            </div>
+            <div class="card-body"><h3>Fond</h3><p>800 m et 1500 m : endurance, stratégie et gestion de l'effort.</p></div>
           </article>
           <article class="card">
             <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Raindrops_on_water.jpg?width=800" alt="Pluie sur l'eau" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <svg class="svg-fallback" viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;display:none;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="30" fill="#4fc3f7" opacity="0.4"/><circle cx="0" cy="0" r="15" fill="#4fc3f7" opacity="0.6"/></g></svg>
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Swimming_pool_underwater_1.JPG?width=800" alt="Vue sous-marine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><rect x="-35" y="-25" width="70" height="50" rx="8" fill="none" stroke="#29b6f6" stroke-width="2"/><path d="M-35,0 L35,0" stroke="#29b6f6" stroke-width="1.5"/></g></svg></div>
             </div>
-            <div class="card-body">
-              <h3>Adaptation</h3>
-              <p>Gestion de l'eau, agriculture résiliente, villes éponges.</p>
-            </div>
+            <div class="card-body"><h3>Relais</h3><p>4×100 m et 4×200 m : l'esprit d'équipe dans l'eau.</p></div>
           </article>
         </div>
       </div>
     </section>
-
     <footer id="contact">
       <div class="container">
         <div class="footer-grid">
-          <div>
-            <div class="brand" style="color:#fff; margin-bottom: 12px;">
-              <div class="brand-mark">🌧️</div>
-              <span style="color:#fff;">La Pluie</span>
-            </div>
-            <p style="font-size: 13px; max-width: 320px;">Beauté, science et poésie de l'eau qui tombe.</p>
-          </div>
-          <div>
-            <h4>Science</h4>
-            <ul>
-              <li><a href="#science">Cycle de l'eau</a></li>
-              <li><a href="#types">Types de pluie</a></li>
-              <li><a href="#climat">Climat</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Culture</h4>
-            <ul>
-              <li><a href="#culture">Poésie</a></li>
-              <li><a href="#">Peinture</a></li>
-              <li><a href="#">Musique</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Déploiement</h4>
-            <ul>
-              <li><a href="/status" target="_blank" rel="noopener">AI deployment ↗</a></li>
-              <li><a href="/healthz" target="_blank" rel="noopener">Health check</a></li>
-            </ul>
-          </div>
+          <div><div class="brand" style="color:#fff;margin-bottom:12px;"><div class="brand-mark">🏊</div><span style="color:#fff;">La Natation</span></div><p style="font-size:13px;max-width:320px;">L'art de glisser dans l'eau, de la première brassée au record olympique.</p></div>
+          <div><h4>Techniques</h4><ul><li><a href="#techniques">Les 4 nages</a></li><li><a href="#bienfaits">Bienfaits</a></li><li><a href="#competition">Compétition</a></li></ul></div>
+          <div><h4>Histoire</h4><ul><li><a href="#histoire">Antiquité</a></li><li><a href="#histoire">XIXᵉ siècle</a></li><li><a href="#histoire">Jeux olympiques</a></li></ul></div>
+          <div><h4>Déploiement</h4><ul><li><a href="/status" target="_blank" rel="noopener">AI deployment ↗</a></li><li><a href="/healthz" target="_blank" rel="noopener">Health check</a></li></ul></div>
         </div>
-        <div class="footer-bottom">
-          <span>© La Pluie — page de démonstration NKP</span>
-          <span>Déployé via NKP GitOps</span>
-        </div>
+        <div class="footer-bottom"><span>© La Natation — page de démonstration NKP</span><span>Déployé via NKP GitOps</span></div>
       </div>
     </footer>
-
     <script>
-      // Rain drops animation
-      (function(){
-        const rain = document.getElementById('rain');
-        if (!rain) return;
-        const count = 80;
-        let html = '';
-        for (let i = 0; i < count; i++) {
-          const left = Math.random() * 100;
-          const delay = Math.random() * 2;
-          const dur = 0.8 + Math.random() * 0.6;
-          const h = 40 + Math.random() * 40;
-          html += `<span style="left:${left}%;animation-delay:${delay}s;animation-duration:${dur}s;height:${h}px;"></span>`;
-        }
-        rain.innerHTML = html;
-      })();
-      document.querySelectorAll('img').forEach(function(img){
-        img.addEventListener('error', function(){
-          this.style.display = 'none';
-          var fb = this.nextElementSibling;
-          if (fb && fb.classList && fb.classList.contains('svg-fallback')) {
-            fb.style.display = 'flex';
-          }
-        });
-      });
+      document.querySelectorAll('img').forEach(function(img){img.addEventListener('error',function(){this.style.display='none';var fb=this.nextElementSibling;if(fb&&fb.classList&&(fb.classList.contains('svg-fallback')||fb.classList.contains('hero-fallback'))){fb.style.display='flex';}});});
     </script>
   </body>
 </html>

@@ -19,7 +19,7 @@ def hello():
 
 @app.get("/healthz")
 def healthz():
-    return jsonify(status="ok", version=APP_VERSION, app="basket-jereme")
+    return jsonify(status="ok", version=APP_VERSION, app="natatio")
 
 
 @app.get("/status")
