@@ -3,27 +3,346 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b1624">
-    <title>Démo en attente</title>
+    <meta name="theme-color" content="#003da5">
+    <title>Michelin — Une meilleure façon d'avancer</title>
     <style>
-      :root { --bg:#0b1624; --ink:#e8f0fa; --muted:#9bb0cc; --accent:#4fc3f7; }
+      :root {
+        --bg: #0a1a3a;
+        --bg-2: #0f2350;
+        --ink: #f2f6ff;
+        --muted: #a8b8d8;
+        --line: rgba(255,255,255,0.1);
+        --accent: #ffcc00;
+        --accent-2: #ffe066;
+        --blue: #003da5;
+        --card: rgba(255,255,255,0.05);
+        font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
       * { box-sizing: border-box; }
-      html, body { margin: 0; height: 100%; }
-      body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); display: grid; place-items: center; text-align: center; padding: 24px; }
-      .card { max-width: 560px; }
-      h1 { font-size: clamp(28px, 5vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; }
-      p { color: var(--muted); margin: 0 0 24px; font-size: 16px; }
-      .pulse { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 24px; background: radial-gradient(circle, var(--accent), transparent 70%); animation: p 1.6s ease-in-out infinite; }
-      @keyframes p { 0%,100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.1); opacity: 1; } }
-      .foot { font-size: 12px; opacity: .6; margin-top: 8px; }
+      html, body { margin: 0; }
+      body { color: var(--ink); background: var(--bg); line-height: 1.6; overflow-x: hidden; }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      img, svg { max-width: 100%; display: block; }
+
+      .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; position: relative; z-index: 1; }
+
+      .topbar { position: sticky; top: 0; z-index: 20; background: rgba(10,26,58,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+      .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; color: #fff; letter-spacing: 0.02em; }
+      .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), #001f5c); display: grid; place-items: center; color: var(--accent); font-size: 20px; border: 2px solid var(--accent); }
+      .nav { display: flex; gap: 28px; font-size: 14px; }
+      .nav a { color: var(--ink); }
+      .nav a:hover { color: var(--accent); text-decoration: none; }
+      .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: var(--accent); color: #0a1a3a; font-weight: 700; font-size: 14px; }
+      .cta:hover { background: var(--accent-2); text-decoration: none; }
+
+      .hero { position: relative; min-height: 92vh; display: flex; align-items: center; overflow: hidden; }
+      .hero-bg { position: absolute; inset: 0; }
+      .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5) saturate(1.05); }
+      .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,26,58,0.25) 0%, rgba(10,26,58,0.7) 60%, var(--bg) 100%); }
+      .hero-content { position: relative; padding: 120px 0 80px; max-width: 760px; }
+      .eyebrow { text-transform: uppercase; letter-spacing: 0.22em; font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 0 20px; }
+      h1 { font-size: clamp(44px, 6.5vw, 78px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -0.03em; font-weight: 800; }
+      .lead { font-size: 19px; color: var(--muted); max-width: 620px; margin: 0 0 36px; }
+      .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+      .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+      .stats { padding: 64px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-2); }
+      .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+      .stat { text-align: center; }
+      .stat .num { font-size: 40px; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; }
+      .stat .lbl { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+      section.block { padding: 96px 0; }
+      .section-head { max-width: 680px; margin-bottom: 56px; }
+      .section-head .eyebrow { color: var(--accent); }
+      h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
+      .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
+
+      .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease; }
+      .card:hover { transform: translateY(-6px); border-color: rgba(255,204,0,0.4); }
+      .card-art { aspect-ratio: 16/9; background: var(--bg-2); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+      .card-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 400ms ease; filter: brightness(0.85) saturate(1.05); }
+      .card:hover .card-art img { transform: scale(1.05); }
+      .card-art .svg-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; }
+      .card-body { padding: 24px; }
+      .card h3 { margin: 0 0 8px; font-size: 18px; }
+      .card p { color: var(--muted); font-size: 14px; margin: 0; }
+
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+      .split-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); aspect-ratio: 4/3; position: relative; }
+      .split-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; filter: brightness(0.8); }
+      .split-art .svg-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; }
+      .list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
+      .list li { display: flex; gap: 12px; font-size: 15px; color: var(--ink); }
+      .list li::before { content: "▸"; color: var(--accent); font-weight: 700; }
+
+      .band { background: linear-gradient(120deg, #0f2350 0%, #0a1a3a 100%); padding: 80px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+      .band-art { border-radius: 18px; border: 1px solid var(--line); background: var(--bg); aspect-ratio: 3/2; position: relative; overflow: hidden; }
+      .band-art img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; filter: brightness(0.75); }
+      .band-art .svg-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; }
+
+      footer { background: #050a14; color: #8fa8c8; padding: 64px 0 32px; border-top: 1px solid var(--line); }
+      .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+      footer h4 { color: #fff; font-size: 14px; margin: 0 0 14px; }
+      footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 13px; }
+      footer a { color: #8fa8c8; }
+      footer a:hover { color: #fff; }
+      .footer-bottom { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+      @media (max-width: 860px) {
+        .split, .band-grid { grid-template-columns: 1fr; }
+        .cards { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: repeat(2,1fr); }
+        .footer-grid { grid-template-columns: 1fr 1fr; }
+        .nav { display: none; }
+      }
+      @media (max-width: 520px) {
+        .stats-grid { grid-template-columns: 1fr; }
+        .footer-grid { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
-    <div class="card">
-      <div class="pulse" aria-hidden="true"></div>
-      <h1>Démo en attente</h1>
-      <p>La prochaine démonstration NKP chargera automatiquement ici.</p>
-      <p class="foot">Déployé via NKP GitOps</p>
-    </div>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">M</div>
+          <span>Michelin</span>
+        </div>
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="#histoire">Histoire</a>
+          <a href="#innovation">Innovation</a>
+          <a href="#mobilite">Mobilité</a>
+          <a href="#gastronomie">Gastronomie</a>
+        </nav>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a class="cta" href="#innovation">Découvrir</a>
+          <a class="cta" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;" href="/status" target="_blank" rel="noopener">AI deployment ↗</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-bg">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Sign_for_Michelin_tyres.jpg?width=1400" alt="Enseigne Michelin avec Bibendum" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="hero-fallback" style="display:none;position:absolute;inset:0;">
+          <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#0a1a3a"/><g fill="rgba(255,204,0,0.15)"><circle cx="600" cy="350" r="220" fill="rgba(0,61,165,0.4)"/><ellipse cx="600" cy="350" rx="180" ry="90" fill="none" stroke="#ffcc00" stroke-width="3"/><circle cx="600" cy="350" r="40" fill="#ffcc00" opacity="0.6"/></g></svg>
+        </div>
+      </div>
+      <div class="container hero-content">
+        <p class="eyebrow">Mobilité · Innovation · Durabilité</p>
+        <h1>Michelin, une meilleure façon d'avancer</h1>
+        <p class="lead">
+          Depuis 1889, Michelin accompagne les déplacements des personnes et des biens.
+          Pneumatiques, cartes, guides, mobilité électrique : l'innovation au service de la route.
+        </p>
+        <div class="hero-actions">
+          <a class="cta" href="#innovation">Innovation</a>
+          <a class="cta btn-ghost" href="#gastronomie">Gastronomie</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="container stats-grid">
+        <div class="stat"><div class="num">1889</div><div class="lbl">Création de Michelin</div></div>
+        <div class="stat"><div class="num">120+</div><div class="lbl">Pays présents</div></div>
+        <div class="stat"><div class="num">Bibendum</div><div class="lbl">Mascotte iconique</div></div>
+        <div class="stat"><div class="num">3 étoiles</div><div class="lbl">Excellence gastronomique</div></div>
+      </div>
+    </section>
+
+    <section id="histoire" class="block">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Histoire</p>
+          <h2>De l'atelier clermontois au leader mondial</h2>
+          <p>Les frères Michelin inventent le pneu démontable et transforment la mobilité.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Michelin_Poster_1898.jpg?width=800" alt="Affiche Michelin 1898 avec Bibendum" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="30" fill="none" stroke="#ffcc00" stroke-width="4"/><circle cx="0" cy="0" r="12" fill="#003da5"/><circle cx="0" cy="0" r="4" fill="#ffcc00"/></g></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>1898 — Bibendum</h3>
+              <p>Naissance de la mascotte qui deviendra l'un des symboles les plus célèbres au monde.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Michelin.jpg?width=800" alt="Michelin" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><path d="M-40,0 L40,0" stroke="#ffcc00" stroke-width="3"/><circle cx="-20" cy="0" r="8" fill="#003da5"/><circle cx="20" cy="0" r="8" fill="#003da5"/></g></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Cartes et guides</h3>
+              <p>Michelin cartographie les routes et guide les voyageurs depuis le début du XXᵉ siècle.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bibendum.jpg?width=800" alt="Bibendum la mascotte Michelin" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><circle cx="0" cy="-15" r="12" fill="#ffffff"/><rect x="-8" y="-3" width="16" height="24" rx="4" fill="#ffffff"/><circle cx="-4" cy="28" r="6" fill="#ffffff"/><circle cx="4" cy="28" r="6" fill="#ffffff"/></g></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Icone mondiale</h3>
+              <p>Bibendum incarne la robustesse et la convivialité de la marque.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="innovation" class="block" style="background: var(--bg-2);">
+      <div class="container split">
+        <div>
+          <p class="eyebrow" style="color: var(--accent);">Innovation</p>
+          <h2>Pneus, matériaux, mobilité durable</h2>
+          <p style="color: var(--muted); font-size: 17px;">
+            Michelin investit dans la recherche pour des pneus plus sûrs, plus durables et adaptés
+            à la mobilité électrique et autonome.
+          </p>
+          <ul class="list">
+            <li>Pneus haute performance et sécurité</li>
+            <li>Mobilité électrique et hybride</li>
+            <li>Matériaux durables et recyclage</li>
+            <li>Solutions connectées et données</li>
+          </ul>
+        </div>
+        <div class="split-art">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Sign_for_Michelin_tyres.jpg?width=800" alt="Enseigne Michelin" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="svg-fallback"><svg viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;"><g transform="translate(100,75)"><circle cx="0" cy="0" r="50" fill="none" stroke="#ffcc00" stroke-width="6"/><circle cx="0" cy="0" r="20" fill="#003da5"/><circle cx="0" cy="0" r="6" fill="#ffcc00"/></g></svg></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mobilite" class="block">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Mobilité</p>
+          <h2>Accompagner tous les déplacements</h2>
+          <p>De la voiture au camion, du vélo à l'avion, Michelin équipe la mobilité.</p>
+        </div>
+        <div class="band">
+          <div class="container band-grid">
+            <div>
+              <h2 style="font-size: 32px;">Route, piste, ciel</h2>
+              <p style="color: var(--muted); font-size: 16px;">
+                Les pneus Michelin équipent les véhicules du quotidien comme les bolides de compétition.
+                L'expertise s'étend aussi aux pneus pour avions et engins lourds.
+              </p>
+              <p style="color: var(--muted); font-size: 16px;">
+                Les guides et cartes Michelin restent des références pour le voyage.
+              </p>
+            </div>
+            <div class="band-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Michelin_Poster_1898.jpg?width=800" alt="Affiche Michelin historique" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;"><g transform="translate(100,70)"><rect x="-60" y="-20" width="120" height="40" rx="20" fill="none" stroke="#ffcc00" stroke-width="3"/><circle cx="-30" cy="0" r="12" fill="#003da5"/><circle cx="30" cy="0" r="12" fill="#003da5"/></g></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gastronomie" class="block">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Gastronomie</p>
+          <h2>Le Guide Michelin</h2>
+          <p>Depuis 1900, le Guide Michelin distingue les meilleures tables du monde.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bibendum.jpg?width=800" alt="Bibendum" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><polygon points="0,-35 10,-10 35,-10 15,5 22,30 0,15 -22,30 -15,5 -35,-10 -10,-10" fill="#ffcc00"/></g></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Une étoile</h3>
+              <p>Une très bonne table dans sa catégorie.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Michelin.jpg?width=800" alt="Michelin" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><polygon points="0,-35 10,-10 35,-10 15,5 22,30 0,15 -22,30 -15,5 -35,-10 -10,-10" fill="#ffcc00"/><polygon points="0,-20 6,-6 20,-6 9,3 13,17 0,9 -13,17 -9,3 -20,-6 -6,-6" fill="#003da5"/></g></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Deux étoiles</h3>
+              <p>Une table excellente, mérite un détour.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Sign_for_Michelin_tyres.jpg?width=800" alt="Michelin" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><polygon points="0,-35 10,-10 35,-10 15,5 22,30 0,15 -22,30 -15,5 -35,-10 -10,-10" fill="#ffcc00"/><polygon points="0,-20 6,-6 20,-6 9,3 13,17 0,9 -13,17 -9,3 -20,-6 -6,-6" fill="#003da5"/><circle cx="0" cy="0" r="4" fill="#ffcc00"/></g></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Trois étoiles</h3>
+              <p>Une table exceptionnelle, vaut le voyage.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="brand" style="color:#fff; margin-bottom: 12px;">
+              <div class="brand-mark">M</div>
+              <span style="color:#fff;">Michelin</span>
+            </div>
+            <p style="font-size: 13px; max-width: 320px;">Une meilleure façon d'avancer.</p>
+          </div>
+          <div>
+            <h4>Innovation</h4>
+            <ul>
+              <li><a href="#innovation">Pneus</a></li>
+              <li><a href="#mobilite">Mobilité</a></li>
+              <li><a href="#gastronomie">Guide</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Histoire</h4>
+            <ul>
+              <li><a href="#histoire">1889</a></li>
+              <li><a href="#histoire">Bibendum</a></li>
+              <li><a href="#histoire">Cartes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Déploiement</h4>
+            <ul>
+              <li><a href="/status" target="_blank" rel="noopener">AI deployment ↗</a></li>
+              <li><a href="/healthz" target="_blank" rel="noopener">Health check</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© Michelin — page de démonstration NKP</span>
+          <span>Déployé via NKP GitOps</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.querySelectorAll('img').forEach(function(img){
+        img.addEventListener('error', function(){
+          this.style.display = 'none';
+          var fb = this.nextElementSibling;
+          if (fb && fb.classList && (fb.classList.contains('svg-fallback') || fb.classList.contains('hero-fallback'))) {
+            fb.style.display = 'flex';
+          }
+        });
+      });
+    </script>
   </body>
 </html>
