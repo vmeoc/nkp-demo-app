@@ -40,19 +40,33 @@ git add index.html nkp-app.yaml k8s/
 git commit -m "chore: RAZ demo -> page 'demo loading', IP LB dynamique"
 git pull --rebase && git push
 
+TOKEN="${DEMO_STATE_TOKEN:-${WIP_TOKEN:-demo-wip-token}}"
+
 # 5. Attendre le déploiement (l'etat raz est deduit de la page deployee au demarrage du pod)
 if [ -x .opencode/skills/nkp-deploy/check_deploy.sh ]; then
   .opencode/skills/nkp-deploy/check_deploy.sh verify
 fi
 
-IP=$(kubectl --context "${NKP_CONTEXT:-}" -n "${NKP_NAMESPACE:-}" get svc natatio \
-  -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
+# Recuperer l'IP avec retries (MetalLB peut l'attribuer tardivement)
+IP=""
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  IP=$(kubectl --context "${NKP_CONTEXT:-}" -n "${NKP_NAMESPACE:-}" get svc natatio \
+    -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
+  [ -n "$IP" ] && break
+  sleep 3
+done
 
-# Remettre le dashboard en "en attente" (la verification ci-dessus a pu poster "success")
+# Remettre le dashboard en "en attente" (la verification ci-dessus a pu poster autre chose)
 if [ -n "$IP" ]; then
-  curl -s -m 10 -X POST "http://${IP}/demo-state" \
-    -H 'X-Demo-State-Token: demo-wip-token' -H 'Content-Type: application/json' \
-    -d '{"status":"idle","mode":"raz","message":"Démo en attente (page de chargement)","theme":"demo-loading","pipeline":{"code":"pending","gitPush":"pending","ci":"pending","flux":"pending","rollout":"pending","health":"pending"}}' >/dev/null 2>&1 || true
+  payload='{"status":"idle","mode":"raz","message":"Démo en attente (page de chargement)","theme":"demo-loading","pipeline":{"code":"pending","gitPush":"pending","ci":"pending","flux":"pending","rollout":"pending","health":"pending"}}'
+  for _ in 1 2 3; do
+    code=$(curl -s -m 10 -o /dev/null -w '%{http_code}' -X POST "http://${IP}/demo-state" \
+      -H "X-Demo-State-Token: ${TOKEN}" -H 'Content-Type: application/json' \
+      -d "$payload" 2>/dev/null || echo "000")
+    [ "$code" = "200" ] && break
+    echo "ATTENTION reset post_state HTTP $code (nouvelle tentative)" >&2
+    sleep 2
+  done
 fi
 
 # 6. Aide

@@ -460,6 +460,8 @@
     }
 
     function renderCards() {
+      const container = $("pipeline-cards");
+      if (!container) return;
       const ci = ciStatus();
       const run = state.runs[0];
       const ciDetail = run
@@ -489,7 +491,7 @@
               ? "Rollout échoué ou timeout."
               : "Rollout en cours.";
 
-      $("pipeline-cards").innerHTML = [
+      container.innerHTML = [
         card("Code développeur", developerStatus(), `Greeting détecté : ${escapeHtml(state.greeting || "non trouvé")}`),
         card("Orchestration IA", aiStatus(), state.deployLog.length ? `Dernier événement : ${escapeHtml(state.deployLog[state.deployLog.length - 1].step)} (${escapeHtml(state.deployLog[state.deployLog.length - 1].status)})` : "Aucun événement d’orchestration enregistré."),
         card("Push Git", gitPushStatus(), state.runs.length ? "Push détecté via les runs GitHub Actions." : "Aucun push détecté."),
@@ -501,8 +503,10 @@
     }
 
     function renderHistory() {
+      const container = $("history");
+      if (!container) return;
       if (!state.runs.length) {
-        $("history").innerHTML = "Aucun historique disponible.";
+        container.innerHTML = "Aucun historique disponible.";
         return;
       }
       const rows = state.runs.map((run) => `
@@ -514,7 +518,7 @@
           <td><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noopener">run</a></td>
         </tr>
       `).join("");
-      $("history").innerHTML = `
+      container.innerHTML = `
         <table>
           <thead><tr><th>État</th><th>Run</th><th>Commit</th><th>Créé</th><th>Lien</th></tr></thead>
           <tbody>${rows}</tbody>
@@ -523,11 +527,13 @@
     }
 
     function renderTimeline() {
+      const container = $("timeline");
+      if (!container) return;
       if (!state.deployLog.length) {
-        $("timeline").innerHTML = "Aucun événement.";
+        container.innerHTML = "Aucun événement.";
         return;
       }
-      $("timeline").innerHTML = state.deployLog.slice().reverse().map((event) => `
+      container.innerHTML = state.deployLog.slice().reverse().map((event) => `
         <div class="event ${escapeHtml(event.status || "pending")}">
           <div><strong>${escapeHtml(event.step || "étape")}</strong> — ${escapeHtml(event.status || "pending")}</div>
           <div>${escapeHtml(event.message || "")}</div>
@@ -537,17 +543,26 @@
     }
 
     function renderSources() {
-      $("greeting").textContent = state.greeting ? `Greeting actuel : ${state.greeting}` : "Greeting non trouvé.";
-      $("contract").textContent = state.contract || "Contrat non trouvé.";
+      const greetingEl = $("greeting");
+      if (greetingEl) greetingEl.textContent = state.greeting ? `Greeting actuel : ${state.greeting}` : "Greeting non trouvé.";
+      const contractEl = $("contract");
+      if (contractEl) contractEl.textContent = state.contract || "Contrat non trouvé.";
     }
 
     function renderErrors() {
-      $("errors").textContent = state.errors.length ? state.errors.join("\n") : "Aucune erreur détectée.";
+      const errorsEl = $("errors");
+      if (errorsEl) errorsEl.textContent = state.errors.length ? state.errors.join("\n") : "Aucune erreur détectée.";
     }
 
     function render() {
       renderVisual();
-      $("updated").textContent = `Dernière mise à jour : ${new Date().toLocaleString()}`;
+      renderCards();
+      renderHistory();
+      renderTimeline();
+      renderSources();
+      renderErrors();
+      const updated = $("updated");
+      if (updated) updated.textContent = `Dernière mise à jour : ${new Date().toLocaleString()}`;
     }
 
     async function loadGitHub() {

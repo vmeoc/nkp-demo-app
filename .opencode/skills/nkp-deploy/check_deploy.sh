@@ -33,12 +33,23 @@ APP=$(awk -F': *' '/^app:/{print $2; exit}' nkp-app.yaml 2>/dev/null | tr -d "\"
 [ -n "$APP" ] || fail CONFIG_ERROR "Champ app introuvable dans nkp-app.yaml."
 
 SVC_IP=""
+DEMO_STATE_TOKEN_RESOLVED="${DEMO_STATE_TOKEN:-${WIP_TOKEN:-demo-wip-token}}"
+
 post_state() {
   [ -n "${SVC_IP:-}" ] || SVC_IP=$($K get svc "$APP" -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null)
   [ -n "$SVC_IP" ] || return 0
-  curl -s -m 5 -X POST "http://${SVC_IP}/demo-state" \
-    -H 'X-Demo-State-Token: demo-wip-token' -H 'Content-Type: application/json' \
-    -d "$1" >/dev/null 2>&1 || true
+  local attempt code
+  for attempt in 1 2 3; do
+    code=$(curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST "http://${SVC_IP}/demo-state" \
+      -H "X-Demo-State-Token: ${DEMO_STATE_TOKEN_RESOLVED}" -H 'Content-Type: application/json' \
+      -d "$1" 2>/dev/null || echo "000")
+    if [ "$code" = "200" ]; then
+      return 0
+    fi
+    echo "ATTENTION post_state HTTP $code (tentative $attempt/3) vers http://${SVC_IP}/demo-state" >&2
+    sleep 2
+  done
+  return 0
 }
 
 diagnose_pods() {
@@ -135,7 +146,13 @@ verify() {
     sleep 5
   done
 
-  post_state '{"pipeline":{"code":"success","gitPush":"success","ci":"success","flux":"success","rollout":"success","health":"success"}}'
+  MODE=$(curl -s -m 5 "http://${SVC_IP}/demo-state" 2>/dev/null | tr -d ' \n' | sed -n 's/.*"mode":"\([^"]*\)".*/\1/p')
+  if [ "$MODE" = "raz" ]; then
+    echo "Mode RAZ detecte : maintien du pipeline en 'pending'."
+    post_state '{"pipeline":{"code":"pending","gitPush":"pending","ci":"pending","flux":"pending","rollout":"pending","health":"pending"}}'
+  else
+    post_state '{"pipeline":{"code":"success","gitPush":"success","ci":"success","flux":"success","rollout":"success","health":"success"}}'
+  fi
   echo "== Déploiement OK"
   $K get pods -l "app.kubernetes.io/name=$APP" 2>&1
   host=$($K get ingress "$APP" -o jsonpath='{.spec.rules[0].host}' 2>/dev/null)

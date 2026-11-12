@@ -118,7 +118,7 @@ try {
     arguments: {},
   });
   assert.equal(opened.structuredContent.kind, "initial");
-  assert.equal(opened.structuredContent.contract.app, "landing-nkp");
+  assert.equal(opened.structuredContent.contract.app, "natatio");
   assert.equal(opened.structuredContent.appLocked, true);
 
   const resource = await request("resources/read", {
