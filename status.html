@@ -203,7 +203,7 @@
       <div>
         <h1>AI deployment on NKP</h1>
         <div class="meta" id="updated">Chargement…</div>
-        <div class="meta" id="wip-status" style="margin-top:4px;">WIP : chargement…</div>
+        <div class="meta" id="wip-status" style="margin-top:4px;">État de la démo : chargement…</div>
         <div class="meta" style="margin-top:4px;"><a href="/" target="_blank" rel="noopener" style="color:var(--accent);">Ouvrir l'application ↗</a></div>
       </div>
       <button id="refresh">Rafraîchir</button>
@@ -263,7 +263,7 @@
       healthError: "",
       targetVersion: null,
       errors: [],
-      wip: { status: "idle", message: "", theme: "", started: "", updated: "" }
+      demoState: { status: "idle", mode: "idle", message: "", theme: "", started: "", updated: "" }
     };
 
     const $ = (id) => document.getElementById(id);
@@ -291,8 +291,12 @@
     }
 
     function wipStartedMs() {
-      const w = state.wip || {};
+      const w = state.demoState || {};
       return w.started ? new Date(w.started).getTime() : 0;
+    }
+    function isRaz() {
+      const d = state.demoState || {};
+      return d.mode === "raz";
     }
     function isNewRun(run) {
       if (!run || !run.created_at) return false;
@@ -306,8 +310,8 @@
       return !!run && isNewRun(run);
     }
     function expectedVersion() {
-      const w = state.wip || {};
-      if (w.status === "in-progress" || w.status === "deploying") {
+      const d = state.demoState || {};
+      if (d.status === "in-progress" || d.status === "deploying") {
         const run = state.runs[0];
         if (run && isNewRun(run)) return (run.head_sha || "").slice(0, 7);
         return null; // pas encore de nouveau run : on attend
@@ -316,10 +320,11 @@
       return successfulRun ? (successfulRun.head_sha || "").slice(0, 7) : state.targetVersion;
     }
     function ciStatus() {
-      const w = state.wip || {};
+      if (isRaz()) return \"pending\";
+      const d = state.demoState || {};
       const run = state.runs[0];
       // Pendant un cycle WIP actif, on n'affiche un run que s'il est nouveau (de ce cycle).
-      if (w.status === "in-progress" || w.status === "deploying") {
+      if (d.status === "in-progress" || d.status === "deploying") {
         if (!run || !isNewRun(run)) return "pending";
       }
       if (!run) return "pending";
@@ -328,6 +333,7 @@
     }
 
     function aiStatus() {
+      if (isRaz()) return "pending";
       if (!state.deployLog.length) return "pending";
       if (state.deployLog.some((e) => e.status === "failed")) return "failed";
       const last = state.deployLog[state.deployLog.length - 1];
@@ -338,18 +344,20 @@
     }
 
     function gitPushStatus() {
+      if (isRaz()) return "pending";
       // Un nouveau run CI prouve qu'un push a eu lieu (même pendant un cycle WIP).
       if (hasNewRun()) return "success";
-      const w = state.wip || {};
-      if (w.status === "in-progress" || w.status === "deploying") return "pending";
+      const d = state.demoState || {};
+      if (d.status === "in-progress" || d.status === "deploying") return "pending";
       if (state.runs.length > 0) return "success";
       if (state.deployLog.some((e) => e.step === "push" && e.status === "success")) return "success";
       return "pending";
     }
 
     function healthStatus() {
-      const w = state.wip || {};
-      if (w.status === "in-progress" || w.status === "deploying") {
+      if (isRaz()) return \"pending\";
+      const d = state.demoState || {};
+      if (d.status === "in-progress" || d.status === "deploying") {
         if (!hasNewRun()) return "pending";
       }
       if (state.healthError) return "failed";
@@ -357,15 +365,16 @@
       const target = expectedVersion();
       if (target && state.health.version === target) return "success";
       // Pendant un cycle WIP actif, une version différente = rollout en cours
-      if (w.status === "in-progress" || w.status === "deploying") return "running";
+      if (d.status === "in-progress" || d.status === "deploying") return "running";
       if (state.targetVersion && state.health.version === state.targetVersion) return "success";
       return "running";
     }
 
     function fluxStatus() {
-      const w = state.wip || {};
+      if (isRaz()) return \"pending\";
+      const d = state.demoState || {};
       const ci = ciStatus();
-      if (w.status === "in-progress" || w.status === "deploying") {
+      if (d.status === "in-progress" || d.status === "deploying") {
         if (ci === "pending") return "pending";
       }
       if (ci === "failed") return "blocked";
@@ -381,8 +390,9 @@
     }
 
     function developerStatus() {
-      const w = state.wip || {};
-      if (w.status === "in-progress" || w.status === "deploying") return "running";
+      if (isRaz()) return "pending";
+      const d = state.demoState || {};
+      if (d.status === "in-progress" || d.status === "deploying") return "running";
       return "success";
     }
 
@@ -421,7 +431,7 @@
       setStep("step-rollout", rollout, "conn-health");
       setStep("step-health", health, null);
 
-      const w = state.wip || {};
+      const w = state.demoState || {};
       const demoIdle = (w.status === "idle" || w.status === "pending");
       const hubColor = demoIdle ? "var(--pending)" : (ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)");
       const hub = $("ai-hub");
@@ -586,19 +596,19 @@
       render();
     }
 
-    async function loadWip() {
+    async function loadDemoState() {
       try {
-        const res = await fetch("/wip-status", { cache: "no-store" });
+        const res = await fetch("/demo-state", { cache: "no-store" });
         if (!res.ok) throw new Error(`wip ${res.status}`);
-        state.wip = await res.json();
+        state.demoState = await res.json();
       } catch (err) {
-        state.wip = { status: "idle", message: "", theme: "", started: "", updated: "" };
+        state.demoState = { status: "idle", mode: "idle", message: "", theme: "", started: "", updated: "" };
       }
-      renderWip();
+      renderDemoState();
     }
 
     function renderWip() {
-      const w = state.wip || {};
+      const w = state.demoState || {};
       const el = $("wip-status");
       if (el) {
         const msg = w.message ? ` — ${w.message}` : "";
@@ -625,7 +635,7 @@
       clearTimeout(healthTimer);
       healthTimer = setTimeout(async () => {
         await loadHealth();
-        await loadWip();
+        await loadDemoState();
         scheduleHealth();
       }, HEALTH_REFRESH_MS);
     }
@@ -633,7 +643,7 @@
     $("refresh").addEventListener("click", async () => {
       clearTimeout(githubTimer);
       clearTimeout(healthTimer);
-      await Promise.all([loadGitHub(), loadHealth(), loadWip()]);
+      await Promise.all([loadGitHub(), loadHealth(), loadDemoState()]);
       scheduleGitHub();
       scheduleHealth();
     });
@@ -642,14 +652,14 @@
       if (!document.hidden) {
         clearTimeout(githubTimer);
         clearTimeout(healthTimer);
-        Promise.all([loadGitHub(), loadHealth(), loadWip()]).then(() => {
+        Promise.all([loadGitHub(), loadHealth(), loadDemoState()]).then(() => {
           scheduleGitHub();
           scheduleHealth();
         });
       }
     });
 
-    Promise.all([loadGitHub(), loadHealth(), loadWip()]).then(() => {
+    Promise.all([loadGitHub(), loadHealth(), loadDemoState()]).then(() => {
       scheduleGitHub();
       scheduleHealth();
     });
