@@ -203,6 +203,7 @@
       <div>
         <h1>AI deployment on NKP</h1>
         <div class="meta" id="updated">Chargement…</div>
+        <div class="meta" id="wip-status" style="margin-top:4px;">WIP : chargement…</div>
         <div class="meta" style="margin-top:4px;"><a href="/" target="_blank" rel="noopener" style="color:var(--accent);">Ouvrir l'application ↗</a></div>
       </div>
       <button id="refresh">Rafraîchir</button>
@@ -420,10 +421,13 @@
       setStep("step-rollout", rollout, "conn-health");
       setStep("step-health", health, null);
 
+      const w = state.wip || {};
+      const demoIdle = (w.status === "idle" || w.status === "pending");
+      const hubColor = demoIdle ? "var(--pending)" : (ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)");
       const hub = $("ai-hub");
       if (hub) {
-        hub.style.borderColor = ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)";
-        hub.style.color = ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)";
+        hub.style.borderColor = hubColor;
+        hub.style.color = hubColor;
       }
     }
 
@@ -594,6 +598,15 @@
     }
 
     function renderWip() {
+      const w = state.wip || {};
+      const el = $("wip-status");
+      if (el) {
+        const msg = w.message ? ` — ${w.message}` : "";
+        const theme = w.theme ? ` (${w.theme})` : "";
+        const label = w.status === "in-progress" ? "en cours" : w.status === "deploying" ? "déploiement" : w.status === "pending" ? "en attente" : "en attente";
+        el.textContent = `WIP : ${label}${theme}${msg}`;
+        el.style.color = (w.status === "in-progress" || w.status === "deploying") ? "var(--run)" : "var(--pending)";
+      }
       render();
     }
 
