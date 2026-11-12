@@ -36,7 +36,7 @@ PY
 .venv/bin/python .opencode/skills/nkp-deploy/render.py
 
 # 4. Pousser via GitOps
-git add index.html nkp-app.yaml k8s/
+git add index.html nkp-app.yaml k8s/base/
 git commit -m "chore: RAZ demo -> page 'demo loading', IP LB dynamique"
 git pull --rebase && git push
 
