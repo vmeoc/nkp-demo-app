@@ -3,203 +3,27 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0a2a4a">
-    <title>La Natation — L'art de glisser dans l'eau</title>
+    <meta name="theme-color" content="#0b1624">
+    <title>Démo en attente</title>
     <style>
-      :root { --bg:#061a2e; --bg-2:#0c2a4a; --ink:#e6f2fb; --muted:#9ec3e0; --line:rgba(255,255,255,0.1); --accent:#29b6f6; --accent-3:#81d4fa; --card:rgba(255,255,255,0.05); font-family:"Inter",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
-      *{box-sizing:border-box;} html,body{margin:0;} body{color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden;}
-      a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;} img,svg{max-width:100%;display:block;}
-      .waves{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:0.35;}
-      .waves svg{position:absolute;bottom:0;width:200%;animation:drift 18s linear infinite;}
-      @keyframes drift{to{transform:translateX(-50%);}}
-      .container{width:min(1180px,calc(100% - 48px));margin:0 auto;position:relative;z-index:1;}
-      .topbar{position:sticky;top:0;z-index:20;background:rgba(6,26,46,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
-      .topbar-inner{display:flex;align-items:center;justify-content:space-between;height:72px;}
-      .brand{display:flex;align-items:center;gap:12px;font-weight:700;color:#fff;}
-      .brand-mark{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0277bd);display:grid;place-items:center;color:#fff;font-size:18px;}
-      .nav{display:flex;gap:28px;font-size:14px;} .nav a{color:var(--ink);} .nav a:hover{color:var(--accent);text-decoration:none;}
-      .cta{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;background:var(--accent);color:#061a2e;font-weight:600;font-size:14px;}
-      .cta:hover{background:var(--accent-3);text-decoration:none;}
-      .hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;}
-      .hero-bg{position:absolute;inset:0;} .hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(0.55) saturate(1.15);}
-      .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,26,46,0.3) 0%,rgba(6,26,46,0.7) 60%,var(--bg) 100%);}
-      .hero-content{position:relative;padding:120px 0 80px;max-width:760px;}
-      .eyebrow{text-transform:uppercase;letter-spacing:0.2em;font-size:12px;font-weight:700;color:var(--accent);margin:0 0 20px;}
-      h1{font-size:clamp(44px,6.5vw,78px);line-height:1.02;margin:0 0 24px;letter-spacing:-0.03em;font-weight:800;}
-      .lead{font-size:19px;color:var(--muted);max-width:620px;margin:0 0 36px;}
-      .hero-actions{display:flex;gap:14px;flex-wrap:wrap;} .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.3);}
-      .stats{padding:64px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2);}
-      .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;} .stat{text-align:center;}
-      .stat .num{font-size:40px;font-weight:800;color:var(--accent);letter-spacing:-0.02em;} .stat .lbl{font-size:13px;color:var(--muted);margin-top:6px;}
-      section.block{padding:96px 0;} .section-head{max-width:680px;margin-bottom:56px;} .section-head .eyebrow{color:var(--accent);}
-      h2{font-size:clamp(30px,4vw,46px);line-height:1.1;margin:0 0 16px;letter-spacing:-0.02em;} .section-head p{color:var(--muted);font-size:17px;margin:0;}
-      .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-      .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform 200ms ease,border-color 200ms ease;}
-      .card:hover{transform:translateY(-6px);border-color:rgba(41,182,246,0.4);}
-      .card-art{aspect-ratio:16/9;background:var(--bg-2);position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
-      .card-art img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform 400ms ease;filter:brightness(0.85) saturate(1.1);}
-      .card:hover .card-art img{transform:scale(1.05);}
-      .card-art .svg-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
-      .card-body{padding:24px;} .card h3{margin:0 0 8px;font-size:18px;} .card p{color:var(--muted);font-size:14px;margin:0;}
-      .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
-      .split-art{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--bg-2);aspect-ratio:4/3;position:relative;}
-      .split-art img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:brightness(0.8);}
-      .split-art .svg-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
-      .list{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px;} .list li{display:flex;gap:12px;font-size:15px;color:var(--ink);}
-      .list li::before{content:"▸";color:var(--accent);font-weight:700;}
-      .band{background:linear-gradient(120deg,#0a2a4a 0%,#061a2e 100%);padding:80px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-      .band-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
-      .band-art{border-radius:18px;border:1px solid var(--line);background:var(--bg);aspect-ratio:3/2;position:relative;overflow:hidden;}
-      .band-art img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:brightness(0.75);}
-      .band-art .svg-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
-      footer{background:#020a14;color:#8fb8d8;padding:64px 0 32px;border-top:1px solid var(--line);}
-      .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;} footer h4{color:#fff;font-size:14px;margin:0 0 14px;}
-      footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:13px;} footer a{color:#8fb8d8;} footer a:hover{color:#fff;}
-      .footer-bottom{border-top:1px solid var(--line);margin-top:40px;padding-top:20px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-      @media (max-width:860px){.split,.band-grid{grid-template-columns:1fr;}.cards{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.footer-grid{grid-template-columns:1fr 1fr;}.nav{display:none;}}
-      @media (max-width:520px){.stats-grid{grid-template-columns:1fr;}.footer-grid{grid-template-columns:1fr;}}
+      :root { --bg:#0b1624; --ink:#e8f0fa; --muted:#9bb0cc; --accent:#4fc3f7; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); display: grid; place-items: center; text-align: center; padding: 24px; }
+      .card { max-width: 560px; }
+      h1 { font-size: clamp(28px, 5vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; }
+      p { color: var(--muted); margin: 0 0 24px; font-size: 16px; }
+      .pulse { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 24px; background: radial-gradient(circle, var(--accent), transparent 70%); animation: p 1.6s ease-in-out infinite; }
+      @keyframes p { 0%,100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.1); opacity: 1; } }
+      .foot { font-size: 12px; opacity: .6; margin-top: 8px; }
     </style>
   </head>
   <body>
-    <div class="waves" aria-hidden="true"><svg viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0,100 C360,160 720,40 1080,100 C1260,130 1380,110 1440,100 L1440,200 L0,200 Z" fill="rgba(41,182,246,0.18)"/></svg></div>
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div class="brand"><div class="brand-mark">🏊</div><span>La Natation</span></div>
-        <nav class="nav" aria-label="Navigation principale">
-          <a href="#histoire">Histoire</a><a href="#techniques">Techniques</a><a href="#bienfaits">Bienfaits</a><a href="#competition">Compétition</a>
-        </nav>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <a class="cta" href="#techniques">Découvrir</a>
-          <a class="cta" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;" href="/status" target="_blank" rel="noopener">AI deployment ↗</a>
-        </div>
-      </div>
-    </header>
-    <section class="hero">
-      <div class="hero-bg">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Swimming_pool_underwater_1.JPG?width=1400" alt="Vue sous-marine d'une piscine" loading="eager" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <div class="hero-fallback" style="display:none;position:absolute;inset:0;"><svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice"><rect width="1200" height="700" fill="#061a2e"/><g fill="rgba(41,182,246,0.25)"><ellipse cx="600" cy="350" rx="500" ry="200" fill="rgba(41,182,246,0.12)"/><path d="M0,500 Q300,460 600,500 T1200,500 L1200,700 L0,700 Z" fill="rgba(41,182,246,0.2)"/></g></svg></div>
-      </div>
-      <div class="container hero-content">
-        <p class="eyebrow">Eau · Mouvement · Respiration</p>
-        <h1>La natation, art de glisser dans l'eau</h1>
-        <p class="lead">De l'Antiquité aux bassins olympiques, la natation est à la fois sport, santé et plaisir. Apprendre à nager, c'est apprendre à respirer autrement et à dompter l'élément liquide.</p>
-        <div class="hero-actions"><a class="cta" href="#techniques">Les 4 nages</a><a class="cta btn-ghost" href="#competition">Compétition</a></div>
-      </div>
-    </section>
-    <section class="stats">
-      <div class="container stats-grid">
-        <div class="stat"><div class="num">14 min</div><div class="lbl">Record du 1500 m (hommes)</div></div>
-        <div class="stat"><div class="num">4</div><div class="lbl">Nages olympiques</div></div>
-        <div class="stat"><div class="num">47 s</div><div class="lbl">Record du 100 m nage libre</div></div>
-        <div class="stat"><div class="num">1896</div><div class="lbl">Natation aux Jeux olympiques</div></div>
-      </div>
-    </section>
-    <section id="histoire" class="block">
-      <div class="container">
-        <div class="section-head"><p class="eyebrow">Histoire</p><h2>Une histoire millénaire</h2><p>De la préhistoire aux bassins modernes, l'humain nage pour survivre, se déplacer et se dépasser.</p></div>
-        <div class="cards">
-          <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Natation.jpg?width=800" alt="Nageur en action" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><path d="M-40,0 Q-20,-20 0,0 T40,0" fill="none" stroke="#29b6f6" stroke-width="3"/><circle cx="-10" cy="-15" r="6" fill="#29b6f6"/></g></svg></div>
-            </div>
-            <div class="card-body"><h3>Antiquité</h3><p>Égyptiens, Grecs et Romains nagent déjà ; la natation est enseignée aux soldats.</p></div>
-          </article>
-          <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Blad_man_swimming_in_the_swimming_pool.jpg?width=800" alt="Homme nageant dans une piscine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><rect x="-40" y="-10" width="80" height="20" rx="10" fill="#0c2a4a" stroke="#29b6f6" stroke-width="2"/><circle cx="-25" cy="0" r="4" fill="#29b6f6"/><circle cx="0" cy="0" r="4" fill="#29b6f6"/><circle cx="25" cy="0" r="4" fill="#29b6f6"/></g></svg></div>
-            </div>
-            <div class="card-body"><h3>XIXᵉ siècle</h3><p>Les clubs et piscines se multiplient en Europe ; la natation devient sport organisé.</p></div>
-          </article>
-          <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/5e_nage.jpg?width=800" alt="Compétition de natation" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;"><g transform="translate(60,60)"><path d="M-45,0 L-20,-20 L20,-20 L45,0 L20,20 L-20,20 Z" fill="none" stroke="#29b6f6" stroke-width="2"/><circle cx="0" cy="0" r="8" fill="#29b6f6"/></g></svg></div>
-            </div>
-            <div class="card-body"><h3>Ère olympique</h3><p>Présente depuis 1896, la natation est aujourd'hui l'un des sports phares des Jeux.</p></div>
-          </article>
-        </div>
-      </div>
-    </section>
-    <section id="techniques" class="block" style="background:var(--bg-2);">
-      <div class="container split">
-        <div>
-          <p class="eyebrow" style="color:var(--accent);">Techniques</p>
-          <h2>Les 4 nages</h2>
-          <p style="color:var(--muted);font-size:17px;">Chaque nage a sa technique, son rythme et son souffle. Maîtriser les quatre, c'est être nageur complet.</p>
-          <ul class="list">
-            <li>Crawl (nage libre) — la plus rapide</li>
-            <li>Brasse — la plus ancienne, la plus accessible</li>
-            <li>Dos crawlé — respiration libre, vue sur le ciel</li>
-            <li>Papillon — la plus spectaculaire et exigeante</li>
-          </ul>
-        </div>
-        <div class="split-art">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Swimming_pool_underwater_1.JPG?width=800" alt="Vue sous-marine d'une piscine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="svg-fallback"><svg viewBox="0 0 200 150" style="width:80%;height:80%;margin:auto;"><g transform="translate(100,75)"><path d="M-80,0 Q-40,-30 0,0 T80,0" fill="none" stroke="#29b6f6" stroke-width="3"/><circle cx="-60" cy="-10" r="6" fill="#29b6f6"/><circle cx="-20" cy="5" r="6" fill="#29b6f6"/><circle cx="20" cy="-5" r="6" fill="#29b6f6"/><circle cx="60" cy="10" r="6" fill="#29b6f6"/></g></svg></div>
-        </div>
-      </div>
-    </section>
-    <section id="bienfaits" class="block">
-      <div class="container">
-        <div class="section-head"><p class="eyebrow">Santé</p><h2>Les bienfaits de la natation</h2><p>Un sport complet, doux pour les articulations et exigeant pour le cœur et les poumons.</p></div>
-        <div class="band">
-          <div class="container band-grid">
-            <div>
-              <h2 style="font-size:32px;">Un corps et un souffle</h2>
-              <p style="color:var(--muted);font-size:16px;">La natation sollicite presque tous les muscles sans impact. Elle améliore l'endurance cardiovasculaire, la souplesse et la coordination. C'est aussi un allié contre le stress : l'eau apaise et la respiration rythmée calme le système nerveux.</p>
-              <p style="color:var(--muted);font-size:16px;">Accessible à tout âge, elle est recommandée pour la rééducation et le maintien en forme.</p>
-            </div>
-            <div class="band-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Blad_man_swimming_in_the_swimming_pool.jpg?width=800" alt="Nageur en piscine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 200 140" style="width:70%;height:70%;margin:auto;"><g transform="translate(100,70)"><ellipse cx="0" cy="0" rx="60" ry="30" fill="rgba(41,182,246,0.15)" stroke="#29b6f6" stroke-width="2"/><path d="M-40,0 Q0,-20 40,0" fill="none" stroke="#29b6f6" stroke-width="2"/><circle cx="0" cy="-5" r="6" fill="#29b6f6"/></g></svg></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="competition" class="block">
-      <div class="container">
-        <div class="section-head"><p class="eyebrow">Compétition</p><h2>Records et légendes</h2><p>Les plus grands nageurs ont repoussé les limites du possible dans l'eau.</p></div>
-        <div class="cards">
-          <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/5e_nage.jpg?width=800" alt="Compétition de natation" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><circle cx="0" cy="0" r="30" fill="none" stroke="#29b6f6" stroke-width="3"/><path d="M0,-30 L0,30" stroke="#29b6f6" stroke-width="2"/><path d="M-30,0 L30,0" stroke="#29b6f6" stroke-width="2"/></g></svg></div>
-            </div>
-            <div class="card-body"><h3>Sprint</h3><p>50 m et 100 m nage libre : explosivité et technique parfaite.</p></div>
-          </article>
-          <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Natation.jpg?width=800" alt="Nageur en action" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><path d="M-40,0 Q-20,-15 0,0 T40,0" fill="none" stroke="#29b6f6" stroke-width="3"/><circle cx="0" cy="-15" r="6" fill="#29b6f6"/></g></svg></div>
-            </div>
-            <div class="card-body"><h3>Fond</h3><p>800 m et 1500 m : endurance, stratégie et gestion de l'effort.</p></div>
-          </article>
-          <article class="card">
-            <div class="card-art">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Swimming_pool_underwater_1.JPG?width=800" alt="Vue sous-marine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="svg-fallback"><svg viewBox="0 0 120 120" style="width:60%;height:60%;margin:auto;"><g transform="translate(60,60)"><rect x="-35" y="-25" width="70" height="50" rx="8" fill="none" stroke="#29b6f6" stroke-width="2"/><path d="M-35,0 L35,0" stroke="#29b6f6" stroke-width="1.5"/></g></svg></div>
-            </div>
-            <div class="card-body"><h3>Relais</h3><p>4×100 m et 4×200 m : l'esprit d'équipe dans l'eau.</p></div>
-          </article>
-        </div>
-      </div>
-    </section>
-    <footer id="contact">
-      <div class="container">
-        <div class="footer-grid">
-          <div><div class="brand" style="color:#fff;margin-bottom:12px;"><div class="brand-mark">🏊</div><span style="color:#fff;">La Natation</span></div><p style="font-size:13px;max-width:320px;">L'art de glisser dans l'eau, de la première brassée au record olympique.</p></div>
-          <div><h4>Techniques</h4><ul><li><a href="#techniques">Les 4 nages</a></li><li><a href="#bienfaits">Bienfaits</a></li><li><a href="#competition">Compétition</a></li></ul></div>
-          <div><h4>Histoire</h4><ul><li><a href="#histoire">Antiquité</a></li><li><a href="#histoire">XIXᵉ siècle</a></li><li><a href="#histoire">Jeux olympiques</a></li></ul></div>
-          <div><h4>Déploiement</h4><ul><li><a href="/status" target="_blank" rel="noopener">AI deployment ↗</a></li><li><a href="/healthz" target="_blank" rel="noopener">Health check</a></li></ul></div>
-        </div>
-        <div class="footer-bottom"><span>© La Natation — page de démonstration NKP</span><span>Déployé via NKP GitOps</span></div>
-      </div>
-    </footer>
-    <script>
-      document.querySelectorAll('img').forEach(function(img){img.addEventListener('error',function(){this.style.display='none';var fb=this.nextElementSibling;if(fb&&fb.classList&&(fb.classList.contains('svg-fallback')||fb.classList.contains('hero-fallback'))){fb.style.display='flex';}});});
-    </script>
+    <div class="card">
+      <div class="pulse" aria-hidden="true"></div>
+      <h1>Démo en attente</h1>
+      <p>La prochaine démonstration NKP chargera automatiquement ici.</p>
+      <p class="foot">Déployé via NKP GitOps</p>
+    </div>
   </body>
 </html>
