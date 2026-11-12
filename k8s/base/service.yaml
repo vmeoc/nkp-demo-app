@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: natatio
+  name: opencode
   labels:
-    app.kubernetes.io/name: natatio
+    app.kubernetes.io/name: opencode
     app.kubernetes.io/managed-by: nkp-deploy
     nkp.demo/env: dev
     nkp.demo/owner: vincentm
@@ -17,7 +17,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app.kubernetes.io/name: natatio
+    app.kubernetes.io/name: opencode
   ports:
   - name: http
     port: 80

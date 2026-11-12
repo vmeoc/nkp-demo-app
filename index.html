@@ -1,30 +1,315 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b1624">
-    <title>Démo en attente</title>
-    <meta name="demo-state" content="raz">
-    <style>
-      :root { --bg:#0b1624; --ink:#e8f0fa; --muted:#9bb0cc; --accent:#4fc3f7; }
-      * { box-sizing: border-box; }
-      html, body { margin: 0; height: 100%; }
-      body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); display: grid; place-items: center; text-align: center; padding: 24px; }
-      .card { max-width: 560px; }
-      h1 { font-size: clamp(28px, 5vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; }
-      p { color: var(--muted); margin: 0 0 24px; font-size: 16px; }
-      .pulse { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 24px; background: radial-gradient(circle, var(--accent), transparent 70%); animation: p 1.6s ease-in-out infinite; }
-      @keyframes p { 0%,100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.1); opacity: 1; } }
-      .foot { font-size: 12px; opacity: .6; margin-top: 8px; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <div class="pulse" aria-hidden="true"></div>
-      <h1>Démo en attente</h1>
-      <p>La prochaine démonstration NKP chargera automatiquement ici.</p>
-      <p class="foot">Déployé via NKP GitOps</p>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>OpenCode — l'agent de code open source pour n'importe quel modèle</title>
+  <meta name="description" content="OpenCode est l'agent de code open source qui fonctionne là où vous travaillez. Connectez plus de 200 providers (Claude, GPT, Gemini…) ou démarrez gratuitement.">
+  <link rel="preconnect" href="https://opencode.ai">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --bg-2: #141414;
+      --fg: #eeeeee;
+      --fg-soft: #aeaeae;
+      --fg-mute: #6b6b6b;
+      --line: #262626;
+      --ink: #1f1f1f;
+      --ink70: #626262;
+      --ink20: #d2d2d2;
+      --accent: #eeeeee;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: var(--fg); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(11,11,11,0.72);
+      border-bottom: 1px solid var(--line);
+    }
+    nav .row { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    nav .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; letter-spacing: -0.01em; }
+    nav .brand img { height: 22px; width: auto; display: block; }
+    nav .links { display: flex; gap: 24px; font-size: 14px; color: var(--fg-soft); }
+    nav .links a:hover { color: var(--fg); text-decoration: none; }
+    nav .cta { font-size: 14px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; }
+    nav .cta:hover { border-color: var(--fg-soft); text-decoration: none; }
+
+    /* Hero */
+    .hero { padding: 96px 0 64px; text-align: center; position: relative; }
+    .hero .logo-wrap { display: inline-flex; align-items: center; justify-content: center; margin-bottom: 32px; }
+    .hero .logo-wrap img { height: 64px; width: auto; display: block; }
+    .hero .fallback { display: none; }
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 76px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 0 0 20px;
+      font-weight: 600;
+    }
+    .hero h1 .muted { color: var(--fg-soft); }
+    .hero p.lede {
+      font-size: clamp(17px, 2vw, 21px);
+      color: var(--fg-soft);
+      max-width: 640px;
+      margin: 0 auto 40px;
+    }
+    .hero .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 20px; border-radius: 10px; font-size: 15px; font-weight: 500;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn-primary { background: var(--fg); color: var(--bg); }
+    .btn-primary:hover { background: #ffffff; text-decoration: none; transform: translateY(-1px); }
+    .btn-ghost { border: 1px solid var(--line); color: var(--fg); }
+    .btn-ghost:hover { border-color: var(--fg-soft); text-decoration: none; transform: translateY(-1px); }
+    .hero .badge {
+      display: inline-block; margin-top: 40px;
+      font-size: 12px; color: var(--fg-mute);
+      padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px;
+    }
+
+    /* Terminal */
+    .terminal {
+      margin: 24px auto 0;
+      max-width: 720px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: left;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .terminal .bar { display: flex; gap: 6px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .terminal .dot { width: 10px; height: 10px; border-radius: 50%; background: #2a2a2a; }
+    .terminal pre {
+      margin: 0; padding: 20px 22px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px; line-height: 1.7;
+      color: var(--fg-soft);
+      overflow-x: auto;
+    }
+    .terminal .prompt { color: var(--fg-mute); user-select: none; }
+    .terminal .cmd { color: var(--fg); }
+    .terminal .out { color: var(--fg-mute); }
+
+    /* Sections */
+    section { padding: 80px 0; border-top: 1px solid var(--line); }
+    section h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+    section .sub { color: var(--fg-soft); max-width: 620px; margin: 0 0 48px; font-size: 17px; }
+
+    .grid { display: grid; gap: 16px; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 820px) {
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+    .card:hover { border-color: var(--fg-mute); transform: translateY(-2px); }
+    .card .icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: grid; place-items: center;
+      background: var(--bg); border: 1px solid var(--line);
+      margin-bottom: 14px;
+      font-family: ui-monospace, monospace; font-size: 14px; color: var(--fg-soft);
+    }
+    .card h3 { margin: 0 0 6px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .card p { margin: 0; color: var(--fg-soft); font-size: 14px; }
+
+    /* Providers strip */
+    .providers {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      margin-top: 8px;
+    }
+    .providers span {
+      font-size: 13px; color: var(--fg-soft);
+      padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px;
+      background: var(--bg-2);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 40px 0;
+      color: var(--fg-mute);
+      font-size: 13px;
+    }
+    footer .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    footer a { color: var(--fg-soft); }
+    footer a:hover { color: var(--fg); }
+
+    /* Fallback for logo */
+    .logo-fallback { display: none; }
+    .logo-wrap.broken img, .brand.broken img { display: none; }
+    .logo-wrap.broken .logo-fallback, .brand.broken .logo-fallback { display: inline-flex; }
+
+    @media (max-width: 640px) {
+      nav .links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container row">
+    <a class="brand" href="#top" id="brand">
+      <img src="https://opencode.ai/brand/files/opencode-logo-transparent-dark.svg" alt="OpenCode logo" onerror="this.parentElement.classList.add('broken')">
+      <span class="logo-fallback" aria-hidden="true">
+        <svg width="28" height="35" viewBox="0 0 28 35" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="26" height="33" rx="4" stroke="#eeeeee" stroke-width="2"/><path d="M9 12 L5 17.5 L9 23" stroke="#eeeeee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12 L23 17.5 L19 23" stroke="#aeaeae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      OpenCode
+    </a>
+    <div class="links">
+      <a href="https://opencode.ai/docs" target="_blank" rel="noopener">Docs</a>
+      <a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://opencode.ai/brand" target="_blank" rel="noopener">Brand</a>
     </div>
-  </body>
+    <a class="cta" href="https://opencode.ai" target="_blank" rel="noopener">opencode.ai</a>
+  </div>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="container">
+      <div class="logo-wrap" id="hero-logo">
+        <img src="https://opencode.ai/brand/files/opencode-logo-transparent-dark.svg" alt="OpenCode" width="64" height="80" onerror="this.parentElement.classList.add('broken')">
+        <span class="logo-fallback" aria-hidden="true">
+          <svg width="64" height="80" viewBox="0 0 28 35" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="26" height="33" rx="4" stroke="#eeeeee" stroke-width="2"/><path d="M9 12 L5 17.5 L9 23" stroke="#eeeeee" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12 L23 17.5 L19 23" stroke="#aeaeae" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+      <h1>L'agent de code open source,<br><span class="muted">pour n'importe quel modèle.</span></h1>
+      <p class="lede">OpenCode fonctionne là où vous travaillez : terminal, IDE, desktop. Connectez plus de 200 providers — Claude, GPT, Gemini, ou des modèles locaux — ou démarrez gratuitement.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener">Voir sur GitHub</a>
+        <a class="btn btn-ghost" href="https://opencode.ai/docs" target="_blank" rel="noopener">Lire la doc</a>
+      </div>
+      <div class="badge">Open source · MIT · Anomaly</div>
+
+      <div class="terminal" aria-label="Exemple d'installation">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <pre><span class="prompt">$</span> <span class="cmd">curl -fsSL https://opencode.ai/install | bash</span>
+<span class="out">Installing OpenCode...</span>
+<span class="out">✓ opencode 2.x installed</span>
+<span class="prompt">$</span> <span class="cmd">opencode</span>
+<span class="out">┌  OpenCode</span>
+<span class="out">│  Select a model provider…</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Pensé pour les développeurs</h2>
+      <p class="sub">Un agent de code qui s'adapte à votre flux de travail, pas l'inverse.</p>
+      <div class="grid grid-3">
+        <article class="card">
+          <div class="icon">{ }</div>
+          <h3>200+ providers</h3>
+          <p>Claude, GPT, Gemini, modèles locaux via Ollama… Branchez le modèle de votre choix, ou plusieurs à la fois.</p>
+        </article>
+        <article class="card">
+          <div class="icon">&gt;_</div>
+          <h3>Terminal-first</h3>
+          <p>Une TUI soignée, rapide et scriptable. Lancez, pipez, automatisez depuis votre shell.</p>
+        </article>
+        <article class="card">
+          <div class="icon">LSP</div>
+          <h3>Conscience du code</h3>
+          <p>Intégration LSP pour comprendre votre base de code, naviguer et refactorer avec précision.</p>
+        </article>
+        <article class="card">
+          <div class="icon">MCP</div>
+          <h3>Serveurs MCP</h3>
+          <p>Étendez l'agent avec des outils via le Model Context Protocol : bases, APIs, navigateurs.</p>
+        </article>
+        <article class="card">
+          <div class="icon">AGT</div>
+          <h3>Agents & skills</h3>
+          <p>Agents spécialisés, skills réutilisables et commandes personnalisées pour votre équipe.</p>
+        </article>
+        <article class="card">
+          <div class="icon">GIT</div>
+          <h3>Git natif</h3>
+          <p>Branche, commit, PR : l'agent travaille dans votre dépôt, avec votre historique.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Modèles supportés</h2>
+      <p class="sub">Choisissez le bon modèle pour chaque tâche. OpenCode ne vous enferme dans aucun écosystème.</p>
+      <div class="providers">
+        <span>Anthropic Claude</span>
+        <span>OpenAI GPT</span>
+        <span>Google Gemini</span>
+        <span>Mistral</span>
+        <span>Groq</span>
+        <span>DeepSeek</span>
+        <span>Ollama (local)</span>
+        <span>LM Studio</span>
+        <span>OpenRouter</span>
+        <span>et 190+ autres</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Open source, point.</h2>
+      <p class="sub">Code disponible, licence MIT, communauté active. Pas de verrouillage, pas de télémétrie cachée.</p>
+      <div class="grid grid-2">
+        <article class="card">
+          <h3>Contribuer</h3>
+          <p>Issues, PRs et discussions sur GitHub. La roadmap est publique et les décisions sont ouvertes.</p>
+          <p style="margin-top:12px"><a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener">github.com/anomalyco/opencode →</a></p>
+        </article>
+        <article class="card">
+          <h3>Ressources</h3>
+          <p>Documentation, brand assets, badges « Works with OpenCode » et « Built with OpenCode ».</p>
+          <p style="margin-top:12px"><a href="https://opencode.ai/brand" target="_blank" rel="noopener">Brand guidelines →</a></p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container row">
+    <div>© OpenCode · Anomaly · Page démo déployée sur NKP</div>
+    <div>
+      <a href="https://opencode.ai" target="_blank" rel="noopener">opencode.ai</a> ·
+      <a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
 </html>
