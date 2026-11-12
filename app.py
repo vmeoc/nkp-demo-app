@@ -13,6 +13,35 @@ WIP_TOKEN = DEMO_STATE_TOKEN  # compatibilite avec l'ancien nom
 _DEMO_STATE = {"status": "idle", "mode": "idle", "message": "", "theme": "", "started": "", "updated": ""}
 
 
+def _init_demo_state_from_index():
+    """Deduit l'etat initial de la demo depuis la page deployee (index.html).
+
+    Cela rend l'etat persistant a travers les redemarrages de pod : la page
+    'demo loading' embarque un marqueur demo-state=raz, une page de theme
+    normale laisse l'etat a idle.
+    """
+    global _DEMO_STATE
+    try:
+        path = os.path.join(os.path.dirname(__file__), "index.html")
+        with open(path, encoding="utf-8") as f:
+            html = f.read()
+    except OSError:
+        return
+    if 'name="demo-state" content="raz"' in html or "name='demo-state' content='raz'" in html:
+        now = datetime.now(timezone.utc).isoformat()
+        _DEMO_STATE = {
+            "status": "idle",
+            "mode": "raz",
+            "message": "Démo en attente (page de chargement)",
+            "theme": "demo-loading",
+            "started": "",
+            "updated": now,
+        }
+
+
+_init_demo_state_from_index()
+
+
 def _demo_state_response():
     return jsonify(_DEMO_STATE)
 

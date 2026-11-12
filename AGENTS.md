@@ -48,7 +48,7 @@ Follow `.opencode/skills/nkp-deploy/SKILL.md`. Summary:
   `kubectl --context $NKP_CONTEXT -n $NKP_NAMESPACE get svc natatio -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
 - L'ancienne app `basket-jereme` peut rester dans le cluster (suppression manuelle optionnelle).
 - Ne pas supprimer à la main les objets K8s : la RAZ via GitOps est la méthode prévue.
-- La RAZ remet aussi l'état de la démo à `idle`/`mode: raz` (attente de fin de déploiement puis POST `/demo-state`).
+- La RAZ déploie la page `demo-loading.html` qui embarque un marqueur `demo-state=raz` ; l'app en déduit l'état `mode: raz` au démarrage du pod (persistant à travers les redémarrages). Plus besoin de POST manuel.
 
 ## Quirks
 - `render.py` and MCP validation require `pyyaml` + `jsonschema`, which are not in `requirements.txt`.
