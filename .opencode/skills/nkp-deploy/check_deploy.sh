@@ -112,6 +112,9 @@ verify() {
   echo "== 2/3 Flux NKP (révision attendue ${TARGET:0:7})"
   KS="${NKP_KUSTOMIZATION:-}"
   if [ -z "$KS" ]; then
+    KS=$($K get kustomizations.kustomize.toolkit.fluxcd.io -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.path}{"\n"}{end}' 2>/dev/null | awk -F'\t' '$2=="./k8s"{print $1; exit}')
+  fi
+  if [ -z "$KS" ]; then
     KS=$($K get kustomizations.kustomize.toolkit.fluxcd.io -o jsonpath='{.items[0].metadata.name}' 2>&1) \
       || fail CONFIG_ERROR "Impossible de lister les Kustomizations Flux : $KS"
     [ -n "$KS" ] || fail CONFIG_ERROR "Aucune Kustomization Flux dans $NKP_NAMESPACE : la source GitOps du Projet est-elle créée ?"
