@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1624">
+    <title>Démo en attente</title>
+    <style>
+      :root { --bg:#0b1624; --ink:#e8f0fa; --muted:#9bb0cc; --accent:#4fc3f7; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); display: grid; place-items: center; text-align: center; padding: 24px; }
+      .card { max-width: 560px; }
+      h1 { font-size: clamp(28px, 5vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; }
+      p { color: var(--muted); margin: 0 0 24px; font-size: 16px; }
+      .pulse { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 24px; background: radial-gradient(circle, var(--accent), transparent 70%); animation: p 1.6s ease-in-out infinite; }
+      @keyframes p { 0%,100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.1); opacity: 1; } }
+      .foot { font-size: 12px; opacity: .6; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="pulse" aria-hidden="true"></div>
+      <h1>Démo en attente</h1>
+      <p>La prochaine démonstration NKP chargera automatiquement ici.</p>
+      <p class="foot">Déployé via NKP GitOps</p>
+    </div>
+  </body>
+</html>

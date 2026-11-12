@@ -42,6 +42,13 @@ Follow `.opencode/skills/nkp-deploy/SKILL.md`. Summary:
 - CI workflow (`.github/workflows/build-deploy.yml`) ignores changes under `k8s/`, `nkp-app.yaml`, `.opencode/skills/`, and `**/*.md`, so contract-only changes do not rebuild the image.
 - Do not change `app` in an existing deployment without warning (creates a new app). Do not commit secrets or force-push.
 
+## RAZ post-démo (à la demande)
+- Script : `./reset-demo.sh` (à la racine). Il remplace `index.html` par `demo-loading.html` (page neutre « démo en attente »), retire l'IP en dur de `nkp-app.yaml` (`expose.ip`) pour éviter le conflit MetalLB de sharing key, régénère les manifests, commit/push. La chaîne GitOps reconstruit et déploie la page neutre ; le pod redémarre et le WIP repasse à `idle`.
+- Après la RAZ, l'IP du LoadBalancer peut changer : la récupérer avec :
+  `kubectl --context $NKP_CONTEXT -n $NKP_NAMESPACE get svc natatio -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
+- L'ancienne app `basket-jereme` peut rester dans le cluster (suppression manuelle optionnelle).
+- Ne pas supprimer à la main les objets K8s : la RAZ via GitOps est la méthode prévue.
+
 ## Quirks
 - `render.py` and MCP validation require `pyyaml` + `jsonschema`, which are not in `requirements.txt`.
 - `render.py` uses paths relative to the current working directory; always run from repo root.
