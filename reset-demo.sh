@@ -49,7 +49,7 @@ IP=$(kubectl --context "${NKP_CONTEXT:-}" -n "${NKP_NAMESPACE:-}" get svc natati
 if [ -n "$IP" ]; then
   curl -s -m 10 -X POST "http://${IP}/demo-state" \
     -H 'X-Wip-Token: demo-wip-token' -H 'Content-Type: application/json' \
-    -d '{"status":"idle","message":"Démo en attente (page de chargement)","theme":"demo-loading"}' >/dev/null 2>&1 || true
+    -d '{"status":"idle","mode":"raz","message":"Démo en attente (page de chargement)","theme":"demo-loading"}' >/dev/null 2>&1 || true
 fi
 
 # 6. Aide
