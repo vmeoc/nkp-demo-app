@@ -48,6 +48,13 @@ fi
 IP=$(kubectl --context "${NKP_CONTEXT:-}" -n "${NKP_NAMESPACE:-}" get svc natatio \
   -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
 
+# Remettre le dashboard en "en attente" (la verification ci-dessus a pu poster "success")
+if [ -n "$IP" ]; then
+  curl -s -m 10 -X POST "http://${IP}/demo-state" \
+    -H 'X-Demo-State-Token: demo-wip-token' -H 'Content-Type: application/json' \
+    -d '{"status":"idle","mode":"raz","message":"Démo en attente (page de chargement)","theme":"demo-loading","pipeline":{"code":"pending","gitPush":"pending","ci":"pending","flux":"pending","rollout":"pending","health":"pending"}}' >/dev/null 2>&1 || true
+fi
+
 # 6. Aide
 echo ""
 echo "RAZ terminée. IP allouée : ${IP:-<voir kubectl>}"
