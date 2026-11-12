@@ -1,5 +1,7 @@
 # Landing NKP
 
+![Aperçu de l'interface](pix/demo%20GUI.png)
+
 Application web (page thématique stylée) en Python avec Flask, exposée sur le port 8080.
 
 ## Lancer localement
