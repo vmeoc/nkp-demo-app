@@ -135,7 +135,7 @@ verify() {
     sleep 5
   done
 
-  post_state '{"pipeline":{"rollout":"success","health":"success"}}'
+  post_state '{"pipeline":{"code":"success","gitPush":"success","ci":"success","flux":"success","rollout":"success","health":"success"}}'
   echo "== Déploiement OK"
   $K get pods -l "app.kubernetes.io/name=$APP" 2>&1
   host=$($K get ingress "$APP" -o jsonpath='{.spec.rules[0].host}' 2>/dev/null)
