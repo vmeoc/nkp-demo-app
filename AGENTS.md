@@ -19,8 +19,7 @@ Flask "Hello ..." demo app. `app.py` serves `index.html` on port 8080 (override 
 - Catalog / validate: `... render.py --print-catalog`; `... render.py --validate-input` (JSON contract on stdin).
 
 ## Architecture / boundaries
-- `index.html` est la page thématique stylée de l'application (générée par l'agent selon le thème demandé). Elle doit intégrer des images liées au thème : vraies photos sourcées (Wikimedia Commons, kits presse, Unsplash/Pexels) avec fallback SVG inline on-theme. Pas de placeholders aléatoires ni d'images générées. Adding static assets requires updating the Dockerfile `COPY`.
-- `status.html` est la page "AI deployment on NKP" (flux de déploiement) : diagramme unique (Développement → NKP), mis à jour en temps réel par le WIP. L'IP du LoadBalancer est fixée via `expose.ip` dans `nkp-app.yaml` (MetalLB). Pour une URL encore plus stable sans DNS, rester sur l'IP pinée.
+- `index.html` est la page thématique stylée de l'application (générée par l'agent selon le thème demandé). Elle doit intégrer des images liées au thème : vraies photos sourcées (Wikimedia Commons, kits presse, Unsplash/Pexels) avec fallback SVG inline on-theme. Pas de placeholders aléatoires ni d'images générées. Adding static assets requ
 - **Mise à jour de l'état de la démo (temps réel)** : l'app expose `GET /demo-state` et `POST /demo-state` (header `X-Wip-Token` ou `X-Demo-State-Token`, token par défaut `demo-wip-token`, surchargeable via env `DEMO_STATE_TOKEN`, repli `WIP_TOKEN`). L'agent signale le travail en cours pour mettre à jour les étapes "Code" et "Push Git" du diagramme :
   `curl -X POST http://<IP>/demo-state -H 'X-Demo-State-Token: demo-wip-token' -d '{"status":"in-progress","mode":"demo","message":"...","theme":"..."}'`
   Le statut repasse à `idle` automatiquement au redémarrage du pod (nouveau déploiement) ou via `{"status":"idle"}`.
@@ -48,6 +47,7 @@ Follow `.opencode/skills/nkp-deploy/SKILL.md`. Summary:
   `kubectl --context $NKP_CONTEXT -n $NKP_NAMESPACE get svc natatio -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
 - L'ancienne app `basket-jereme` peut rester dans le cluster (suppression manuelle optionnelle).
 - Ne pas supprimer à la main les objets K8s : la RAZ via GitOps est la méthode prévue.
+- `check_deploy.sh verify` pousse l'état vérifié (CI, Flux, rollout, health) dans `/demo-state` (`pipeline`), que le dashboard affiche directement.
 - La RAZ déploie la page `demo-loading.html` qui embarque un marqueur `demo-state=raz` ; l'app en déduit l'état `mode: raz` au démarrage du pod (persistant à travers les redémarrages). Plus besoin de POST manuel.
 
 ## Quirks

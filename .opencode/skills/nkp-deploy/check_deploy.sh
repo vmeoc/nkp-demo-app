@@ -32,6 +32,15 @@ K="kubectl -n $NKP_NAMESPACE"
 APP=$(awk -F': *' '/^app:/{print $2; exit}' nkp-app.yaml 2>/dev/null | tr -d "\"' ")
 [ -n "$APP" ] || fail CONFIG_ERROR "Champ app introuvable dans nkp-app.yaml."
 
+SVC_IP=""
+post_state() {
+  [ -n "${SVC_IP:-}" ] || SVC_IP=$($K get svc "$APP" -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null)
+  [ -n "$SVC_IP" ] || return 0
+  curl -s -m 5 -X POST "http://${SVC_IP}/demo-state" \
+    -H 'X-Demo-State-Token: demo-wip-token' -H 'Content-Type: application/json' \
+    -d "$1" >/dev/null 2>&1 || true
+}
+
 diagnose_pods() {
   echo "--- Pods"
   $K get pods -l "app.kubernetes.io/name=$APP" -o wide 2>&1
@@ -61,6 +70,7 @@ verify() {
   [ "$BRANCH" = "main" ] || echo "ATTENTION branche $BRANCH : Flux ne surveille que main."
 
   echo "== 1/3 CI GitHub Actions (commit ${SRC_SHA:0:7})"
+  post_state '{"pipeline":{"gitPush":"success","ci":"running","flux":"pending","rollout":"pending","health":"pending"}}'
   RUN_ID=""
   if command -v gh >/dev/null; then
     for _ in 1 2 3 4 5 6 7 8 9; do
@@ -76,11 +86,14 @@ verify() {
     if ! gh run watch "$RUN_ID" --exit-status --interval 5 >/dev/null 2>&1; then
       echo "--- Logs des étapes en échec"
       gh run view "$RUN_ID" --log-failed 2>&1 | tail -n 60
+      post_state '{"pipeline":{"ci":"failed"}}'
       fail CI_FAILED "La CI a échoué : corriger le code ou le Dockerfile." 2
     fi
     echo "CI OK (run $RUN_ID)"
+    post_state '{"pipeline":{"ci":"success","flux":"running"}}' 
   else
     echo "Aucun build pour ce commit (changement de configuration seule) : on passe à Flux."
+    post_state '{"pipeline":{"ci":"success","flux":"running"}}'
   fi
 
   git fetch -q origin "$BRANCH"
@@ -103,9 +116,9 @@ verify() {
     attempted=$($K get kustomization.kustomize.toolkit.fluxcd.io "$KS" -o jsonpath='{.status.lastAttemptedRevision}' 2>/dev/null)
     ready=$($K get kustomization.kustomize.toolkit.fluxcd.io "$KS" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)
     msg=$($K get kustomization.kustomize.toolkit.fluxcd.io "$KS" -o jsonpath='{.status.conditions[?(@.type=="Ready")].message}' 2>/dev/null)
-    case "$applied" in *"$TARGET"*) echo "Flux a appliqué la révision ${TARGET:0:7}"; break ;; esac
+    case "$applied" in *"$TARGET"*) echo "Flux a appliqué la révision ${TARGET:0:7}"; post_state '{"pipeline":{"flux":"success","rollout":"running"}}'; break ;; esac
     case "$attempted" in *"$TARGET"*)
-      [ "$ready" = "False" ] && fail FLUX_FAILED "Flux a refusé la révision : $msg" 3 ;;
+      if [ "$ready" = "False" ]; then post_state '{"pipeline":{"flux":"failed"}}'; fail FLUX_FAILED "Flux a refusé la révision : $msg" 3; fi ;;
     esac
     [ "$(date +%s)" -lt "$deadline" ] || fail FLUX_TIMEOUT "Révision non appliquée après 5 min. État Flux : $msg" 4
     sleep 10
@@ -117,11 +130,12 @@ verify() {
     if $K rollout status "deployment/$APP" --timeout=5s >/dev/null 2>&1; then break; fi
     reasons=$($K get pods -l "app.kubernetes.io/name=$APP" -o jsonpath='{range .items[*]}{range .status.initContainerStatuses[*]}{.state.waiting.reason}{"\n"}{end}{range .status.containerStatuses[*]}{.state.waiting.reason}{"\n"}{end}{end}' 2>/dev/null \
               | grep -E 'ImagePullBackOff|ErrImagePull|InvalidImageName|CrashLoopBackOff|CreateContainerConfigError' | sort -u | tr '\n' ' ')
-    if [ -n "$reasons" ]; then diagnose_pods; fail ROLLOUT_FAILED "Pods en erreur : $reasons" 5; fi
-    if [ "$(date +%s)" -ge "$deadline" ]; then diagnose_pods; fail ROLLOUT_FAILED "Rollout non terminé après 3 min." 5; fi
+    if [ -n "$reasons" ]; then diagnose_pods; post_state '{"pipeline":{"rollout":"failed"}}'; fail ROLLOUT_FAILED "Pods en erreur : $reasons" 5; fi
+    if [ "$(date +%s)" -ge "$deadline" ]; then diagnose_pods; post_state '{"pipeline":{"rollout":"failed"}}'; fail ROLLOUT_FAILED "Rollout non terminé après 3 min." 5; fi
     sleep 5
   done
 
+  post_state '{"pipeline":{"rollout":"success","health":"success"}}'
   echo "== Déploiement OK"
   $K get pods -l "app.kubernetes.io/name=$APP" 2>&1
   host=$($K get ingress "$APP" -o jsonpath='{.spec.rules[0].host}' 2>/dev/null)

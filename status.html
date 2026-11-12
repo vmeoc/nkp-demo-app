@@ -251,7 +251,7 @@
     const BRANCH = "main";
     const RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}`;
     const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
-    const GITHUB_REFRESH_MS = 60000;
+    const GITHUB_REFRESH_MS = 10000;
     const HEALTH_REFRESH_MS = 10000;
 
     const state = {
@@ -297,6 +297,11 @@
     function isRaz() {
       const d = state.demoState || {};
       return d.mode === "raz";
+    }
+    function pipelineStatus(key) {
+      const d = state.demoState || {};
+      const p = d.pipeline || {};
+      return (typeof p[key] === "string") ? p[key] : null;
     }
     function isNewRun(run) {
       if (!run || !run.created_at) return false;
@@ -419,21 +424,24 @@
       const health = healthStatus();
       const ai = aiStatus();
 
-      setStep("step-developer", dev, "conn-developer");
-      setStep("step-git", git, "conn-git");
-      setStep("step-ci", ci, "conn-flux");
+      const ps = (key, fallback) => pipelineStatus(key) || fallback;
+      setStep("step-developer", ps("code", dev), "conn-developer");
+      setStep("step-git", ps("gitPush", git), "conn-git");
+      setStep("step-ci", ps("ci", ci), "conn-flux");
 
       const bridge = $("conn-bridge");
       if (bridge) {
-        bridge.className = "connector bridge" + (ci === "success" ? " active" : (ci === "running" ? " running" : ""));
+        const ciStep = ps("ci", ci);
+        bridge.className = "connector bridge" + (ciStep === "success" ? " active" : (ciStep === "running" ? " running" : ""));
       }
-      setStep("step-flux", flux, "conn-rollout");
-      setStep("step-rollout", rollout, "conn-health");
-      setStep("step-health", health, null);
+      setStep("step-flux", ps("flux", flux), "conn-rollout");
+      setStep("step-rollout", ps("rollout", rollout), "conn-health");
+      setStep("step-health", ps("health", health), null);
 
       const w = state.demoState || {};
       const demoIdle = (w.status === "idle" || w.status === "pending");
-      const hubColor = demoIdle ? "var(--pending)" : (ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)");
+      const hubHealth = pipelineStatus("health");
+      const hubColor = demoIdle ? "var(--pending)" : (hubHealth ? (hubHealth === "success" ? "var(--ok)" : hubHealth === "failed" ? "var(--fail)" : hubHealth === "running" ? "var(--run)" : "var(--pending)") : (ai === "success" ? "var(--ok)" : ai === "failed" ? "var(--fail)" : ai === "running" ? "var(--run)" : "var(--pending)"));
       const hub = $("ai-hub");
       if (hub) {
         hub.style.borderColor = hubColor;
