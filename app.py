@@ -10,7 +10,12 @@ DEMO_STATE_TOKEN = os.environ.get("DEMO_STATE_TOKEN", os.environ.get("WIP_TOKEN"
 WIP_TOKEN = DEMO_STATE_TOKEN  # compatibilite avec l'ancien nom
 
 # Stockage ephemere en memoire (suffisant pour une demo de quelques minutes).
-_DEMO_STATE = {"status": "idle", "mode": "idle", "message": "", "theme": "", "started": "", "updated": ""}
+_DEMO_STATE = {
+    "status": "idle", "mode": "idle", "message": "", "theme": "",
+    "started": "", "updated": "", "gitPushed": False,
+    "pipeline": {"code": "pending", "gitPush": "pending", "ci": "pending",
+                 "flux": "pending", "rollout": "pending", "health": "pending"},
+}
 
 
 def _init_demo_state_from_index():
@@ -36,6 +41,9 @@ def _init_demo_state_from_index():
             "theme": "demo-loading",
             "started": "",
             "updated": now,
+            "gitPushed": False,
+            "pipeline": {"code": "pending", "gitPush": "pending", "ci": "pending",
+                         "flux": "pending", "rollout": "pending", "health": "pending"},
         }
 
 
@@ -85,12 +93,20 @@ def demo_state_post():
         return jsonify(error="invalid mode"), 400
     _DEMO_STATE["status"] = status_val
     _DEMO_STATE["mode"] = mode_val
-    _DEMO_STATE["message"] = data.get("message", "")
-    _DEMO_STATE["theme"] = data.get("theme", "")
+    _DEMO_STATE["message"] = data.get("message", _DEMO_STATE.get("message", ""))
+    _DEMO_STATE["theme"] = data.get("theme", _DEMO_STATE.get("theme", ""))
+    if "gitPushed" in data:
+        _DEMO_STATE["gitPushed"] = bool(data.get("gitPushed"))
+    if isinstance(data.get("pipeline"), dict):
+        cur = _DEMO_STATE.setdefault("pipeline", {})
+        for k, v in data["pipeline"].items():
+            if v in ("pending", "running", "success", "failed"):
+                cur[k] = v
     if status_val != "idle" and not _DEMO_STATE["started"]:
         _DEMO_STATE["started"] = now
-    if status_val == "idle":
+    if status_val == "idle" and mode_val != "demo":
         _DEMO_STATE["started"] = ""
+        _DEMO_STATE["gitPushed"] = False
     _DEMO_STATE["updated"] = now
     return jsonify(_DEMO_STATE), 200
 
