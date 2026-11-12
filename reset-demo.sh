@@ -40,9 +40,21 @@ git add index.html nkp-app.yaml k8s/
 git commit -m "chore: RAZ demo -> page 'demo loading', IP LB dynamique"
 git pull --rebase && git push
 
-# 5. Aide pour récupérer la nouvelle IP
+# 5. Attendre le déploiement puis remettre le WIP à idle
+if [ -x .opencode/skills/nkp-deploy/check_deploy.sh ]; then
+  .opencode/skills/nkp-deploy/check_deploy.sh verify || true
+fi
+IP=$(kubectl --context "${NKP_CONTEXT:-}" -n "${NKP_NAMESPACE:-}" get svc natatio \
+  -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
+if [ -n "$IP" ]; then
+  curl -s -m 10 -X POST "http://${IP}/wip-status" \
+    -H 'X-Wip-Token: demo-wip-token' -H 'Content-Type: application/json' \
+    -d '{"status":"idle"}' >/dev/null 2>&1 || true
+fi
+
+# 6. Aide
 echo ""
-echo "RAZ poussée. Une fois déployée, récupère l'IP allouée :"
+echo "RAZ terminée. IP allouée : ${IP:-<voir kubectl>}"
 echo "  kubectl --context \"\${NKP_CONTEXT:-}\" -n \"\${NKP_NAMESPACE:-}\" get svc natatio \\"
 echo "    -o jsonpath='{.status.loadBalancer.ingress[0].ip}'"
 echo ""
