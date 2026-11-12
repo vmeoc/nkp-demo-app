@@ -83,18 +83,28 @@ def demo_state_post():
         return jsonify(error="unauthorized"), 401
     data = request.get_json(silent=True) or {}
     now = datetime.now(timezone.utc).isoformat()
-    status_val = data.get("status", "idle")
+    # Mise a jour partielle : seuls les champs fournis sont modifies.
+    status_val = data.get("status", _DEMO_STATE.get("status", "idle"))
     if status_val not in ("idle", "in-progress", "deploying"):
         return jsonify(error="invalid status"), 400
-    mode_val = data.get("mode")
-    if mode_val is None:
-        mode_val = "demo" if status_val in ("in-progress", "deploying") else "idle"
-    if mode_val not in ("idle", "demo", "raz"):
-        return jsonify(error="invalid mode"), 400
+    if "mode" in data:
+        mode_val = data.get("mode")
+        if mode_val not in ("idle", "demo", "raz"):
+            return jsonify(error="invalid mode"), 400
+    else:
+        # Deduire le mode si un statut actif est envoye sans mode explicite.
+        if status_val in ("in-progress", "deploying"):
+            mode_val = "demo"
+        elif "status" in data:
+            mode_val = "idle" if status_val == "idle" else _DEMO_STATE.get("mode", "idle")
+        else:
+            mode_val = _DEMO_STATE.get("mode", "idle")
     _DEMO_STATE["status"] = status_val
     _DEMO_STATE["mode"] = mode_val
-    _DEMO_STATE["message"] = data.get("message", _DEMO_STATE.get("message", ""))
-    _DEMO_STATE["theme"] = data.get("theme", _DEMO_STATE.get("theme", ""))
+    if "message" in data:
+        _DEMO_STATE["message"] = data.get("message", "")
+    if "theme" in data:
+        _DEMO_STATE["theme"] = data.get("theme", "")
     if "gitPushed" in data:
         _DEMO_STATE["gitPushed"] = bool(data.get("gitPushed"))
     if isinstance(data.get("pipeline"), dict):
@@ -104,7 +114,7 @@ def demo_state_post():
                 cur[k] = v
     if status_val != "idle" and not _DEMO_STATE["started"]:
         _DEMO_STATE["started"] = now
-    if status_val == "idle" and mode_val != "demo":
+    if status_val == "idle" and mode_val != "demo" and "status" in data:
         _DEMO_STATE["started"] = ""
         _DEMO_STATE["gitPushed"] = False
     _DEMO_STATE["updated"] = now
